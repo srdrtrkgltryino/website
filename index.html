@@ -368,6 +368,12 @@
         _captcha: 'false',
         page_language: lang
       })
+    }).then(function(res){
+      // fetch() only rejects on network-level failure — a non-2xx response (e.g.
+      // FormSubmit asking to re-confirm the inbox) still resolves, so it must be
+      // checked explicitly or the visitor would see a false "sent" confirmation.
+      if(!res.ok) throw new Error('FormSubmit responded with ' + res.status);
+      return res;
     });
   }
 
