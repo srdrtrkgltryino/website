@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrowserPing — Tryino</title>
+<meta name="description" content="BrowserPing: a native custom channel for Dynamics 365 Customer Insights – Journeys. Web push notifications and in-page banners, right in the browser.">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/index.html" aria-label="Tryino"><img src="/assets/img/logo-tryino.png" alt="Tryino"></a>
+    <nav class="nav-links">
+      <a href="/index.html#about" data-i18n="nav.about">About</a>
+      <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+      <a href="/index.html#products" data-i18n="nav.products">Products</a>
+      <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+      <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+      <a href="/index.html#contact" class="btn btn-primary btn-header btn-sm" data-i18n="nav.cta">Talk to Us</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="/index.html#about" data-i18n="nav.about">About</a>
+    <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+    <a href="/index.html#products" data-i18n="nav.products">Products</a>
+    <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+    <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="/index.html" data-i18n="bc.home">Home</a>
+  <span class="sep">/</span>
+  <a href="/index.html#products" data-i18n="bc.products">Products</a>
+  <span class="sep">/</span>
+  <span class="current">BrowserPing</span>
+</div>
+
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="hero.eyebrow">Product · Customer Insights Journeys Add-on</span>
+  <h1>BrowserPing</h1>
+  <p class="lead" data-i18n="hero.lead">A native custom channel for Dynamics 365 Customer Insights – Journeys that reaches your website visitors directly in the browser — no app install, no extra database. Two modules, one channel.</p>
+  <div class="hero-ctas">
+    <a href="/index.html#contact" class="btn btn-primary" data-i18n="hero.cta">Talk to Us</a>
+  </div>
+</div>
+
+<div class="section" style="padding-top:40px;">
+  <div class="module-grid">
+    <a class="module-card reveal" href="/products/browserping-web-push.html">
+      <span class="module-num">1</span>
+      <h3 data-i18n="m1.title">Web Push Notifications</h3>
+      <p data-i18n="m1.p">Native browser push notifications as a custom channel inside Customer Insights Journeys — reach subscribed visitors even after they've left your site.</p>
+      <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-left:4px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+    <a class="module-card reveal" href="/products/browserping-in-page-banner.html">
+      <span class="module-num">2</span>
+      <h3 data-i18n="m2.title">Web Behavior &amp; In-Page Banner</h3>
+      <p data-i18n="m2.p">Anonymous visitor tracking and behavior-based segmentation, paired with realtime in-page banners — no push permission required.</p>
+      <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-left:4px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+  </div>
+</div>
+
+<div class="cta-band">
+  <h2 data-i18n="cta.band.title">Ready to talk it through?</h2>
+  <p data-i18n="cta.band.p">Tell us where you're starting from — we'll take it from there.</p>
+  <a href="/index.html#contact" class="btn btn-primary" data-i18n="cta.band.btn">Talk to Us</a>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    <span data-i18n="footer.copy">© 2026 Tryino. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+<script>
+  Tryino.init({
+    "hero.eyebrow": {en:"Product · Customer Insights Journeys Add-on", tr:"Ürün · Customer Insights Journeys Eklentisi"},
+    "hero.lead": {en:"A native custom channel for Dynamics 365 Customer Insights – Journeys that reaches your website visitors directly in the browser — no app install, no extra database. Two modules, one channel.",
+                  tr:"Dynamics 365 Customer Insights – Journeys için, ziyaretçilere doğrudan tarayıcıda ulaşan yerleşik bir özel kanal — uygulama kurulumu yok, ek veritabanı yok. İki modül, tek kanal."},
+    "hero.cta": {en:"Talk to Us", tr:"Bize Ulaşın"},
+
+    "m1.title": {en:"Web Push Notifications", tr:"Web Push Bildirimleri"},
+    "m1.p": {en:"Native browser push notifications as a custom channel inside Customer Insights Journeys — reach subscribed visitors even after they've left your site.",
+             tr:"Customer Insights Journeys içinde özel bir kanal olarak native tarayıcı push bildirimleri — aboneler siteden ayrılsa bile onlara ulaşın."},
+    "m2.title": {en:"Web Behavior & In-Page Banner", tr:"Web Davranışı & Sayfa İçi Banner"},
+    "m2.p": {en:"Anonymous visitor tracking and behavior-based segmentation, paired with realtime in-page banners — no push permission required.",
+             tr:"Anonim ziyaretçi takibi ve davranış bazlı segmentasyon, gerçek zamanlı sayfa içi banner'larla birleşiyor — push izni gerekmez."}
+  });
+</script>
+</body>
+</html>

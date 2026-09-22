@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamics 365 Customer Service — Tryino</title>
+<meta name="description" content="Dynamics 365 Customer Service implementation: case management, knowledge base, omnichannel support, and AI-assisted agents.">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/index.html" aria-label="Tryino"><img src="/assets/img/logo-tryino.png" alt="Tryino"></a>
+    <nav class="nav-links">
+      <a href="/index.html#about" data-i18n="nav.about">About</a>
+      <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+      <a href="/index.html#products" data-i18n="nav.products">Products</a>
+      <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+      <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+      <a href="/index.html#contact" class="btn btn-primary btn-header btn-sm" data-i18n="nav.cta">Talk to Us</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="/index.html#about" data-i18n="nav.about">About</a>
+    <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+    <a href="/index.html#products" data-i18n="nav.products">Products</a>
+    <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+    <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="/index.html" data-i18n="bc.home">Home</a>
+  <span class="sep">/</span>
+  <a href="/index.html#solutions" data-i18n="bc.solutions">Solutions</a>
+  <span class="sep">/</span>
+  <span class="current">Customer Service</span>
+</div>
+
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="hero.eyebrow">Solutions · 03</span>
+  <h1 data-i18n="hero.h1">Dynamics 365 Customer Service</h1>
+  <p class="lead" data-i18n="hero.lead">Case management, a knowledge base your agents actually use, and omnichannel support — set up so resolutions get faster, not just busier.</p>
+  <div class="hero-ctas">
+    <a href="/index.html#contact" class="btn btn-primary" data-i18n="hero.cta">Talk to Us</a>
+  </div>
+</div>
+
+<div class="detail-blocks">
+  <div class="detail-block reveal">
+    <div class="shot"><div class="browser-bar"><span></span><span></span><span></span></div><img src="/assets/img/customer-service-workspace.jpg" alt="Unified Agent Workspace"></div>
+    <div class="copy">
+      <div class="step-num">01</div>
+      <h3 data-i18n="b1.title">Unified Agent Workspace</h3>
+      <ul>
+        <li data-i18n="b1.li1">Case, customer, and conversation details in one screen — no tab-switching mid-conversation</li>
+        <li data-i18n="b1.li2">Live chat alongside case details, so context never gets lost</li>
+        <li data-i18n="b1.li3">Copilot built into the same panel for real-time, AI-assisted answers</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="detail-block reveal">
+    <div class="shot"><div class="browser-bar"><span></span><span></span><span></span></div><img src="/assets/img/customer-service-copilot-email.jpg" alt="Copilot-Assisted Replies"></div>
+    <div class="copy">
+      <div class="step-num">02</div>
+      <h3 data-i18n="b2.title">Copilot-Assisted Replies</h3>
+      <ul>
+        <li data-i18n="b2.li1">Draft customer emails with Copilot, grounded in your knowledge base</li>
+        <li data-i18n="b2.li2">Adjust tone, translate, or resolve the customer's issue with one click</li>
+        <li data-i18n="b2.li3">Agents stay in control — every draft is reviewed before it's sent</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="detail-block reveal">
+    <div class="shot"><div class="browser-bar"><span></span><span></span><span></span></div><img src="/assets/img/customer-service-analytics.jpg" alt="Reporting & Insights"></div>
+    <div class="copy">
+      <div class="step-num">03</div>
+      <h3 data-i18n="b3.title">Reporting &amp; Insights</h3>
+      <ul>
+        <li data-i18n="b3.li1">Case volume, resolution time, and CSAT trends on one dashboard</li>
+        <li data-i18n="b3.li2">AI-surfaced insights — volume spikes, topics to watch, CSAT drivers</li>
+        <li data-i18n="b3.li3">Visible to team leads directly, not buried in a monthly export</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="spec-section">
+  <div class="spec-grid">
+    <div class="spec-item reveal">
+      <h4 data-i18n="s2.t">Knowledge Base &amp; Self-Service</h4>
+      <p data-i18n="s2.p">A searchable knowledge base that suggests articles to agents in real time — and can power a customer self-service portal.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s3.t">Omnichannel Support</h4>
+      <p data-i18n="s3.p">Chat, email, and social channels handled from one agent workspace instead of five different tabs.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s5.t">SLA &amp; Queue Management</h4>
+      <p data-i18n="s5.p">Entitlements and SLAs configured per customer tier, with escalation rules that actually trigger on time.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-band">
+  <h2 data-i18n="cta.band.title">Ready to talk it through?</h2>
+  <p data-i18n="cta.band.p">Tell us where you're starting from — we'll take it from there.</p>
+  <a href="/index.html#contact" class="btn btn-primary" data-i18n="cta.band.btn">Talk to Us</a>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    <span data-i18n="footer.copy">© 2026 Tryino. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+<script>
+  Tryino.init({
+    "hero.eyebrow": {en:"Solutions · 03", tr:"Çözümler · 03"},
+    "hero.h1": {en:"Dynamics 365 Customer Service", tr:"Dynamics 365 Customer Service"},
+    "hero.lead": {en:"Case management, a knowledge base your agents actually use, and omnichannel support — set up so resolutions get faster, not just busier.",
+                  tr:"Vaka yönetimi, temsilcilerin gerçekten kullandığı bir bilgi bankası ve omnichannel destek — çözüm süreleri daha meşgul değil, daha hızlı olsun diye kuruyoruz."},
+    "hero.cta": {en:"Talk to Us", tr:"Bize Ulaşın"},
+
+    "b1.title": {en:"Unified Agent Workspace", tr:"Birleşik Temsilci Ekranı"},
+    "b1.li1": {en:"Case, customer, and conversation details in one screen — no tab-switching mid-conversation", tr:"Vaka, müşteri ve konuşma detayları tek ekranda — görüşme sırasında sekme değiştirmeye gerek yok"},
+    "b1.li2": {en:"Live chat alongside case details, so context never gets lost", tr:"Vaka detaylarının yanında canlı sohbet, bağlam hiç kaybolmaz"},
+    "b1.li3": {en:"Copilot built into the same panel for real-time, AI-assisted answers", tr:"Gerçek zamanlı, yapay zeka destekli yanıtlar için aynı panele yerleşik Copilot"},
+
+    "b2.title": {en:"Copilot-Assisted Replies", tr:"Copilot Destekli Yanıtlar"},
+    "b2.li1": {en:"Draft customer emails with Copilot, grounded in your knowledge base", tr:"Bilgi bankanıza dayanan müşteri e-postalarını Copilot ile taslak haline getirin"},
+    "b2.li2": {en:"Adjust tone, translate, or resolve the customer's issue with one click", tr:"Tek tıkla üslubu ayarlayın, çevirin veya müşterinin sorununu çözün"},
+    "b2.li3": {en:"Agents stay in control — every draft is reviewed before it's sent", tr:"Kontrol temsilcide kalır — her taslak gönderilmeden önce gözden geçirilir"},
+
+    "b3.title": {en:"Reporting & Insights", tr:"Raporlama & İçgörüler"},
+    "b3.li1": {en:"Case volume, resolution time, and CSAT trends on one dashboard", tr:"Vaka hacmi, çözüm süresi ve CSAT trendleri tek bir dashboard'da"},
+    "b3.li2": {en:"AI-surfaced insights — volume spikes, topics to watch, CSAT drivers", tr:"Yapay zekanın ortaya çıkardığı içgörüler — hacim artışları, izlenecek konular, CSAT etkenleri"},
+    "b3.li3": {en:"Visible to team leads directly, not buried in a monthly export", tr:"Aylık bir dışa aktarımda kaybolmadan, doğrudan ekip liderlerine görünür"},
+
+    "s2.t": {en:"Knowledge Base & Self-Service", tr:"Bilgi Bankası & Self-Servis"},
+    "s2.p": {en:"A searchable knowledge base that suggests articles to agents in real time — and can power a customer self-service portal.", tr:"Temsilcilere gerçek zamanlı makale öneren, aranabilir bir bilgi bankası — bir müşteri self-servis portalını da besleyebilir."},
+    "s3.t": {en:"Omnichannel Support", tr:"Omnichannel Destek"},
+    "s3.p": {en:"Chat, email, and social channels handled from one agent workspace instead of five different tabs.", tr:"Chat, e-posta ve sosyal medya kanallarının beş ayrı sekme yerine tek bir temsilci ekranından yönetilmesi."},
+    "s5.t": {en:"SLA & Queue Management", tr:"SLA & Kuyruk Yönetimi"},
+    "s5.p": {en:"Entitlements and SLAs configured per customer tier, with escalation rules that actually trigger on time.", tr:"Müşteri seviyesine göre yapılandırılmış haklar ve SLA'lar, zamanında tetiklenen eskalasyon kurallarıyla birlikte."}
+  });
+</script>
+</body>
+</html>

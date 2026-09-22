@@ -1,302 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tryino</title>
-  <!-- Montserrat Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(to bottom, #eef3f9, #ffffff);
-      color: #333;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 40px;
-      background: linear-gradient(to right, #ffffff, #f1f6fb);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    header img {
-      height: 95px; /* Logo bigger */
-    }
-    nav a {
-      margin-left: 25px;
-      text-decoration: none;
-      color: #003366; /* Logo renginde */
-      font-weight: 600;
-      transition: color 0.3s ease, border-bottom 0.3s ease;
-    }
-    nav a:hover {
-      color: #0055aa;
-      border-bottom: 2px solid #0055aa;
-    }
-    .hero {
-      background: linear-gradient(to right, #0078d7, #00a4ef);
-      color: white;
-      text-align: center;
-      padding: 120px 20px;
-      animation: fadeIn 1.5s ease-in-out;
-    }
-    .hero h1 {
-      font-size: 2.8em;
-      margin-bottom: 15px;
-      animation: slideUp 1.5s ease-in-out;
-    }
-    .hero p {
-      font-size: 1.2em;
-      animation: slideUp 2s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .solutions {
-      padding: 60px 20px;
-    }
-    .solutions h2 {
-      text-align: center;
-      font-size: 2.2em;
-      font-weight: 600;
-      margin-bottom: 50px;
-    }
-    .solution-group {
-      margin-bottom: 80px;
-      padding: 40px;
-      border-radius: 12px;
-      background: #f9fbfd;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      animation: fadeIn 1.2s ease-in-out;
-    }
-    .solution-group h3 {
-      color: #0078d7;
-      font-size: 1.6em;
-      margin-bottom: 20px;
-    }
-    .solution {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 40px;
-      flex-wrap: wrap;
-    }
-    .monitor {
-      width: 45%;
-      max-width: 500px;
-      background: #000;
-      border-radius: 12px;
-      padding: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .monitor img {
-      width: 100%;
-      border-radius: 6px;
-    }
-    .solution-text {
-      width: 45%;
-      padding: 20px;
-      text-align: left;
-    }
-    .solution:nth-child(even) {
-      flex-direction: row-reverse;
-    }
-    .solution-text h4 {
-      margin-bottom: 10px;
-      color: #0078d7;
-      font-weight: 600;
-    }
-    .solution-text ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    /* TryCPQ special */
-    .trycpq {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .trycpq-card {
-      flex: 1 1 250px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-    }
-    .trycpq-card h4 {
-      color: #0078d7;
-      margin-bottom: 10px;
-    }
-
-    .partner-banner {
-      width: 100%;
-      max-width: 1200px;
-      margin: 40px auto;
-      text-align: center;
-    }
-    .contact {
-      padding: 60px 20px;
-      text-align: center;
-      background: #f4f4f4;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #e9ecef;
-      font-size: 0.9em;
-    }
-  </style>
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WN8X4YE3G3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-WN8X4YE3G3');
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tryino — Microsoft Dynamics 365 &amp; AI Cloud Partner</title>
+<meta name="description" content="Tryino is a Microsoft AI Cloud Partner delivering Dynamics 365 Customer Engagement implementations and its own BrowserPing and Ino Loyalty products, built on Microsoft Azure.">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/assets/favicon.png" sizes="256x256">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WN8X4YE3G3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WN8X4YE3G3');
+</script>
 </head>
 <body>
-  <header>
-    <img src="Logo T.png" alt="Tryino Logo">
-    <nav>
-      <a href="#about">About</a>
-      <a href="#solutions">Solutions</a>
-      <a href="#contact">Contact</a>
+
+<header id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/index.html" aria-label="Tryino">
+      <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    </a>
+    <nav class="nav-links">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#solutions" data-i18n="nav.solutions">Solutions</a>
+      <a href="#products" data-i18n="nav.products">Products</a>
+      <a href="#why" data-i18n="nav.why">Why Tryino</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
     </nav>
-  </header>
-
-  <section class="hero" id="about">
-    <h1>Innovating Customer Engagement with Dynamics 365</h1>
-    <p>We are a Microsoft AI Cloud Partner delivering Dynamics 365 CRM, Customer Insights, and CPQ solutions. With our young and dynamic team, we embrace agility and bring innovation into every project, leveraging the full power of Azure.</p>
-  </section>
-
-  <section class="solutions" id="solutions">
-    <h2>Our Solutions</h2>
-
-    <div class="solution-group">
-      <h3>Dynamics 365 Sales Implementation Services</h3>
-      <div class="solution">
-        <div class="monitor"><img src="Opportunity Management.png" alt="Opportunity Management"></div>
-        <div class="solution-text">
-          <h4>Opportunity Management</h4>
-          <ul>
-            <li>Lead and opportunity scoring to focus on the most valuable deals</li>
-            <li>Predefined task management for faster sales cycles</li>
-            <li>Copilot support for meeting summaries and next-step recommendations</li>
-          </ul>
-        </div>
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="tr">TR</button>
       </div>
-      <div class="solution">
-        <div class="monitor"><img src="Forecast Predictions.png" alt="Forecast Predictions"></div>
-        <div class="solution-text">
-          <h4>Forecast Predictions</h4>
-          <ul>
-            <li>Manage forecasts by region, sales team, and product line</li>
-            <li>AI-powered models leveraging historical opportunities</li>
-            <li>Real-time pipeline analysis for accurate revenue predictions</li>
-          </ul>
+      <a href="#contact" class="btn btn-primary btn-header btn-sm" data-i18n="nav.cta">Talk to Us</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="#about" data-i18n="nav.about">About</a>
+    <a href="#solutions" data-i18n="nav.solutions">Solutions</a>
+    <a href="#products" data-i18n="nav.products">Products</a>
+    <a href="#why" data-i18n="nav.why">Why Tryino</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero" id="about">
+  <div class="hero-inner">
+    <span class="badge"><span class="dot"></span><span data-i18n="hero.badge">Microsoft AI Cloud Partner</span></span>
+    <h1 data-i18n="hero.h1">Innovating Customer Engagement with Dynamics 365</h1>
+    <p data-i18n="hero.p">We implement the full Dynamics 365 Customer Engagement suite and build our own products on top of it. A young, agile team running on the full power of Microsoft Azure.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-primary" data-i18n="hero.ctaPrimary">Talk to Us</a>
+      <a href="#solutions" class="btn btn-ghost" data-i18n="hero.ctaSecondary">Explore Solutions</a>
+    </div>
+    <div class="trust-row">
+      <span class="label" data-i18n="hero.trustLabel">Our Expertise</span>
+      <span class="items">
+        <span>Dynamics 365 Sales</span>
+        <span>Customer Insights</span>
+        <span>Customer Service</span>
+        <span>Contact Center</span>
+        <span>Microsoft Azure</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="section why" id="why">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="why.eyebrow">Why Tryino</span>
+    <h2 data-i18n="why.title">Built for speed, not bureaucracy</h2>
+    <p data-i18n="why.sub">A focused Microsoft partner with senior hands on every project.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/></svg></div>
+      <h3 data-i18n="why.card1.title">Microsoft AI Cloud Partner</h3>
+      <p data-i18n="why.card1.p">Certified expertise across Dynamics 365 and the Microsoft Cloud, applied to real sales and service challenges.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/><path d="M12 7v5l3.5 2"/></svg></div>
+      <h3 data-i18n="why.card2.title">Built on Azure</h3>
+      <p data-i18n="why.card2.p">Every solution we deliver runs on the security, scale, and AI capabilities of Microsoft Azure.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+      <h3 data-i18n="why.card3.title">Agile by Design</h3>
+      <p data-i18n="why.card3.p">A young, hands-on team that moves fast, iterates with you, and stays close to every project.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      <h3 data-i18n="why.card4.title">End-to-End Coverage</h3>
+      <p data-i18n="why.card4.p">From Sales and Customer Insights to Customer Service and Contact Center, we cover the full customer engagement stack on one platform.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="solutions">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="solutions.eyebrow">Our Solutions</span>
+    <h2 data-i18n="solutions.title">Dynamics 365 Customer Engagement Implementation</h2>
+    <p data-i18n="solutions.sub">End-to-end implementation and consulting across the Dynamics 365 Customer Engagement suite. Click any area for the full picture.</p>
+  </div>
+
+  <div class="overview-wrap">
+    <div class="overview-featured">
+      <a class="overview-card reveal" href="/solutions/sales.html">
+        <div class="shot">
+          <div class="browser-bar"><span></span><span></span><span></span></div>
+          <img src="/assets/img/opportunity-management.jpg" alt="Dynamics 365 Sales">
         </div>
-      </div>
+        <div class="body">
+          <span class="num">01</span>
+          <h3 data-i18n="sol.sales.title">Dynamics 365 Sales — B2B Sales Automation</h3>
+          <p class="teaser" data-i18n="sol.sales.teaser">Opportunity management, AI-driven forecasting, and Copilot-assisted selling.</p>
+          <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
+
+      <a class="overview-card reveal" href="/solutions/customer-insights.html">
+        <div class="shot">
+          <div class="browser-bar"><span></span><span></span><span></span></div>
+          <img src="/assets/img/customer-360.jpg" alt="Dynamics 365 Customer Insights">
+        </div>
+        <div class="body">
+          <span class="num">02</span>
+          <h3 data-i18n="sol.ci.title">Customer Insights — Data &amp; Journey</h3>
+          <p class="teaser" data-i18n="sol.ci.teaser">Unified profiles, AI segmentation, and omni-channel journeys.</p>
+          <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </a>
     </div>
 
-    <div class="solution-group">
-      <h3>Dynamics 365 Customer Insights – Data</h3>
-      <div class="solution">
-        <div class="monitor"><img src="Churn Score.png" alt="Ready-to-Use Models"></div>
-        <div class="solution-text">
-          <h4>Ready-to-Use AI Models</h4>
-          <ul>
-            <li>Prebuilt models: Churn Prediction, Customer Lifetime Value, Product Recommendations</li>
-            <li>Continuously refreshed with your data, keeping segments dynamic</li>
-            <li>Deploy directly into campaigns and journeys</li>
-          </ul>
-        </div>
-      </div>
-      <div class="solution">
-        <div class="monitor"><img src="Customer 360.png" alt="Customer 360"></div>
-        <div class="solution-text">
-          <h4>Customer 360</h4>
-          <ul>
-            <li>Profiles enriched with measures and predictive models</li>
-            <li>Track churn risk, CLV, and behaviors in one unified profile</li>
-            <li>Activity timeline captures all customer interactions</li>
-          </ul>
-        </div>
-      </div>
+    <div class="overview-compact-grid">
+      <a class="compact-card reveal" href="/solutions/customer-service.html">
+        <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h4 data-i18n="sol.service.title">Dynamics 365 Customer Service</h4>
+        <p data-i18n="sol.service.teaser">Case management and omnichannel support with AI-assisted agents.</p>
+        <span class="go" data-i18n="go.details">See details</span>
+      </a>
+      <a class="compact-card reveal" href="/solutions/contact-center.html">
+        <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <h4 data-i18n="sol.contact.title">Dynamics 365 Contact Center</h4>
+        <p data-i18n="sol.contact.teaser">Voice, digital, and social channels unified in one AI-powered center.</p>
+        <span class="go" data-i18n="go.details">See details</span>
+      </a>
+      <a class="compact-card reveal" href="/solutions/teams-telephony.html">
+        <div class="icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h8M8 14h4"/></svg></div>
+        <h4 data-i18n="sol.teams.title">Microsoft Teams Telephony Setup</h4>
+        <p data-i18n="sol.teams.teaser">Operator Connect / Direct Routing to bring PSTN calling into Teams.</p>
+        <span class="go" data-i18n="go.details">See details</span>
+      </a>
     </div>
+  </div>
+</section>
 
-    <div class="solution-group">
-      <h3>Dynamics 365 Customer Insights – Journeys</h3>
-      <div class="solution">
-        <div class="monitor"><img src="Journey Measures.jpeg" alt="Marketing Journeys"></div>
-        <div class="solution-text">
-          <h4>Marketing Journeys</h4>
-          <ul>
-            <li>AI optimizes channel selection based on customer preference</li>
-            <li>Run A/B tests to identify high-performing variations</li>
-            <li>Trigger-based and segment-based journeys</li>
-            <li>Comprehensive journey and channel performance analytics</li>
-          </ul>
-        </div>
-      </div>
-      <div class="solution">
-        <div class="monitor"><img src="SMS, Email, Push Notifications.jpeg" alt="Omni-Channel Engagement"></div>
-        <div class="solution-text">
-          <h4>Omni-Channel Engagement</h4>
-          <ul>
-            <li>Leverage Email, SMS, Push notifications, and custom channels</li>
-            <li>Design and personalize messages directly within the app</li>
-            <li>Deliver individualized experiences across multiple touchpoints</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+<section class="section products" id="products">
+  <div class="section-head reveal">
+    <span class="eyebrow" data-i18n="products.eyebrow">Our Products</span>
+    <h2 data-i18n="products.title">Built by us, extending Dynamics 365</h2>
+    <p data-i18n="products.sub">Two focused products born from real implementation projects.</p>
+  </div>
 
-    <div class="solution-group">
-      <h3>TryCPQ – Configure Price Quote Solution</h3>
-      <p><strong>Revolutionize your quote-to-cash process with a native Dynamics 365 add-on:</strong></p>
-      <div class="trycpq">
-        <div class="trycpq-card">
-          <h4>Configure</h4>
-          <p>Build complex product bundles and configurations with ease.</p>
-        </div>
-        <div class="trycpq-card">
-          <h4>Price</h4>
-          <p>Apply dynamic pricing rules, discount logic, and AI-driven recommendations.</p>
-        </div>
-        <div class="trycpq-card">
-          <h4>Quote</h4>
-          <p>Generate accurate quotes in minutes, with automated approval workflows.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="products-grid">
+    <a class="product-overview-card reveal" href="/products/browserping.html">
+      <span class="product-badge" data-i18n="products.bp.badge">Customer Insights Journeys Add-on</span>
+      <h3>BrowserPing</h3>
+      <p class="teaser" data-i18n="products.bp.desc">A native custom channel for Dynamics 365 Customer Insights – Journeys that reaches your website visitors directly in the browser. Two modules: Web Push and Web Behavior &amp; In-Page Banner.</p>
+      <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-left:4px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
 
-  <!-- Microsoft Partner Banner -->
+    <a class="product-overview-card reveal" href="/products/ino-loyalty.html">
+      <span class="product-badge" data-i18n="products.ino.badge">Multi-Channel Loyalty Engine</span>
+      <h3>Ino Loyalty &amp; Promotion Platform</h3>
+      <p class="teaser" data-i18n="products.ino.desc">A loyalty and promotion platform that plugs into POS, e-commerce, mobile, and ERP — with a Power Apps console built on Dataverse.</p>
+      <span class="go" data-i18n="go.details">See details <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;display:inline-block;vertical-align:-2px;margin-left:4px;"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+  </div>
+</section>
+
+<!-- Microsoft Partner Banner -->
+<section class="partner-section">
   <div class="partner-banner">
     <div id="dccn-6888d06c-e301-4acf-a2eb-6a431265415a"></div>
-    <script type='text/javascript'>
+    <script type="text/javascript">
       (function() {
           const scriptId = '6888d06c-e301-4acf-a2eb-6a431265415a';
-          const bannerHeight = 120; /* smaller height */
-          const bannerWidth = 1200; /* fits page width */
+          const bannerHeight = 120;
+          const bannerWidth = 1200;
           const embedType = 'banner';
           const script = document.createElement('script');
           script.defer = true;
@@ -305,14 +206,246 @@
       })();
     </script>
   </div>
+</section>
 
-  <section class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <p>Email: <a href="mailto:info@tryino.com">info@tryino.com</a></p>
-  </section>
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <h2 data-i18n="contact.title">Let's Talk</h2>
+    <p data-i18n="contact.sub">No forms, no formalities — just tell us what's on your mind.</p>
 
-  <footer>
-    © 2025 Tryino
-  </footer>
+    <div class="chat-widget">
+      <div class="chat-box" id="chatBox">
+        <div class="chat-msg them">
+          <span class="chat-avatar">T</span>
+          <div class="chat-bubble" data-i18n="contact.opener">👋 Hi! Tell us a bit about your project — we'll take it from there.</div>
+        </div>
+      </div>
+      <div class="chat-input-row" id="chatForm">
+        <textarea id="chatInput" rows="1" data-i18n-placeholder="contact.placeholder" placeholder="Type your message and hit Enter..."></textarea>
+        <button type="button" class="chat-send" id="chatSend" aria-label="Send">
+          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <p class="chat-hint" data-i18n="contact.hint">Hit Enter — your message reaches us instantly, right here.</p>
+    </div>
+
+    <a class="contact-email-fallback" href="mailto:info@tryino.com">info@tryino.com</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    <span data-i18n="footer.copy">© 2026 Tryino. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+<script>
+(function(){
+  var T = Tryino.init({
+    "hero.badge": {en:"Microsoft AI Cloud Partner", tr:"Microsoft AI Cloud Partner"},
+    "hero.h1": {en:"Innovating Customer Engagement with Dynamics 365", tr:"Dynamics 365 ile Müşteri Deneyiminde Yeni Nesil Yaklaşım"},
+    "hero.p": {en:"We implement the full Dynamics 365 Customer Engagement suite and build our own products on top of it. A young, agile team running on the full power of Microsoft Azure.",
+               tr:"Dynamics 365 Customer Engagement paketinin tamamını uçtan uca kuruyor, üzerine kendi ürünlerimizi inşa ediyoruz. Microsoft Azure'ın tüm gücünü kullanan genç ve çevik bir ekibiz."},
+    "hero.ctaPrimary": {en:"Talk to Us", tr:"Bize Ulaşın"},
+    "hero.ctaSecondary": {en:"Explore Solutions", tr:"Çözümleri İncele"},
+    "hero.trustLabel": {en:"Our Expertise", tr:"Uzmanlık Alanlarımız"},
+
+    "why.eyebrow": {en:"Why Tryino", tr:"Neden Tryino"},
+    "why.title": {en:"Built for speed, not bureaucracy", tr:"Bürokrasi değil, hız için kurulduk"},
+    "why.sub": {en:"A focused Microsoft partner with senior hands on every project.", tr:"Her projede deneyimli ellerin yer aldığı, odaklı bir Microsoft iş ortağı."},
+    "why.card1.title": {en:"Microsoft AI Cloud Partner", tr:"Microsoft AI Cloud Partner"},
+    "why.card1.p": {en:"Certified expertise across Dynamics 365 and the Microsoft Cloud, applied to real sales and service challenges.", tr:"Dynamics 365 ve Microsoft Cloud genelindeki sertifikalı uzmanlığımızı gerçek satış ve servis problemlerine uyguluyoruz."},
+    "why.card2.title": {en:"Built on Azure", tr:"Azure Altyapısı"},
+    "why.card2.p": {en:"Every solution we deliver runs on the security, scale, and AI capabilities of Microsoft Azure.", tr:"Teslim ettiğimiz her çözüm, Microsoft Azure'ın güvenlik, ölçeklenebilirlik ve yapay zeka gücü üzerinde çalışır."},
+    "why.card3.title": {en:"Agile by Design", tr:"Çevik Yaklaşım"},
+    "why.card3.p": {en:"A young, hands-on team that moves fast, iterates with you, and stays close to every project.", tr:"Hızlı hareket eden, sizinle birlikte iterasyon yapan ve her projeye yakından dahil olan genç bir ekip."},
+    "why.card4.title": {en:"End-to-End Coverage", tr:"Uçtan Uca Kapsama"},
+    "why.card4.p": {en:"From Sales and Customer Insights to Customer Service and Contact Center, we cover the full customer engagement stack on one platform.", tr:"Sales ve Customer Insights'tan Customer Service ve Contact Center'a kadar, müşteri deneyimi yığınının tamamını tek platformda kapsıyoruz."},
+
+    "solutions.eyebrow": {en:"Our Solutions", tr:"Çözümlerimiz"},
+    "solutions.title": {en:"Dynamics 365 Customer Engagement Implementation", tr:"Dynamics 365 Customer Engagement Implementasyonu"},
+    "solutions.sub": {en:"End-to-end implementation and consulting across the Dynamics 365 Customer Engagement suite. Click any area for the full picture.", tr:"Dynamics 365 Customer Engagement paketinin tamamında uçtan uca implementasyon ve danışmanlık. Detaylar için herhangi birine tıklayın."},
+
+    "sol.sales.title": {en:"Dynamics 365 Sales — B2B Sales Automation", tr:"Dynamics 365 Sales — B2B Satış Otomasyonu"},
+    "sol.sales.teaser": {en:"Opportunity management, AI-driven forecasting, and Copilot-assisted selling.", tr:"Fırsat yönetimi, yapay zeka destekli tahminleme ve Copilot destekli satış."},
+    "sol.ci.title": {en:"Customer Insights — Data & Journey", tr:"Customer Insights — Data & Journey"},
+    "sol.ci.teaser": {en:"Unified profiles, AI segmentation, and omni-channel journeys.", tr:"Birleşik profiller, yapay zeka segmentasyonu ve omni-channel journey'ler."},
+    "sol.service.title": {en:"Dynamics 365 Customer Service", tr:"Dynamics 365 Customer Service"},
+    "sol.service.teaser": {en:"Case management and omnichannel support with AI-assisted agents.", tr:"Vaka yönetimi ve yapay zeka destekli omnichannel destek."},
+    "sol.contact.title": {en:"Dynamics 365 Contact Center", tr:"Dynamics 365 Contact Center"},
+    "sol.contact.teaser": {en:"Voice, digital, and social channels unified in one AI-powered center.", tr:"Ses, dijital ve sosyal kanalların birleştiği yapay zeka destekli merkez."},
+    "sol.teams.title": {en:"Microsoft Teams Telephony Setup", tr:"Microsoft Teams Telefon Altyapısı"},
+    "sol.teams.teaser": {en:"Operator Connect / Direct Routing to bring PSTN calling into Teams.", tr:"Teams'e PSTN çağrı altyapısı için Operator Connect / Direct Routing."},
+
+    "products.eyebrow": {en:"Our Products", tr:"Ürünlerimiz"},
+    "products.title": {en:"Built by us, extending Dynamics 365", tr:"Kendi ürünlerimiz, Dynamics 365'i genişletiyor"},
+    "products.sub": {en:"Two focused products born from real implementation projects.", tr:"Gerçek implementasyon projelerinden doğan iki odaklı ürün."},
+    "products.bp.badge": {en:"Customer Insights Journeys Add-on", tr:"Customer Insights Journeys Eklentisi"},
+    "products.bp.desc": {en:"A native custom channel for Dynamics 365 Customer Insights – Journeys that reaches your website visitors directly in the browser. Two modules: Web Push and Web Behavior &amp; In-Page Banner.",
+                          tr:"Dynamics 365 Customer Insights – Journeys için, ziyaretçilere doğrudan tarayıcıda ulaşan yerleşik bir özel kanal. İki modül: Web Push ve Web Davranışı &amp; Sayfa İçi Banner."},
+    "products.ino.badge": {en:"Multi-Channel Loyalty Engine", tr:"Çok Kanallı Sadakat Motoru"},
+    "products.ino.desc": {en:"A loyalty and promotion platform that plugs into POS, e-commerce, mobile, and ERP — with a Power Apps console built on Dataverse.",
+                           tr:"POS, e-ticaret, mobil ve ERP sistemlerine entegre olan; Dataverse üzerine kurulu bir Power Apps konsoluna sahip sadakat ve promosyon platformu."},
+
+    "contact.title": {en:"Let's Talk", tr:"Hadi Konuşalım"},
+    "contact.sub": {en:"No forms, no formalities — just tell us what's on your mind.", tr:"Form yok, resmiyet yok — aklından geçeni yazman yeterli."},
+    "contact.opener": {en:"👋 Hi! Tell us a bit about your project — we'll take it from there.", tr:"👋 Merhaba! Projenden kısaca bahset, gerisini biz hallederiz."},
+    "contact.placeholder": {en:"Type your message and hit Enter...", tr:"Mesajını yaz, Enter'a bas..."},
+    "contact.hint": {en:"Hit Enter — your message reaches us instantly, right here.", tr:"Enter'a bas — mesajın anında, buradan bize ulaşır."},
+    "contact.sending": {en:"Sending…", tr:"Gönderiliyor…"},
+    "contact.askEmail": {en:"Got it! And what's the best email to reach you back on?", tr:"Alındı! Peki sana dönebilmemiz için en iyi e-posta adresin nedir?"},
+    "contact.placeholderEmail": {en:"you@company.com", tr:"sen@sirket.com"},
+    "contact.emailInvalid": {en:"That doesn't quite look like an email — mind trying again?", tr:"Bu bir e-posta adresine pek benzemiyor — tekrar yazar mısın?"},
+    "contact.reply1": {en:"Got it — that landed in our inbox. We usually reply within a business day 🚀", tr:"Alındı — kutumuza düştü. Genellikle bir iş günü içinde dönüş yapıyoruz 🚀"},
+    "contact.reply2": {en:"Thanks for reaching out! Someone from the team will get back to you shortly ✉️", tr:"Ulaştığın için teşekkürler! Ekipten biri kısa süre içinde sana dönecek ✉️"},
+    "contact.reply3": {en:"Perfect, noted — talk soon 👋", tr:"Harika, not ettik — yakında konuşuruz 👋"},
+    "contact.error": {en:"Hmm, that didn't send. Mind emailing us directly at info@tryino.com?", tr:"Hmm, gönderilemedi. Doğrudan info@tryino.com adresine yazabilir misin?"},
+    "contact.doneHint": {en:"Sent! We'll be in touch soon.", tr:"Gönderildi! Yakında sana döneceğiz."}
+  });
+
+  // Chat-style contact widget — submits via FormSubmit.co (no page leave, no mailto popup).
+  // One conversation = at most one network call, fired exactly once, after both the
+  // message and the email have been collected. `locked` is checked+set as the very
+  // first thing in trySend() so a stray double-Enter or Enter-then-click can never
+  // trigger it twice.
+  var chatBox = document.getElementById('chatBox');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+
+  function addBubble(text, who){
+    var msg = document.createElement('div');
+    msg.className = 'chat-msg ' + who;
+    var avatar = document.createElement('span');
+    avatar.className = 'chat-avatar';
+    avatar.textContent = who === 'me' ? 'S' : 'T';
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = text;
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return msg;
+  }
+
+  function showTyping(){
+    var typing = document.createElement('div');
+    typing.className = 'chat-msg them';
+    typing.innerHTML = '<span class="chat-avatar">T</span><div class="chat-typing"><span></span><span></span><span></span></div>';
+    chatBox.appendChild(typing);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return typing;
+  }
+
+  function autoGrow(){
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+  }
+  chatInput.addEventListener('input', autoGrow);
+
+  var replyKeys = ['contact.reply1','contact.reply2','contact.reply3'];
+  var locked = false;          // true while a step is animating or a request is in flight
+  var stage = 'message';       // 'message' -> 'email' -> 'done'
+  var pendingMessage = '';
+  var alreadySent = false;     // hard guard: the network call may fire at most once, ever
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function sendToInbox(message, email){
+    if(alreadySent) return Promise.resolve();
+    alreadySent = true;
+    var lang = T.getLang();
+    var subject = lang === 'tr' ? 'Web sitesinden yeni mesaj' : 'New message from the website';
+    return fetch('https://formsubmit.co/ajax/info@tryino.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        message: message,
+        _replyto: email,
+        _subject: subject,
+        _template: 'table',
+        _captcha: 'false',
+        page_language: lang
+      })
+    });
+  }
+
+  function trySend(){
+    if(locked || stage === 'done') return;
+    var text = chatInput.value.trim();
+    if(!text) return;
+    var lang = T.getLang();
+    locked = true;
+    chatSend.disabled = true;
+
+    if(stage === 'message'){
+      addBubble(text, 'me');
+      pendingMessage = text;
+      chatInput.value = '';
+      autoGrow();
+      chatInput.placeholder = T.dict['contact.placeholderEmail'][lang] || T.dict['contact.placeholderEmail'].en;
+
+      var typing1 = showTyping();
+      setTimeout(function(){
+        typing1.remove();
+        addBubble(T.dict['contact.askEmail'][lang] || T.dict['contact.askEmail'].en, 'them');
+        stage = 'email';
+        locked = false;
+        chatSend.disabled = false;
+        chatInput.focus();
+      }, 550);
+      return;
+    }
+
+    if(stage === 'email'){
+      if(!EMAIL_RE.test(text)){
+        addBubble(text, 'me');
+        chatInput.value = '';
+        autoGrow();
+        var typingBad = showTyping();
+        setTimeout(function(){
+          typingBad.remove();
+          addBubble(T.dict['contact.emailInvalid'][lang] || T.dict['contact.emailInvalid'].en, 'them');
+          locked = false;
+          chatSend.disabled = false;
+          chatInput.focus();
+        }, 500);
+        return;
+      }
+
+      addBubble(text, 'me');
+      var email = text;
+      chatInput.value = '';
+      autoGrow();
+      stage = 'done';               // flip immediately — no further sends can start
+      chatInput.disabled = true;
+      var typing2 = showTyping();
+
+      sendToInbox(pendingMessage, email).then(function(){
+        typing2.remove();
+        var key = replyKeys[Math.floor(Math.random() * replyKeys.length)];
+        addBubble(T.dict[key][lang] || T.dict[key].en, 'them');
+      }).catch(function(){
+        typing2.remove();
+        addBubble(T.dict['contact.error'][lang] || T.dict['contact.error'].en, 'them');
+      }).finally(function(){
+        chatInput.placeholder = T.dict['contact.doneHint'][lang] || T.dict['contact.doneHint'].en;
+      });
+    }
+  }
+
+  chatInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      trySend();
+    }
+  });
+  chatSend.addEventListener('click', function(e){
+    e.preventDefault();
+    trySend();
+  });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Teams Telephony Setup — Tryino</title>
+<meta name="description" content="Operator Connect / Direct Routing setup to bring PSTN calling and call routing rules into Microsoft Teams.">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/index.html" aria-label="Tryino"><img src="/assets/img/logo-tryino.png" alt="Tryino"></a>
+    <nav class="nav-links">
+      <a href="/index.html#about" data-i18n="nav.about">About</a>
+      <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+      <a href="/index.html#products" data-i18n="nav.products">Products</a>
+      <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+      <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+      <a href="/index.html#contact" class="btn btn-primary btn-header btn-sm" data-i18n="nav.cta">Talk to Us</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="/index.html#about" data-i18n="nav.about">About</a>
+    <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+    <a href="/index.html#products" data-i18n="nav.products">Products</a>
+    <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+    <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="/index.html" data-i18n="bc.home">Home</a>
+  <span class="sep">/</span>
+  <a href="/index.html#solutions" data-i18n="bc.solutions">Solutions</a>
+  <span class="sep">/</span>
+  <span class="current">Teams Telephony</span>
+</div>
+
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="hero.eyebrow">Solutions · 05</span>
+  <h1 data-i18n="hero.h1">Microsoft Teams Telephony Setup</h1>
+  <p class="lead" data-i18n="hero.lead">Bring real phone calling into Microsoft Teams — Operator Connect or Direct Routing, set up and configured so calls land where they should.</p>
+  <div class="hero-ctas">
+    <a href="/index.html#contact" class="btn btn-primary" data-i18n="hero.cta">Talk to Us</a>
+  </div>
+</div>
+
+<div class="spec-section" style="padding-top:34px;">
+  <div class="spec-grid">
+    <div class="spec-item reveal">
+      <h4 data-i18n="s1.t">Operator Connect, Direct Routing &amp; Calling Plans</h4>
+      <p data-i18n="s1.p">Choosing and configuring the right PSTN connectivity model — Operator Connect, Direct Routing, or Microsoft Calling Plans — for your carrier, region, and budget.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s2.t">AI-Powered Calling</h4>
+      <p data-i18n="s2.p">Enable Copilot in Teams Phone for AI-generated summaries, real-time transcription, and call insights — backed by Microsoft's 99.999% uptime SLA.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s3.t">Collaborative Call Handling</h4>
+      <p data-i18n="s3.p">Call transfer, forwarding, simultaneous ring, and busy-on-busy — configured to match how your team actually answers.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s4.t">Contact Center Integration</h4>
+      <p data-i18n="s4.p">Extending Teams Phone into Dynamics 365 Contact Center for a single voice + digital experience.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s5.t">Teams-Certified Devices</h4>
+      <p data-i18n="s5.p">Desk phones, headsets, and conferencing devices set up for a consistent calling experience across every device.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s6.t">Number Porting &amp; Provisioning</h4>
+      <p data-i18n="s6.p">Moving existing numbers into Teams without downtime, and provisioning new local or international numbers as you grow.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-band">
+  <h2 data-i18n="cta.band.title">Ready to talk it through?</h2>
+  <p data-i18n="cta.band.p">Tell us where you're starting from — we'll take it from there.</p>
+  <a href="/index.html#contact" class="btn btn-primary" data-i18n="cta.band.btn">Talk to Us</a>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    <span data-i18n="footer.copy">© 2026 Tryino. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+<script>
+  Tryino.init({
+    "hero.eyebrow": {en:"Solutions · 05", tr:"Çözümler · 05"},
+    "hero.h1": {en:"Microsoft Teams Telephony Setup", tr:"Microsoft Teams Telefon Altyapısı"},
+    "hero.lead": {en:"Bring real phone calling into Microsoft Teams — Operator Connect or Direct Routing, set up and configured so calls land where they should.",
+                  tr:"Gerçek telefon aramalarını Microsoft Teams'e taşıyın — Operator Connect veya Direct Routing, çağrıların doğru yere ulaşacağı şekilde kurulur ve yapılandırılır."},
+    "hero.cta": {en:"Talk to Us", tr:"Bize Ulaşın"},
+
+    "s1.t": {en:"Operator Connect, Direct Routing & Calling Plans", tr:"Operator Connect, Direct Routing & Calling Plans"},
+    "s1.p": {en:"Choosing and configuring the right PSTN connectivity model — Operator Connect, Direct Routing, or Microsoft Calling Plans — for your carrier, region, and budget.", tr:"Operatörünüze, bölgenize ve bütçenize uygun doğru PSTN bağlantı modelinin — Operator Connect, Direct Routing veya Microsoft Calling Plans — seçilmesi ve yapılandırılması."},
+    "s2.t": {en:"AI-Powered Calling", tr:"Yapay Zeka Destekli Arama"},
+    "s2.p": {en:"Enable Copilot in Teams Phone for AI-generated summaries, real-time transcription, and call insights — backed by Microsoft's 99.999% uptime SLA.", tr:"Yapay zeka destekli özetler, gerçek zamanlı transkripsiyon ve çağrı içgörüleri için Teams Phone'da Copilot'u etkinleştirin — Microsoft'un %99,999 çalışma süresi SLA'sı ile desteklenir."},
+    "s3.t": {en:"Collaborative Call Handling", tr:"Ortak Çağrı Yönetimi"},
+    "s3.p": {en:"Call transfer, forwarding, simultaneous ring, and busy-on-busy — configured to match how your team actually answers.", tr:"Ekibinizin gerçek yanıtlama şekline uygun olarak yapılandırılmış çağrı aktarma, yönlendirme, eşzamanlı çalma ve meşgulken-meşgul ayarları."},
+    "s4.t": {en:"Contact Center Integration", tr:"Contact Center Entegrasyonu"},
+    "s4.p": {en:"Extending Teams Phone into Dynamics 365 Contact Center for a single voice + digital experience.", tr:"Tek bir ses + dijital deneyim için Teams Phone'un Dynamics 365 Contact Center'a genişletilmesi."},
+    "s5.t": {en:"Teams-Certified Devices", tr:"Teams Sertifikalı Cihazlar"},
+    "s5.p": {en:"Desk phones, headsets, and conferencing devices set up for a consistent calling experience across every device.", tr:"Her cihazda tutarlı bir arama deneyimi için kurulan masa telefonları, kulaklıklar ve konferans cihazları."},
+    "s6.t": {en:"Number Porting & Provisioning", tr:"Numara Taşıma & Tanımlama"},
+    "s6.p": {en:"Moving existing numbers into Teams without downtime, and provisioning new local or international numbers as you grow.", tr:"Mevcut numaraları kesinti olmadan Teams'e taşımak ve büyüdükçe yeni yerel veya uluslararası numaralar tanımlamak."}
+  });
+</script>
+</body>
+</html>

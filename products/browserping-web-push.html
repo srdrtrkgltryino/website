@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrowserPing — Web Push Notifications — Tryino</title>
+<meta name="description" content="Native browser push notifications as a custom channel inside Dynamics 365 Customer Insights – Journeys.">
+<link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header id="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/index.html" aria-label="Tryino"><img src="/assets/img/logo-tryino.png" alt="Tryino"></a>
+    <nav class="nav-links">
+      <a href="/index.html#about" data-i18n="nav.about">About</a>
+      <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+      <a href="/index.html#products" data-i18n="nav.products">Products</a>
+      <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+      <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="tr">TR</button>
+      </div>
+      <a href="/index.html#contact" class="btn btn-primary btn-header btn-sm" data-i18n="nav.cta">Talk to Us</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="/index.html#about" data-i18n="nav.about">About</a>
+    <a href="/index.html#solutions" data-i18n="nav.solutions">Solutions</a>
+    <a href="/index.html#products" data-i18n="nav.products">Products</a>
+    <a href="/index.html#why" data-i18n="nav.why">Why Tryino</a>
+    <a href="/index.html#contact" data-i18n="nav.contact">Contact</a>
+  </nav>
+</header>
+
+<div class="breadcrumb">
+  <a href="/index.html" data-i18n="bc.home">Home</a>
+  <span class="sep">/</span>
+  <a href="/index.html#products" data-i18n="bc.products">Products</a>
+  <span class="sep">/</span>
+  <a href="/products/browserping.html">BrowserPing</a>
+  <span class="sep">/</span>
+  <span class="current">Web Push</span>
+</div>
+
+<div class="page-hero">
+  <span class="eyebrow" data-i18n="hero.eyebrow">BrowserPing · Module 1</span>
+  <h1 data-i18n="hero.h1">Web Push Notifications</h1>
+  <p class="lead" data-i18n="hero.lead">A native browser push channel wired directly into Customer Insights Journeys. Design the notification in the journey canvas like any other step — BrowserPing handles delivery to the browser.</p>
+  <div class="hero-ctas">
+    <a href="/index.html#contact" class="btn btn-primary" data-i18n="hero.cta">Talk to Us</a>
+  </div>
+</div>
+
+<div class="spec-section" style="padding-top:34px;">
+  <div class="spec-grid">
+    <div class="spec-item reveal">
+      <h4 data-i18n="s1.t">Native Custom Channel</h4>
+      <p data-i18n="s1.p">Shows up as its own channel step in Customer Insights Journeys, alongside email and SMS — no separate tool to log into.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s2.t">Reaches People Off-Site</h4>
+      <p data-i18n="s2.p">Once someone subscribes, you can reach them even after they've closed the tab — no need for them to be on your site.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s3.t">Delivery Reporting</h4>
+      <p data-i18n="s3.p">Delivered / not-delivered status flows back into the journey, the same way it does for any other CI-Journeys channel.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s4.t">Trigger &amp; Segment-Based</h4>
+      <p data-i18n="s4.p">Send from the same segments and triggers you already use for email and SMS journeys — no duplicate audience setup.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s5.t">No App Required</h4>
+      <p data-i18n="s5.p">Runs on standard browser push APIs — visitors subscribe with one click, no app store, no install.</p>
+    </div>
+    <div class="spec-item reveal">
+      <h4 data-i18n="s6.t">Works Alongside Other Channels</h4>
+      <p data-i18n="s6.p">Combine push with email, SMS, and — once enabled — in-page banners, all from the same journey.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-band">
+  <h2 data-i18n="cta.band.title">Ready to talk it through?</h2>
+  <p data-i18n="cta.band.p">Tell us where you're starting from — we'll take it from there.</p>
+  <a href="/index.html#contact" class="btn btn-primary" data-i18n="cta.band.btn">Talk to Us</a>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <img src="/assets/img/logo-tryino.png" alt="Tryino">
+    <span data-i18n="footer.copy">© 2026 Tryino. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="/main.js"></script>
+<script>
+  Tryino.init({
+    "hero.eyebrow": {en:"BrowserPing · Module 1", tr:"BrowserPing · Modül 1"},
+    "hero.h1": {en:"Web Push Notifications", tr:"Web Push Bildirimleri"},
+    "hero.lead": {en:"A native browser push channel wired directly into Customer Insights Journeys. Design the notification in the journey canvas like any other step — BrowserPing handles delivery to the browser.",
+                  tr:"Customer Insights Journeys'e doğrudan bağlı, native bir tarayıcı push kanalı. Bildirimi journey ekranında diğer adımlar gibi tasarlayın — tarayıcıya teslimatı BrowserPing halleder."},
+    "hero.cta": {en:"Talk to Us", tr:"Bize Ulaşın"},
+
+    "s1.t": {en:"Native Custom Channel", tr:"Yerleşik Özel Kanal"},
+    "s1.p": {en:"Shows up as its own channel step in Customer Insights Journeys, alongside email and SMS — no separate tool to log into.", tr:"Customer Insights Journeys içinde e-posta ve SMS'in yanında kendi kanal adımı olarak görünür — ayrı bir araca giriş yapmaya gerek yok."},
+    "s2.t": {en:"Reaches People Off-Site", tr:"Site Dışındaki Ziyaretçilere Ulaşır"},
+    "s2.p": {en:"Once someone subscribes, you can reach them even after they've closed the tab — no need for them to be on your site.", tr:"Biri abone olduktan sonra, sekmeyi kapatmış olsa bile ona ulaşabilirsiniz — sitede olması gerekmez."},
+    "s3.t": {en:"Delivery Reporting", tr:"Teslimat Raporlama"},
+    "s3.p": {en:"Delivered / not-delivered status flows back into the journey, the same way it does for any other CI-Journeys channel.", tr:"Teslim edildi / edilmedi durumu, diğer CI-Journeys kanallarında olduğu gibi journey'e geri akar."},
+    "s4.t": {en:"Trigger & Segment-Based", tr:"Tetikleyici & Segment Bazlı"},
+    "s4.p": {en:"Send from the same segments and triggers you already use for email and SMS journeys — no duplicate audience setup.", tr:"E-posta ve SMS journey'leri için zaten kullandığınız segment ve tetikleyicilerden gönderin — kitleyi tekrar kurmaya gerek yok."},
+    "s5.t": {en:"No App Required", tr:"Uygulama Gerektirmez"},
+    "s5.p": {en:"Runs on standard browser push APIs — visitors subscribe with one click, no app store, no install.", tr:"Standart tarayıcı push API'leri üzerinde çalışır — ziyaretçiler tek tıkla abone olur, uygulama mağazası veya kurulum gerekmez."},
+    "s6.t": {en:"Works Alongside Other Channels", tr:"Diğer Kanallarla Birlikte Çalışır"},
+    "s6.p": {en:"Combine push with email, SMS, and — once enabled — in-page banners, all from the same journey.", tr:"Push'u e-posta, SMS ve — etkinleştirildiğinde — sayfa içi banner'larla aynı journey'den birleştirin."}
+  });
+</script>
+</body>
+</html>
