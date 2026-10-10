@@ -347,15 +347,10 @@
   }
   chatInput.addEventListener('input', autoGrow);
 
-  // Fire once, on first focus — gets the model loaded into memory on the Mac mini
-  // before the visitor finishes typing their first message, so that first reply
-  // isn't paying the full cold-start cost.
-  var warmedUp = false;
-  chatInput.addEventListener('focus', function(){
-    if(warmedUp) return;
-    warmedUp = true;
-    fetch(CHAT_API + '/warmup', { method: 'POST' }).catch(function(){});
-  });
+  // Fired as soon as this script runs (page load), not on focus — gives the model the
+  // most possible head start loading into memory on the Mac mini before the visitor
+  // scrolls to the widget, reads the opener, and types their first message.
+  fetch(CHAT_API + '/warmup', { method: 'POST' }).catch(function(){});
 
   var locked = false; // true while a request is in flight — blocks a second send until it resolves
 
