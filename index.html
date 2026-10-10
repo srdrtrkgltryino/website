@@ -305,14 +305,16 @@
     "contact.doneHint": {en:"Sent! We'll be in touch soon.", tr:"Gönderildi! Yakında sana döneceğiz."}
   });
 
-  // Chat-style contact widget — submits via FormSubmit.co (no page leave, no mailto popup).
-  // One conversation = at most one network call, fired exactly once, after both the
-  // message and the email have been collected. `locked` is checked+set as the very
-  // first thing in trySend() so a stray double-Enter or Enter-then-click can never
-  // trigger it twice.
+  // Chat widget — talks to the Tryino chat backend (KB-grounded local LLM, running on
+  // Mac mini, reached through Cloudflare Tunnel at chat.tryino.com). The backend holds
+  // the conversation naturally, asks for contact info itself, and emails the team a
+  // summary once it has it — this script is just plumbing: render bubbles, send each
+  // message, show the reply.
+  var CHAT_API = 'https://chat.tryino.com';
   var chatBox = document.getElementById('chatBox');
   var chatInput = document.getElementById('chatInput');
   var chatSend = document.getElementById('chatSend');
+  var sessionId = 'web-' + Date.now() + '-' + Math.random().toString(36).slice(2);
 
   function addBubble(text, who){
     var msg = document.createElement('div');
@@ -345,100 +347,49 @@
   }
   chatInput.addEventListener('input', autoGrow);
 
-  var replyKeys = ['contact.reply1','contact.reply2','contact.reply3'];
-  var locked = false;          // true while a step is animating or a request is in flight
-  var stage = 'message';       // 'message' -> 'email' -> 'done'
-  var pendingMessage = '';
-  var alreadySent = false;     // hard guard: the network call may fire at most once, ever
-  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Fire once, on first focus — gets the model loaded into memory on the Mac mini
+  // before the visitor finishes typing their first message, so that first reply
+  // isn't paying the full cold-start cost.
+  var warmedUp = false;
+  chatInput.addEventListener('focus', function(){
+    if(warmedUp) return;
+    warmedUp = true;
+    fetch(CHAT_API + '/warmup', { method: 'POST' }).catch(function(){});
+  });
 
-  function sendToInbox(message, email){
-    if(alreadySent) return Promise.resolve();
-    alreadySent = true;
-    var lang = T.getLang();
-    var subject = lang === 'tr' ? 'Web sitesinden yeni mesaj' : 'New message from the website';
-    return fetch('https://formsubmit.co/ajax/info@tryino.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        message: message,
-        _replyto: email,
-        _subject: subject,
-        _template: 'table',
-        _captcha: 'false',
-        page_language: lang
-      })
-    }).then(function(res){
-      // fetch() only rejects on network-level failure — a non-2xx response (e.g.
-      // FormSubmit asking to re-confirm the inbox) still resolves, so it must be
-      // checked explicitly or the visitor would see a false "sent" confirmation.
-      if(!res.ok) throw new Error('FormSubmit responded with ' + res.status);
-      return res;
-    });
-  }
+  var locked = false; // true while a request is in flight — blocks a second send until it resolves
 
   function trySend(){
-    if(locked || stage === 'done') return;
+    if(locked) return;
     var text = chatInput.value.trim();
     if(!text) return;
     var lang = T.getLang();
     locked = true;
     chatSend.disabled = true;
 
-    if(stage === 'message'){
-      addBubble(text, 'me');
-      pendingMessage = text;
-      chatInput.value = '';
-      autoGrow();
-      chatInput.placeholder = T.dict['contact.placeholderEmail'][lang] || T.dict['contact.placeholderEmail'].en;
+    addBubble(text, 'me');
+    chatInput.value = '';
+    autoGrow();
+    var typing = showTyping();
 
-      var typing1 = showTyping();
-      setTimeout(function(){
-        typing1.remove();
-        addBubble(T.dict['contact.askEmail'][lang] || T.dict['contact.askEmail'].en, 'them');
-        stage = 'email';
-        locked = false;
-        chatSend.disabled = false;
-        chatInput.focus();
-      }, 550);
-      return;
-    }
-
-    if(stage === 'email'){
-      if(!EMAIL_RE.test(text)){
-        addBubble(text, 'me');
-        chatInput.value = '';
-        autoGrow();
-        var typingBad = showTyping();
-        setTimeout(function(){
-          typingBad.remove();
-          addBubble(T.dict['contact.emailInvalid'][lang] || T.dict['contact.emailInvalid'].en, 'them');
-          locked = false;
-          chatSend.disabled = false;
-          chatInput.focus();
-        }, 500);
-        return;
-      }
-
-      addBubble(text, 'me');
-      var email = text;
-      chatInput.value = '';
-      autoGrow();
-      stage = 'done';               // flip immediately — no further sends can start
-      chatInput.disabled = true;
-      var typing2 = showTyping();
-
-      sendToInbox(pendingMessage, email).then(function(){
-        typing2.remove();
-        var key = replyKeys[Math.floor(Math.random() * replyKeys.length)];
-        addBubble(T.dict[key][lang] || T.dict[key].en, 'them');
-      }).catch(function(){
-        typing2.remove();
-        addBubble(T.dict['contact.error'][lang] || T.dict['contact.error'].en, 'them');
-      }).finally(function(){
-        chatInput.placeholder = T.dict['contact.doneHint'][lang] || T.dict['contact.doneHint'].en;
-      });
-    }
+    fetch(CHAT_API + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId, message: text, lang: lang })
+    }).then(function(res){
+      if(!res.ok) throw new Error('chat backend responded ' + res.status);
+      return res.json();
+    }).then(function(data){
+      typing.remove();
+      addBubble(data.reply, 'them');
+    }).catch(function(){
+      typing.remove();
+      addBubble(T.dict['contact.error'][lang] || T.dict['contact.error'].en, 'them');
+    }).finally(function(){
+      locked = false;
+      chatSend.disabled = false;
+      chatInput.focus();
+    });
   }
 
   chatInput.addEventListener('keydown', function(e){
