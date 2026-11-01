@@ -1,0 +1,351 @@
+---
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import Shot from '../components/Shot.astro';
+import {href, type Lang} from '../i18n';
+import programImg from '../assets/product/program-designer.jpg';
+import economyImg from '../assets/product/points-economy.jpg';
+import tierImg from '../assets/product/tier-designer.jpg';
+import actionsImg from '../assets/product/campaign-actions.jpg';
+import segmentImg from '../assets/product/segment-studio.jpg';
+import c360Img from '../assets/product/customer-360.jpg';
+import walletImg from '../assets/product/wallet-settings.jpg';
+import privacyImg from '../assets/product/privacy-request.jpg';
+import devImg from '../assets/product/developers-overview.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+type Section = {id: string; title: string; text: string; points: string[]; img?: ImageMetadata; label?: string; chips?: string[]};
+
+const copy = {
+  en: {
+    title: 'Ino Loyalty features — programs, tiers, campaigns, vouchers, wallet and privacy',
+    description: 'Everything in Ino Loyalty: Program Designer, points economy, tiers, five-step campaigns, segments, vouchers, Customer 360, Apple Wallet, return policies, insights and a privacy desk.',
+    pill: 'Features',
+    h1: 'Everything a loyalty program needs',
+    lead: 'From the first rule to the last erasure request: what your team can do in Ino Loyalty, screen by screen.',
+    toc: 'On this page',
+    demo: 'Book a demo',
+    sections: [
+      {id: 'program', title: 'Program Designer', label: 'Program Designer', img: programImg,
+        text: 'Set up your loyalty program step by step, the way your business works. The rules live in a screen your team owns, not in code.',
+        points: ['Eight guided steps: program, points and currency, earning, spending, expiry, offer rules, returns, review and publish', 'Your program name and description, shown to members', 'Point value, minimum redemption and the share of a basket points can pay for', 'Welcome bonus and default validity for earned points']},
+      {id: 'economy', title: 'Points economy', label: 'Points economy', img: economyImg,
+        text: 'Know what your program owes and where points go, at a glance.',
+        points: ['Outstanding points and the liability they represent', 'Points earned, spent and expiring in the next 30 days', 'Earned against spent over 7, 30, 90 days or 12 months']},
+      {id: 'tiers', title: 'Tiers', label: 'Tier Designer', img: tierImg,
+        text: 'As many tiers as you want, with your own names, colours, rules and perks. Ino Loyalty ships with none, so nothing is decided for you.',
+        points: ['Rules on spend or number of purchases over a period', 'Perks such as extra points, points worth more when spent, a discount on every order or vouchers on a schedule', 'A grace period before a member drops a tier', 'Evaluated automatically after purchases and every night']},
+      {id: 'campaigns', title: 'Campaigns', label: 'Campaign Wizard', img: actionsImg,
+        text: 'Five guided steps from idea to live: basics, audience, actions, test and publish.',
+        points: ['Points, discount, gift, voucher or mixed campaigns, on web, mobile and in store', 'Include and exclude segments; exclusion always wins', 'Schedules and blackout windows by day and hour', '“When this happens, give that”: nested rule groups with all, any, at least N and none', 'Caps and validity per reward, and webhook calls to your own systems as a reward', 'A test basket before anyone is affected, and approval before going live']},
+      {id: 'segments', title: 'Segments', label: 'Segment Studio', img: segmentImg,
+        text: 'Build audiences from what customers actually do, and read every rule back as a sentence.',
+        points: ['Conditions on purchases, spend over a period and profile fields', 'Groups with all, any, at least and none', 'Refreshed every few minutes, nightly or on request', 'Used by campaigns to include or exclude members']},
+      {id: 'vouchers', title: 'Vouchers',
+        text: 'Run vouchers as batches: your own codes, or codes a partner gives you.',
+        chips: ['WELCOME-7Q4K', 'GOLD-25-OFF', 'FREE-TOTE-3M'],
+        points: ['Generate up to 100,000 codes or import up to 50,000 per batch', 'Limits per customer and validity counted from assignment', 'Free-item vouchers that make one product in the basket free', 'Issued by campaigns and tiers, redeemed in every connected channel']},
+      {id: 'members', title: 'Customer 360', label: 'Customer 360', img: c360Img,
+        text: 'One view of every member for your service and CRM teams.',
+        points: ['Balance, tier, lifetime spend and last purchase at the top', 'Tabs for profile, campaigns, transactions, consents, wallet and support', 'Signals such as “no marketing consent” or “new member”', 'SMS-verified sign-up with a welcome message']},
+      {id: 'wallet', title: 'Apple Wallet cards', label: 'Wallet settings', img: walletImg,
+        text: 'Members add their loyalty card to Apple Wallet, in your brand, without a separate app.',
+        points: ['Your logo, card name and colours, with a live preview', 'The card updates itself when points, tier or vouchers change', 'Optional notifications on the member’s phone']},
+      {id: 'returns', title: 'Return policies',
+        text: 'Decide once what happens to discounts, points and vouchers when an order is returned or cancelled.',
+        points: ['Start from a template, customise only when you need to', 'Customer-friendly by default: no extra charge to the customer when in doubt', 'Earned points taken back, spent points given back, vouchers handled by the same policy']},
+      {id: 'insights', title: 'Insights and data',
+        text: 'See who took part in what, and take your data where you analyse it.',
+        points: ['Participation per member and campaign', 'Campaign reports and a program summary', 'Incremental Parquet exports of transactions and customer facts for your data lake or BI']},
+      {id: 'privacy', title: 'Privacy desk', label: 'Privacy desk', img: privacyImg,
+        text: 'Handle erasure requests with a clear review step, built for KVKK and GDPR processes.',
+        points: ['Received, in review, approved, completed, with the legal deadline in view', 'Erases or anonymises the member everywhere: ledger, vouchers, cards, CRM records', 'Keeps only the anonymised financial records the law requires', 'Consent history per channel']},
+      {id: 'developers', title: 'For developers', label: 'Developers console', img: devImg,
+        text: 'A console for your IT team: API keys, webhooks, logs and an audit trail.',
+        points: ['API keys per channel, limited to IP addresses and revocable without a deployment', 'Webhook endpoints with event filters and test deliveries', 'Request and delivery logs, and who changed what']},
+    ] as Section[],
+    devLink: 'Read the developer docs',
+  },
+  tr: {
+    title: 'Ino Loyalty özellikleri — program, kademe, kampanya, kupon, cüzdan ve gizlilik',
+    description: 'Ino Loyalty\'de her şey: Program Designer, puan ekonomisi, kademeler, beş adımda kampanya, segmentler, kuponlar, Customer 360, Apple Wallet, iade politikaları, raporlar ve gizlilik masası.',
+    pill: 'Özellikler',
+    h1: 'Bir sadakat programının ihtiyacı olan her şey',
+    lead: 'İlk kuraldan son silme talebine kadar ekibinizin Ino Loyalty\'de neler yapabildiği, ekran ekran.',
+    toc: 'Bu sayfada',
+    demo: 'Demo planlayın',
+    sections: [
+      {id: 'program', title: 'Program Designer', label: 'Program Designer', img: programImg,
+        text: 'Sadakat programınızı işinizin çalıştığı gibi, adım adım kurun. Kurallar kodda değil, ekibinizin yönettiği bir ekranda durur.',
+        points: ['Sekiz yönlendirmeli adım: program, puan ve para birimi, kazanma, harcama, sona erme, teklif kuralları, iadeler, gözden geçirme ve yayın', 'Üyelere görünen program adı ve açıklaması', 'Puan değeri, en az kullanım ve puanın sepetin ne kadarını ödeyebileceği', 'Hoş geldin puanı ve kazanılan puanlar için varsayılan geçerlilik']},
+      {id: 'economy', title: 'Puan ekonomisi', label: 'Points economy', img: economyImg,
+        text: 'Programınızın ne kadar borçlu olduğunu ve puanların nereye gittiğini tek bakışta görün.',
+        points: ['Bekleyen puanlar ve temsil ettikleri yükümlülük', 'Kazanılan, harcanan ve önümüzdeki 30 günde sona erecek puanlar', '7, 30, 90 gün ya da 12 ayda kazanılan ve harcanan']},
+      {id: 'tiers', title: 'Kademeler', label: 'Tier Designer', img: tierImg,
+        text: 'İstediğiniz kadar kademe; adları, renkleri, kuralları ve ayrıcalıkları sizin. Ino Loyalty hiçbir kademeyle gelmez, yani hiçbir şeye sizin yerinize karar verilmez.',
+        points: ['Bir dönemdeki harcamaya ya da alışveriş sayısına dayalı kurallar', 'Ek puan, harcarken daha değerli puan, her siparişte indirim ya da düzenli kupon gibi ayrıcalıklar', 'Üye bir alt kademeye düşmeden önce tanınan süre', 'Alışverişlerden sonra ve her gece otomatik değerlendirme']},
+      {id: 'campaigns', title: 'Kampanyalar', label: 'Campaign Wizard', img: actionsImg,
+        text: 'Fikirden yayına beş yönlendirmeli adım: temel bilgiler, hedef kitle, kurallar, test ve yayın.',
+        points: ['Web, mobil ve mağazada puan, indirim, hediye, kupon ya da karma kampanyalar', 'Dahil ve hariç segmentler; hariç tutma her zaman kazanır', 'Gün ve saate göre zamanlama ve karartma pencereleri', '"Bu olunca şunu ver": tümü, herhangi biri, en az N ve hiçbiri ile iç içe kural grupları', 'Ödül başına üst sınır ve geçerlilik; ödül olarak kendi sistemlerinize webhook çağrısı', 'Kimse etkilenmeden önce örnek sepetle test ve yayından önce onay']},
+      {id: 'segments', title: 'Segmentler', label: 'Segment Studio', img: segmentImg,
+        text: 'Müşterilerin gerçekte yaptıklarından kitle kurun; her kuralı bir cümle olarak okuyun.',
+        points: ['Alışveriş, dönemsel harcama ve profil alanlarına göre koşullar', 'Tümü, herhangi biri, en az ve hiçbiri ile gruplar', 'Birkaç dakikada bir, her gece ya da istendiğinde yenilenir', 'Kampanyalarda üyeleri dahil etmek ya da hariç tutmak için kullanılır']},
+      {id: 'vouchers', title: 'Kuponlar',
+        text: 'Kuponları parti olarak yönetin: kendi kodlarınız ya da bir iş ortağının verdiği kodlar.',
+        chips: ['WELCOME-7Q4K', 'GOLD-25-OFF', 'FREE-TOTE-3M'],
+        points: ['Parti başına 100.000 kod üretin ya da 50.000 koda kadar içe aktarın', 'Müşteri başına sınır ve atamadan itibaren işleyen geçerlilik', 'Sepetteki bir ürünü bedava yapan hediye ürün kuponları', 'Kampanya ve kademelerle verilir, bağlı her kanalda kullanılır']},
+      {id: 'members', title: 'Customer 360', label: 'Customer 360', img: c360Img,
+        text: 'Hizmet ve CRM ekipleriniz için her üyenin tek görünümü.',
+        points: ['Üstte bakiye, kademe, toplam harcama ve son alışveriş', 'Profil, kampanyalar, alışverişler, izinler, cüzdan ve destek sekmeleri', '"Pazarlama izni yok" ya da "yeni üye" gibi sinyaller', 'Hoş geldin mesajıyla SMS doğrulamalı kayıt']},
+      {id: 'wallet', title: 'Apple Wallet kartları', label: 'Wallet settings', img: walletImg,
+        text: 'Üyeler sadakat kartlarını ayrı bir uygulamaya gerek kalmadan, markanızla Apple Wallet\'a ekler.',
+        points: ['Logonuz, kart adınız ve renkleriniz; canlı önizlemeyle', 'Puan, kademe ya da kupon değişince kart kendiliğinden güncellenir', 'İsteğe bağlı olarak üyenin telefonuna bildirim']},
+      {id: 'returns', title: 'İade politikaları',
+        text: 'Bir sipariş iade ya da iptal edildiğinde indirime, puana ve kupona ne olacağına bir kez karar verin.',
+        points: ['Bir şablonla başlayın, yalnız gerektiğinde özelleştirin', 'Varsayılan müşteri dostu: belirsizlikte müşteriden ek tahsilat yapılmaz', 'Kazanılan puan geri alınır, harcanan puan iade edilir, kuponlar aynı politikayla yönetilir']},
+      {id: 'insights', title: 'Raporlar ve veri',
+        text: 'Kimin neye katıldığını görün, verinizi analiz ettiğiniz yere taşıyın.',
+        points: ['Üye ve kampanya bazında katılım', 'Kampanya raporları ve program özeti', 'Veri gölünüz ya da BI aracınız için alışveriş ve müşteri verisinin artımlı Parquet aktarımı']},
+      {id: 'privacy', title: 'Gizlilik masası', label: 'Privacy desk', img: privacyImg,
+        text: 'Silme taleplerini açık bir inceleme adımıyla yönetin; KVKK ve GDPR süreçleri için tasarlandı.',
+        points: ['Alındı, incelemede, onaylandı, tamamlandı; yasal süre gözünüzün önünde', 'Üyeyi her yerde siler ya da anonimleştirir: puan defteri, kuponlar, kartlar, CRM kayıtları', 'Yalnız yasanın gerektirdiği anonim mali kayıtları saklar', 'Kanal bazında izin geçmişi']},
+      {id: 'developers', title: 'Geliştiriciler için', label: 'Developers console', img: devImg,
+        text: 'BT ekibiniz için bir konsol: API anahtarları, webhook\'lar, kayıtlar ve denetim izi.',
+        points: ['Kanal başına, IP adresiyle sınırlanabilen ve deploy gerekmeden iptal edilebilen API anahtarları', 'Olay filtreli webhook uçları ve test gönderimleri', 'İstek ve gönderim kayıtları, kimin neyi değiştirdiği']},
+    ] as Section[],
+    devLink: 'Geliştirici belgelerini okuyun',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="f-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-200px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-200px" aria-hidden="true"></div>
+    <div class="container f-hero-inner">
+      <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+      <h1 data-reveal>{copy.h1}</h1>
+      <p class="lead" data-reveal>{copy.lead}</p>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="features" />
+
+  <div class="container layout">
+    <aside class="toc" aria-label={copy.toc}>
+      <p>{copy.toc}</p>
+      <ol>
+        {copy.sections.map((s) => (
+          <li><a href={`#${s.id}`} data-toc={s.id}>{s.title}</a></li>
+        ))}
+      </ol>
+      <a class="btn btn-primary btn-sm" href={href(lang, 'demo')}>{copy.demo}</a>
+    </aside>
+
+    <div class="content">
+      {copy.sections.map((s, i) => (
+        <section class="feature" id={s.id} data-section>
+          <div class="f-head" data-reveal>
+            <span class="f-no">{String(i + 1).padStart(2, '0')}</span>
+            <h2>{s.title}</h2>
+            <p class="lead">{s.text}</p>
+          </div>
+          <ul class="f-points" data-reveal>
+            {s.points.map((p) => <li>{p}</li>)}
+          </ul>
+          {s.img && (
+            <div data-reveal>
+              <Shot src={s.img} alt={s.title} label={s.label} />
+            </div>
+          )}
+          {s.chips && (
+            <div class="chips" data-reveal aria-hidden="true">
+              {s.chips.map((c) => <span class="code">{c}</span>)}
+            </div>
+          )}
+          {s.id === 'developers' && (
+            <a class="btn btn-dark dev-link" href={href(lang, 'developers')}>{copy.devLink} <span class="arrow">→</span></a>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Highlight the table-of-contents entry for the section in view.
+  const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')].map((a) => [a.dataset.toc!, a]));
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((a) => a.removeAttribute('aria-current'));
+          links.get(e.target.id)?.setAttribute('aria-current', 'true');
+        }
+      }
+    },
+    {rootMargin: '-40% 0px -55% 0px'},
+  );
+  document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+</script>
+
+<style>
+  .f-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0 100px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #b9c6d9;
+  }
+  .f-hero-inner {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .f-hero-inner > * {
+    max-width: 860px;
+  }
+  .f-hero-inner img {
+    width: 16px;
+    height: 16px;
+  }
+  .f-hero h1 {
+    color: #fff;
+    font-size: clamp(40px, 5.4vw, 66px);
+  }
+  .f-hero .lead {
+    color: #b9c6d9;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 64px;
+    padding-top: 72px;
+    padding-bottom: var(--section);
+  }
+  .toc {
+    position: sticky;
+    top: 170px;
+    align-self: start;
+    display: grid;
+    gap: 14px;
+  }
+  .toc p {
+    font: 600 12.5px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    border-left: 2px solid var(--line);
+  }
+  .toc ol a {
+    display: block;
+    padding: 7px 14px;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .toc ol a:hover {
+    color: var(--ink);
+  }
+  .toc ol a[aria-current] {
+    color: var(--ink);
+    font-weight: 600;
+    border-left-color: var(--blue);
+  }
+  .toc .btn {
+    justify-self: start;
+    margin-top: 8px;
+  }
+  .content {
+    display: grid;
+    gap: 96px;
+    min-width: 0;
+  }
+  .feature {
+    display: grid;
+    gap: 26px;
+    scroll-margin-top: 170px;
+  }
+  .f-head {
+    display: grid;
+    gap: 12px;
+  }
+  .f-no {
+    font: 650 14px/1 var(--font-display);
+    color: var(--blue-ink);
+  }
+  .f-head h2 {
+    font-size: clamp(30px, 3.4vw, 42px);
+  }
+  .f-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .f-points li {
+    position: relative;
+    padding: 16px 18px 16px 46px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .f-points li::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 19px;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--grad);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .code {
+    padding: 14px 20px;
+    border-radius: 14px;
+    background: #fff;
+    border: 2px dashed var(--line-2);
+    font: 650 18px/1 ui-monospace, 'SF Mono', Menlo, monospace;
+    letter-spacing: 0.06em;
+    color: var(--indigo);
+  }
+  .dev-link {
+    justify-self: start;
+  }
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .toc {
+      display: none;
+    }
+    .f-points {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

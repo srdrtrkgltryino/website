@@ -1,0 +1,138 @@
+---
+// About Tryino: vision (fast implementation, fast return), mission (the "try" in our name), what we specialise in,
+// our values and the platforms we build on.
+import InfoPage, {type Block} from '../components/InfoPage.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const en = {
+  title: 'About Tryino',
+  description: 'Tryino builds Ino Loyalty and implements Microsoft Dynamics 365. We aim for short implementations and a fast return, and we are not afraid to try new things first.',
+  hero: {
+    pill: 'About Tryino',
+    h1: ['Short implementations,', 'fast return'] as [string, string],
+    lead: 'We take a different approach to traditional enterprise software. Instead of long projects that pay back years later, we aim for implementations measured in weeks and a return you can see in the first months.',
+    cta: {label: 'Meet Ino Loyalty', href: href(lang, 'ino')},
+    secondary: {label: 'Contact us', href: href(lang, 'contact')},
+  },
+  blocks: [
+    {
+      type: 'split',
+      eyebrow: 'The “try” in Tryino',
+      title: 'Open to new ideas, first to try them',
+      text: 'Our name starts with “try”, and that is how we work. We are curious about new technology, we are not afraid to experiment, and we want to be the first to bring new solutions to the market, so our customers can be early too.',
+      list: [
+        'We test new ideas in our own products before we recommend them',
+        'We ship in short cycles and learn from real use',
+        'We would rather show a working prototype than a long proposal',
+      ],
+      aside: {title: 'Tryino at a glance', lines: ['Based in Istanbul, Türkiye', 'Product: Ino Loyalty', 'Services: Dynamics 365 implementation', 'Add-on: BrowserPing']},
+    },
+    {
+      type: 'cards',
+      eyebrow: 'What we specialise in',
+      title: 'Two areas of deep expertise',
+      cols: 2,
+      items: [
+        {tag: 'Product', title: 'Loyalty for retail and e-commerce', text: 'Ino Loyalty: points, tiers, campaigns, wallet and member offers across stores, e-commerce and apps, with apps for Shopify and ikas, a public API and webhooks.'},
+        {tag: 'Services', title: 'Customer engagement on Dynamics 365', text: 'Sales, Customer Insights, Customer Service and Contact Center, implemented end to end, plus our own add-on BrowserPing for Customer Insights – Journeys.'},
+      ],
+    },
+    {
+      type: 'cards',
+      eyebrow: 'Our values',
+      title: 'What guides our work',
+      cols: 4,
+      items: [
+        {title: 'Your brand first', text: 'Shoppers see the retailer’s brand. Ino Loyalty stays in the background, on a small “powered by” line.'},
+        {title: 'Privacy by design', text: 'KVKK and GDPR tools are part of the product: consent records, data requests, erasure and retention.'},
+        {title: 'Transparency', text: 'We share the technology we build with our partners, from a public API reference to open webhooks, and grow together with them.'},
+        {title: 'Agility', text: 'We respond fast, model fast and change course when the data says so. Short feedback loops beat long plans.'},
+      ],
+    },
+    {
+      type: 'split',
+      eyebrow: 'Platforms',
+      title: 'Built on the platforms your IT already trusts',
+      text: 'Ino Loyalty runs on Microsoft Power Platform today, using Azure, Dataverse and Microsoft Entra ID for sign-in and roles. We are bringing it to Salesforce with the same goals: low cost, quick setup and the security model your team already knows.',
+      list: ['Microsoft AI Cloud Partner for Dynamics 365 implementation', 'Ino Loyalty apps for Shopify and ikas', 'Connectors for SAP Commerce Cloud, Akinon, POS and ERP'],
+      aside: {title: 'Why we build on these platforms', lines: ['Lower cost than a separate stack', 'Quick setup in your own tenant', 'Single sign-on and role-based access', 'Security and compliance you already have']},
+    },
+    {
+      type: 'cta',
+      title: 'Want to work with us?',
+      text: 'Tell us about your loyalty program or your CRM project.',
+      cta: {label: 'Book a demo', href: href(lang, 'contact')},
+      secondary: {label: 'Support', href: href(lang, 'support')},
+    },
+  ] as Block[],
+};
+const tr: typeof en = {
+  title: 'Tryino hakkında',
+  description: 'Tryino, Ino Loyalty\'yi geliştirir ve Microsoft Dynamics 365 kurar. Kısa sürede implementasyon ve hızlı geri dönüş hedefliyor, yenilikleri ilk deneyen olmaktan çekinmiyoruz.',
+  hero: {
+    pill: 'Tryino hakkında',
+    h1: ['Kısa sürede kurulum,', 'hızlı geri dönüş'],
+    lead: 'Geleneksel kurumsal yazılıma farklı yaklaşıyoruz. Yıllar sonra kendini ödeyen uzun projeler yerine, haftalarla ölçülen implementasyonları ve ilk aylarda görülen bir geri dönüşü hedefliyoruz.',
+    cta: {label: 'Ino Loyalty\'yi tanıyın', href: href(lang, 'ino')},
+    secondary: {label: 'İletişime geçin', href: href(lang, 'contact')},
+  },
+  blocks: [
+    {
+      type: 'split',
+      eyebrow: 'Tryino\'daki “try”',
+      title: 'Yeniliğe açık, ilk deneyen',
+      text: 'Adımız “try”, yani “dene” ile başlıyor; çalışma biçimimiz de bu. Yeni teknolojiye meraklıyız, denemekten korkmuyoruz ve yenilikçi çözümleri piyasaya ilk getiren olmak istiyoruz; müşterilerimiz de erken davransın diye.',
+      list: [
+        'Yeni fikirleri önermeden önce kendi ürünlerimizde deniyoruz',
+        'Kısa döngülerle yayına alıyor, gerçek kullanımdan öğreniyoruz',
+        'Uzun bir teklif yerine çalışan bir prototip göstermeyi tercih ediyoruz',
+      ],
+      aside: {title: 'Kısaca Tryino', lines: ['Merkez: İstanbul, Türkiye', 'Ürün: Ino Loyalty', 'Hizmet: Dynamics 365 implementasyonu', 'Eklenti: BrowserPing']},
+    },
+    {
+      type: 'cards',
+      eyebrow: 'Uzmanlık alanlarımız',
+      title: 'İki alanda derin uzmanlık',
+      cols: 2,
+      items: [
+        {tag: 'Ürün', title: 'Perakende ve e-ticaret için sadakat', text: 'Ino Loyalty: mağaza, e-ticaret ve uygulamalarda puan, kademe, kampanya, cüzdan ve üye teklifleri; Shopify ve ikas uygulamaları, herkese açık API ve webhook\'lar.'},
+        {tag: 'Hizmet', title: 'Dynamics 365 ile müşteri etkileşimi', text: 'Sales, Customer Insights, Customer Service ve Contact Center\'ın uçtan uca kurulumu; ayrıca Customer Insights – Journeys için kendi eklentimiz BrowserPing.'},
+      ],
+    },
+    {
+      type: 'cards',
+      eyebrow: 'Değerlerimiz',
+      title: 'İşimize yön verenler',
+      cols: 4,
+      items: [
+        {title: 'Önce sizin markanız', text: 'Müşteriler perakendecinin markasını görür. Ino Loyalty arka planda, küçük bir “Altyapı” satırında kalır.'},
+        {title: 'Tasarımdan gelen gizlilik', text: 'KVKK ve GDPR araçları ürünün parçası: izin kayıtları, veri talepleri, silme ve saklama.'},
+        {title: 'Şeffaflık', text: 'Geliştirdiğimiz teknolojileri iş ortaklarımızla paylaşıyoruz: herkese açık API referansından açık webhook\'lara. Birlikte büyümek bizim için önemli.'},
+        {title: 'Çeviklik', text: 'Hızlı tepki veriyor, hızlı modelliyor, veriler gösterdiğinde yön değiştiriyoruz. Kısa geri bildirim döngüleri uzun planlardan iyidir.'},
+      ],
+    },
+    {
+      type: 'split',
+      eyebrow: 'Platformlar',
+      title: 'BT ekibinizin zaten güvendiği platformlar üzerinde',
+      text: 'Ino Loyalty bugün Microsoft Power Platform üzerinde çalışıyor; oturum açma ve roller için Azure, Dataverse ve Microsoft Entra ID\'yi kullanıyor. Aynı hedeflerle Salesforce\'a da getiriyoruz: düşük maliyet, hızlı kurulum ve ekibinizin zaten bildiği güvenlik modeli.',
+      list: ['Dynamics 365 implementasyonu için Microsoft AI Cloud Partner', 'Shopify ve ikas için Ino Loyalty uygulamaları', 'SAP Commerce Cloud, Akinon, kasa ve ERP bağlayıcıları'],
+      aside: {title: 'Neden bu platformlar', lines: ['Ayrı bir altyapıdan daha düşük maliyet', 'Kendi ortamınızda hızlı kurulum', 'Tek oturum açma ve rol tabanlı erişim', 'Zaten sahip olduğunuz güvenlik ve uyum']},
+    },
+    {
+      type: 'cta',
+      title: 'Birlikte çalışmak ister misiniz?',
+      text: 'Sadakat programınızı ya da CRM projenizi anlatın.',
+      cta: {label: 'Demo planlayın', href: href(lang, 'contact')},
+      secondary: {label: 'Destek', href: href(lang, 'support')},
+    },
+  ] as Block[],
+};
+const c = lang === 'tr' ? tr : en;
+---
+
+<InfoPage lang={lang} title={c.title} description={c.description} hero={c.hero} blocks={c.blocks} />

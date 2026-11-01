@@ -1,0 +1,805 @@
+---
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import RewardsDemo from '../components/RewardsDemo.astro';
+import VideoStage from '../components/VideoStage.astro';
+import {Image} from 'astro:assets';
+import memberImg from '../assets/tiles/member.jpg';
+import campaignImg from '../assets/tiles/campaign.jpg';
+import walletImg from '../assets/tiles/wallet.jpg';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Ino Loyalty — Loyalty and promotion platform for retail and e-commerce',
+    description: 'Points, tiers, campaigns, vouchers and Apple Wallet cards for retail and e-commerce. Apps for Shopify and ikas, connectors for SAP Commerce Cloud and Akinon, and a real-time API.',
+    pill: 'Loyalty and promotion platform',
+    h1a: 'Loyalty your customers',
+    h1b: 'come back for.',
+    lead: 'Points, tiers, campaigns, vouchers and wallet cards that work the same online, in your shops and in your app. Run by your marketing team, connected once by IT.',
+    demo: 'Book a demo',
+    features: 'See all features',
+    stats: [
+      ['5 steps', 'from campaign idea to live, with a test basket'],
+      ['1 engine', 'for web, mobile and in-store'],
+      ['0 code', 'for your team to change the program'],
+    ],
+    builtTitle: 'Built for how you sell',
+    built: [
+      ['Retail chains', 'Shops, POS and an online store under one program. Points earned at the till can be spent online, and the other way round.'],
+      ['E-commerce brands', 'Install the Ino Loyalty app for Shopify or ikas. Rewards and a My Rewards page appear in your store without theme work.'],
+      ['Enterprise commerce', 'Connectors for SAP Commerce Cloud and Akinon, a real-time API, webhooks and offline-tolerant POS flows.'],
+    ],
+    pillarsEyebrow: 'One platform',
+    pillarsTitle: 'Design it, run it, connect it',
+    pillars: [
+      ['Design', 'Your program, your rules', ['Program Designer: points, currency, earning, spending, expiry', 'Tiers with their own rules and perks', 'Points economy: outstanding points, liability, expiry', 'Return policy templates']],
+      ['Engage', 'Campaigns that know your customers', ['Campaigns in five steps with a test basket', 'Segments built from behaviour, explained in plain words', 'Vouchers: generated or imported batches', 'Apple Wallet cards, SMS-verified sign-up, Braze']],
+      ['Connect', 'One engine behind every channel', ['Shopify and ikas apps, SAP Commerce Cloud and Akinon connectors', 'Real-time API, signed webhooks, event catalog', 'Batch file import and offline POS reconciliation', 'Kafka event streaming and Parquet data exports']],
+    ],
+    tourEyebrow: 'See it',
+    tourTitle: 'A one-minute tour',
+    shopperEyebrow: 'What your customers see',
+    shopperTitle: 'Your brand in front, our engine behind',
+    shopperText: 'Members see their balance, how close the next tier is and what they can redeem, in your store and in their wallet. Your brand leads; Ino Loyalty stays a small "powered by" line.',
+    shopperPoints: ['Rewards panel and My Rewards page in the store', 'Pay with points at checkout', 'Apple Wallet card that updates itself', 'Works the same at the till and online'],
+    tryIt: 'Try it: switch tabs, use a reward, pay with points.',
+    qualifies: 'Campaign live · +100 points',
+    teamsEyebrow: 'For every team',
+    teamsTitle: 'Everyone gets what they need',
+    teams: [
+      ['Marketing', 'Launch, test and measure campaigns without waiting for a release.', ['Campaign Wizard and Segment Studio', 'Approval before anything goes live', 'Participation and campaign reports']],
+      ['CRM and operations', 'One view of each member, and clear rules for the hard cases.', ['Customer 360: balance, tier, purchases, consents', 'Return policy: what happens to points and vouchers', 'Privacy desk for erasure requests']],
+      ['IT and developers', 'Connect once, then stay out of the way.', ['Real-time API with signed requests', 'Webhooks with retries and an event catalog', 'API keys, logs and an audit trail in the console']],
+    ],
+    compareEyebrow: 'Why Ino Loyalty',
+    compareTitle: 'Compared with the usual options',
+    compareCols: ['Build it yourself', 'Coupon apps', 'Ino Loyalty'],
+    compareRows: [
+      ['Marketing changes rules without developers', 'no', 'partly', 'yes'],
+      ['Points, tiers and vouchers in one model', 'later', 'partly', 'yes'],
+      ['Same program online, in store and in apps', 'later', 'no', 'yes'],
+      ['Tested before going live', 'no', 'no', 'yes'],
+      ['Returns and cancellations handled by policy', 'later', 'no', 'yes'],
+      ['Consent and erasure requests built in', 'later', 'no', 'yes'],
+    ],
+    yes: 'Yes',
+    no: 'No',
+    partly: 'Partly',
+    later: 'Only with more work',
+    privacyEyebrow: 'Privacy',
+    privacyTitle: 'Built for KVKK and GDPR processes',
+    privacyText: 'You are the data controller; Tryino processes loyalty data on your behalf. Ino Loyalty gives you the tools to meet your obligations.',
+    privacyPoints: [
+      ['Consents per channel', 'E-mail, SMS, calls, push and data sharing are recorded as an append-only history.'],
+      ['Erasure requests', 'Reviewed, then completed across the ledger, vouchers, cards and CRM records, keeping only the anonymised financial records the law requires.'],
+      ['Retention', 'Data is kept only as long as your policy says.'],
+    ],
+    endTitle: 'See Ino Loyalty with your own data',
+    endText: 'In 30 minutes: your goals, a live demo and a plan to launch.',
+  },
+  tr: {
+    title: 'Ino Loyalty — Perakende ve e-ticaret için sadakat ve promosyon platformu',
+    description: 'Perakende ve e-ticaret için puan, kademe, kampanya, kupon ve Apple Wallet kartları. Shopify ve ikas uygulamaları, SAP Commerce Cloud ve Akinon bağlayıcıları, gerçek zamanlı API.',
+    pill: 'Sadakat ve promosyon platformu',
+    h1a: 'Müşterilerinizi geri getiren',
+    h1b: 'sadakat.',
+    lead: 'Web\'de, mağazalarınızda ve uygulamanızda aynı çalışan puan, kademe, kampanya, kupon ve cüzdan kartları. Pazarlama ekibiniz yönetir, BT bir kez bağlar.',
+    demo: 'Demo planlayın',
+    features: 'Tüm özellikler',
+    stats: [
+      ['5 adım', 'kampanya fikrinden yayına, örnek sepetle test dahil'],
+      ['1 motor', 'web, mobil ve mağaza için'],
+      ['0 kod', 'ekibinizin programı değiştirmesi için'],
+    ],
+    builtTitle: 'Nasıl satıyorsanız ona göre',
+    built: [
+      ['Perakende zincirleri', 'Mağazalar, kasa ve online mağaza tek programda. Kasada kazanılan puan online harcanır, tersi de geçerli.'],
+      ['E-ticaret markaları', 'Shopify ya da ikas için Ino Loyalty uygulamasını kurun. Rewards paneli ve My Rewards sayfası tema çalışması olmadan mağazanızda belirir.'],
+      ['Kurumsal e-ticaret', 'SAP Commerce Cloud ve Akinon bağlayıcıları, gerçek zamanlı API, webhook\'lar ve bağlantı kopsa da çalışan kasa akışları.'],
+    ],
+    pillarsEyebrow: 'Tek platform',
+    pillarsTitle: 'Tasarlayın, yönetin, bağlayın',
+    pillars: [
+      ['Tasarla', 'Programınız, kurallarınız', ['Program Designer: puan, para birimi, kazanma, harcama, sona erme', 'Kendi kuralı ve ayrıcalığı olan kademeler', 'Puan ekonomisi: bekleyen puan, yükümlülük, sona erme', 'İade politikası şablonları']],
+      ['Etkileşim', 'Müşterinizi tanıyan kampanyalar', ['Örnek sepetle test edilen beş adımlı kampanyalar', 'Davranıştan kurulan, düz cümleyle anlatılan segmentler', 'Kuponlar: üretilen ya da içe aktarılan partiler', 'Apple Wallet kartları, SMS doğrulamalı kayıt, Braze']],
+      ['Bağla', 'Her kanalın arkasında tek motor', ['Shopify ve ikas uygulamaları, SAP Commerce Cloud ve Akinon bağlayıcıları', 'Gerçek zamanlı API, imzalı webhook\'lar, olay kataloğu', 'Dosyayla toplu aktarım ve çevrimdışı kasa mutabakatı', 'Kafka olay akışı ve Parquet veri aktarımı']],
+    ],
+    tourEyebrow: 'İzleyin',
+    tourTitle: 'Bir dakikalık tur',
+    shopperEyebrow: 'Müşterileriniz ne görür',
+    shopperTitle: 'Önde markanız, arkada motorumuz',
+    shopperText: 'Üyeler bakiyelerini, bir sonraki kademeye ne kadar kaldığını ve neyi kullanabileceklerini mağazanızda ve cüzdanlarında görür. Önde sizin markanız durur; Ino Loyalty küçük bir "altyapı" satırında kalır.',
+    shopperPoints: ['Mağazada Rewards paneli ve My Rewards sayfası', 'Ödemede puanla öde', 'Kendiliğinden güncellenen Apple Wallet kartı', 'Kasada ve online aynı çalışır'],
+    tryIt: 'Deneyin: sekmeleri değiştirin, bir ödül kullanın, puanla ödeyin.',
+    qualifies: 'Kampanya yayında · +100 puan',
+    teamsEyebrow: 'Her ekip için',
+    teamsTitle: 'Herkes ihtiyacı olanı alır',
+    teams: [
+      ['Pazarlama', 'Bir sürüm beklemeden kampanyaları kurun, deneyin ve ölçün.', ['Campaign Wizard ve Segment Studio', 'Yayından önce onay adımı', 'Katılım ve kampanya raporları']],
+      ['CRM ve operasyon', 'Her üye için tek görünüm, zor durumlar için net kurallar.', ['Customer 360: bakiye, kademe, alışveriş, izinler', 'İade politikası: puan ve kuponlara ne olacağı', 'Silme talepleri için gizlilik masası']],
+      ['BT ve geliştiriciler', 'Bir kez bağlayın, sonra işinize bakın.', ['İmzalı isteklerle gerçek zamanlı API', 'Yeniden denemeli webhook\'lar ve olay kataloğu', 'Konsolda API anahtarları, kayıtlar ve denetim izi']],
+    ],
+    compareEyebrow: 'Neden Ino Loyalty',
+    compareTitle: 'Alışılmış seçeneklerle karşılaştırın',
+    compareCols: ['Kendin yap', 'Kupon uygulamaları', 'Ino Loyalty'],
+    compareRows: [
+      ['Pazarlama kuralları geliştiricisiz değiştirir', 'no', 'partly', 'yes'],
+      ['Puan, kademe ve kupon tek modelde', 'later', 'partly', 'yes'],
+      ['Online, mağazada ve uygulamada aynı program', 'later', 'no', 'yes'],
+      ['Yayından önce test edilir', 'no', 'no', 'yes'],
+      ['İade ve iptaller politikayla yönetilir', 'later', 'no', 'yes'],
+      ['İzin ve silme talepleri yerleşik', 'later', 'no', 'yes'],
+    ],
+    yes: 'Evet',
+    no: 'Hayır',
+    partly: 'Kısmen',
+    later: 'Ancak ek işle',
+    privacyEyebrow: 'Gizlilik',
+    privacyTitle: 'KVKK ve GDPR süreçleri için tasarlandı',
+    privacyText: 'Veri sorumlusu sizsiniz; Tryino sadakat verisini sizin adınıza işler. Ino Loyalty yükümlülüklerinizi yerine getirmeniz için gereken araçları verir.',
+    privacyPoints: [
+      ['Kanal bazında izinler', 'E-posta, SMS, arama, bildirim ve veri paylaşımı izinleri değiştirilemez bir geçmiş olarak kaydedilir.'],
+      ['Silme talepleri', 'İncelenir; sonra puan defteri, kuponlar, kartlar ve CRM kayıtlarında tamamlanır. Yalnız yasanın gerektirdiği anonim mali kayıtlar kalır.'],
+      ['Saklama süresi', 'Veri yalnız politikanızın söylediği süre kadar tutulur.'],
+    ],
+    endTitle: 'Ino Loyalty\'yi kendi verinizle görün',
+    endText: '30 dakikada: hedefleriniz, canlı bir demo ve yayına alma planı.',
+  },
+}[lang];
+
+const mark = (v: string) => ({yes: copy.yes, no: copy.no, partly: copy.partly, later: copy.later})[v as 'yes' | 'no' | 'partly' | 'later'];
+---
+
+<Base
+  lang={lang}
+  title={copy.title}
+  description={copy.description}
+  image="/og/ino-loyalty.png"
+  jsonld={{
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Ino Loyalty',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    description: copy.description,
+    url: new URL(href(lang, 'ino'), 'https://tryino.com').href,
+    image: 'https://tryino.com/og/ino-loyalty.png',
+    publisher: {'@type': 'Organization', name: 'Tryino', url: 'https://tryino.com'},
+  }}
+>
+  <section class="ino-hero">
+    <div class="glow blue" style="width:780px;height:780px;left:-260px;top:-300px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:780px;height:780px;right:-300px;bottom:-380px" aria-hidden="true"></div>
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+        <h1 data-reveal>{copy.h1a} <span class="grad-light">{copy.h1b}</span></h1>
+        <p class="lead" data-reveal>{copy.lead}</p>
+        <div class="ctas" data-reveal>
+          <a class="btn btn-primary" href={href(lang, 'demo')}>{copy.demo} <span class="arrow">→</span></a>
+          <a class="btn btn-glass" href={href(lang, 'features')}>{copy.features}</a>
+        </div>
+        <dl class="stats" data-reveal>
+          {copy.stats.map(([big, small]) => (
+            <div><dt>{big}</dt><dd>{small}</dd></div>
+          ))}
+        </dl>
+      </div>
+      <div class="collage" data-reveal aria-hidden="true">
+        <div class="shot s1"><Image src={memberImg} alt="" widths={[700, 1100]} sizes="560px" loading="eager" /></div>
+        <div class="shot s2"><Image src={campaignImg} alt="" widths={[500, 800]} sizes="340px" loading="eager" /></div>
+        <div class="shot s3"><Image src={walletImg} alt="" widths={[400, 700]} sizes="300px" loading="eager" /></div>
+        <div class="toast-chip"><span class="dot-ok"></span>{copy.qualifies}</div>
+      </div>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="ino" />
+
+  <section class="section built">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <h2>{copy.builtTitle}</h2>
+      </div>
+      <div class="built-grid">
+        {copy.built.map(([title, text], i) => (
+          <article class="built-card" data-reveal style={`transition-delay:${i * 80}ms`}>
+            <span class={`b-icon b${i}`} aria-hidden="true"></span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section pillars">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.pillarsEyebrow}</span>
+        <h2>{copy.pillarsTitle}</h2>
+      </div>
+      <div class="pillar-grid">
+        {copy.pillars.map(([name, sub, points], i) => (
+          <article class={`pillar p${i}`} data-reveal style={`transition-delay:${i * 80}ms`}>
+            <span class="pillar-no">0{i + 1}</span>
+            <h3>{name}</h3>
+            <p class="pillar-sub">{sub}</p>
+            <ul>
+              {(points as string[]).map((p) => <li>{p}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section tour">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.tourEyebrow}</span>
+        <h2>{copy.tourTitle}</h2>
+      </div>
+      <div data-reveal><VideoStage lang={lang} /></div>
+    </div>
+  </section>
+
+  <section class="section shopper">
+    <div class="container shopper-grid">
+      <div class="shopper-text" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.shopperEyebrow}</span>
+        <h2>{copy.shopperTitle}</h2>
+        <p class="lead">{copy.shopperText}</p>
+        <ul class="ticks">
+          {copy.shopperPoints.map((p) => <li>{p}</li>)}
+        </ul>
+      </div>
+      <div class="shopper-visual" data-reveal>
+        <div class="phone">
+          <div class="phone-screen">
+            <RewardsDemo lang={lang} />
+          </div>
+        </div>
+        <p class="try">{copy.tryIt}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section teams">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.teamsEyebrow}</span>
+        <h2>{copy.teamsTitle}</h2>
+      </div>
+      <div class="team-grid">
+        {copy.teams.map(([name, text, points], i) => (
+          <article class="team" data-reveal style={`transition-delay:${i * 80}ms`}>
+            <h3>{name}</h3>
+            <p>{text}</p>
+            <ul class="ticks">
+              {(points as string[]).map((p) => <li>{p}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section compare">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.compareEyebrow}</span>
+        <h2>{copy.compareTitle}</h2>
+      </div>
+      <div class="table-wrap" data-reveal>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"><span class="sr-only">—</span></th>
+              {copy.compareCols.map((c, i) => <th scope="col" class={i === 2 ? 'ours' : ''}>{i === 2 ? <img src="/brand/ino-loyalty-logo-horizontal.svg" alt="Ino Loyalty" height="30" /> : c}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {copy.compareRows.map(([label, ...vals]) => (
+              <tr>
+                <th scope="row">{label}</th>
+                {vals.map((v, i) => (
+                  <td class={i === 2 ? 'ours' : ''}><span class={`mark ${v}`}>{mark(v)}</span></td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section privacy">
+    <div class="container">
+    <div class="privacy-card" data-reveal>
+      <div>
+        <span class="pill on-dark">{copy.privacyEyebrow}</span>
+        <h2>{copy.privacyTitle}</h2>
+        <p>{copy.privacyText}</p>
+      </div>
+      <div class="privacy-list">
+        {copy.privacyPoints.map(([t, d]) => (
+          <div class="privacy-item"><strong>{t}</strong><p>{d}</p></div>
+        ))}
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="end">
+    <div class="container end-inner" data-reveal>
+      <img src="/brand/ino-loyalty-logo-horizontal.svg" alt="Ino Loyalty" width="230" height="51" />
+      <h2>{copy.endTitle}</h2>
+      <p class="lead">{copy.endText}</p>
+      <a class="btn btn-primary" href={href(lang, 'demo')}>{copy.demo} <span class="arrow">→</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ino-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0 110px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #c9d6e8;
+  }
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero-text {
+    display: grid;
+    gap: 24px;
+    justify-items: start;
+  }
+  .hero-text img {
+    width: 16px;
+    height: 16px;
+  }
+  .ino-hero h1 {
+    color: #fff;
+    font-size: clamp(42px, 5.6vw, 70px);
+  }
+  .grad-light {
+    background: linear-gradient(100deg, #5fd0ff 0%, #a79bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ino-hero .lead {
+    color: #b9c6d9;
+    max-width: 560px;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .stats {
+    margin: 12px 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    width: 100%;
+    max-width: 560px;
+  }
+  .stats div {
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .stats dt {
+    font: 650 26px/1 var(--font-display);
+    color: #fff;
+  }
+  .stats dd {
+    margin: 6px 0 0;
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: #93a6c0;
+  }
+  .collage {
+    position: relative;
+    height: 460px;
+  }
+  .shot {
+    position: absolute;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--app-bg);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    animation: float 7s ease-in-out infinite;
+  }
+  .shot :global(img) {
+    width: 100%;
+    height: auto;
+  }
+  .s1 {
+    width: 92%;
+    left: 0;
+    top: 10px;
+  }
+  .s2 {
+    width: 56%;
+    right: -4%;
+    top: 190px;
+    animation-delay: -2.5s;
+  }
+  .s3 {
+    width: 46%;
+    left: 4%;
+    top: 300px;
+    animation-delay: -4.5s;
+  }
+  .toast-chip {
+    position: absolute;
+    right: 6%;
+    top: 140px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font: 600 13.5px/1 var(--font-text);
+    box-shadow: var(--shadow-lg);
+    animation: float 6s ease-in-out infinite -1s;
+  }
+  .dot-ok {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 0 4px rgba(47, 191, 143, 0.2);
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  .try {
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .built {
+    padding-top: calc(var(--section) - 20px);
+  }
+  .built-grid,
+  .team-grid,
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .built-card {
+    padding: 30px;
+    border-radius: var(--r-lg);
+    background: #fff;
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+  .built-card p {
+    color: var(--ink-2);
+    font-size: 16px;
+  }
+  .b-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--grad);
+    position: relative;
+  }
+  .b-icon.b1 {
+    background: linear-gradient(135deg, #2fbf8f, #00a4e4);
+  }
+  .b-icon.b2 {
+    background: linear-gradient(135deg, #4f46e5, #7c6cf2);
+  }
+  .b-icon::after {
+    content: '';
+    position: absolute;
+    inset: 13px;
+    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+  }
+
+  .pillars {
+    background: #fff;
+  }
+  .pillar {
+    padding: 32px;
+    border-radius: var(--r-lg);
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .pillar.p0 {
+    background: #e7f5fc;
+  }
+  .pillar.p1 {
+    background: #efedfe;
+  }
+  .pillar.p2 {
+    background: #eaf7f1;
+  }
+  .pillar-no {
+    font: 650 14px/1 var(--font-display);
+    color: var(--muted);
+  }
+  .pillar h3 {
+    font-size: 30px;
+  }
+  .pillar-sub {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .pillar ul {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .pillar li {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.75);
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  .ticks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .ticks li {
+    position: relative;
+    padding-left: 30px;
+    color: var(--ink-2);
+  }
+  .ticks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--grad);
+  }
+  .ticks li::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    width: 4px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .shopper {
+    background: linear-gradient(180deg, var(--bg) 0%, #eef3fc 100%);
+  }
+  .shopper-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+  .shopper-text {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .shopper-visual {
+    display: grid;
+    justify-items: center;
+  }
+  .phone {
+    width: min(390px, 100%);
+    padding: 14px;
+    border-radius: 48px;
+    background: #0b1222;
+    box-shadow: 0 40px 100px rgba(11, 31, 58, 0.3), inset 0 0 0 2px #2a3550;
+  }
+  .phone-screen {
+    border-radius: 36px;
+    padding: 34px 0 12px;
+    background: linear-gradient(180deg, #f4f6fb 0%, #e9eef8 100%);
+    display: grid;
+    justify-items: center;
+  }
+  .phone-screen :global(.rewards) {
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .teams {
+    background: #fff;
+  }
+  .team {
+    padding: 30px;
+    border-radius: var(--r-lg);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+  .team p {
+    color: var(--ink-2);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+  th,
+  td {
+    padding: 18px 22px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    font-size: 15.5px;
+  }
+  thead th {
+    font: 600 15px/1.2 var(--font-display);
+    color: var(--muted);
+    vertical-align: bottom;
+  }
+  thead th img {
+    height: 30px;
+    width: auto;
+  }
+  tbody th {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  .ours {
+    background: #f1f7ff;
+  }
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .mark::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .mark.yes {
+    color: #0f8a62;
+  }
+  .mark.yes::before {
+    background: var(--mint);
+  }
+  .mark.no {
+    color: #b4413c;
+  }
+  .mark.no::before {
+    background: #f07f74;
+  }
+  .mark.partly,
+  .mark.later {
+    color: #9a6a12;
+  }
+  .mark.partly::before,
+  .mark.later::before {
+    background: var(--amber);
+  }
+
+  .privacy-card {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+    padding: clamp(32px, 5vw, 60px);
+    border-radius: var(--r-xl);
+    background: var(--grad-navy);
+    color: #b9c6d9;
+  }
+  .privacy-card > div:first-child {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+    justify-items: start;
+  }
+  .privacy-card h2 {
+    color: #fff;
+  }
+  .privacy-list {
+    display: grid;
+    gap: 14px;
+  }
+  .privacy-item {
+    padding: 20px 22px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .privacy-item strong {
+    color: #fff;
+    font: 600 17px/1.3 var(--font-display);
+  }
+  .privacy-item p {
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  .end {
+    padding: var(--section) 0;
+    background: linear-gradient(180deg, var(--bg) 0%, #e9f0fc 100%);
+  }
+  .end-inner {
+    text-align: center;
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+  }
+  .end-inner img {
+    height: 48px;
+    width: auto;
+  }
+
+  @media (max-width: 1000px) {
+    .collage {
+      height: 380px;
+    }
+    .hero-grid,
+    .shopper-grid,
+    .privacy-card {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .built-grid,
+    .team-grid,
+    .pillar-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 560px) {
+    .ino-hero {
+      padding-top: 130px;
+    }
+    .stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

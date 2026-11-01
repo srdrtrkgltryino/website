@@ -1,0 +1,710 @@
+---
+// For developers: quick start, concepts, webhooks and the event catalog. The event list is read from the public
+// OpenAPI document at build time, so this page never drifts from the API reference.
+import fs from 'node:fs';
+import path from 'node:path';
+import {parse} from 'yaml';
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+const SPEC = '/developers/openapi/ino-loyalty-v1.yaml';
+const spec = parse(fs.readFileSync(path.join(process.cwd(), 'public', SPEC), 'utf8'));
+const events: {type: string; summary: string}[] = Object.entries(spec.webhooks as Record<string, {post: {summary?: string}}>)
+  .filter(([type]) => type !== 'webhook.test')
+  .map(([type, op]) => ({type, summary: op.post.summary ?? ''}));
+const groups = [...new Set(events.map((e) => e.type.split('.')[0]))];
+
+const copy = {
+  en: {
+    title: 'Ino Loyalty for developers — API, webhooks and event catalog',
+    description: 'Real-time channel API with signed requests, Standard Webhooks with retries, an event catalog, async jobs and an OpenAPI 3.1 reference for Ino Loyalty.',
+    pill: 'For developers',
+    h1: 'Build on Ino Loyalty',
+    lead: 'A real-time API for your POS, store and apps, signed webhooks for everything that happens, and a full OpenAPI reference. Documented in the open.',
+    ref: 'Open the API reference',
+    quickTitle: 'Your first request in three steps',
+    steps: [
+      ['Get your credentials', 'During onboarding you receive your API host and a channel code (for example MODERN_ECOM). Your IT admin creates the API key and secret in the Developers console of Ino Loyalty.'],
+      ['Sign the request', 'Every call carries X-Api-Key, X-Timestamp (Unix seconds, within 5 minutes) and X-Signature: the lowercase hex HMAC-SHA256 of "{timestamp}.{raw body}" with your secret. Sign the exact bytes you send.'],
+      ['Record a purchase', 'Call transaction.create with the order and list prices. Ino Loyalty evaluates campaigns, earns or spends points and returns the result.'],
+    ],
+    conceptsTitle: 'Good to know',
+    concepts: [
+      ['Channels and operations', 'One endpoint per channel: POST /api/v1/{channelCode}/{operation}, for example transaction.create, campaign.inquiry or voucher.redeem.'],
+      ['Authentication', 'API key with HMAC signature, or an OAuth2 client-credentials bearer token. Chosen per channel.'],
+      ['Idempotency', 'requestId is your idempotency key: the same request within 24 hours returns the original response; a duplicate never earns points twice.'],
+      ['Errors', 'A standard error catalog with HTTP status, a machine-readable code and whether it is safe to retry.'],
+      ['Rate limits', '600 requests a minute per channel by default. Over the limit you get 429 with Retry-After.'],
+      ['Versioning', 'v1 only changes in additive ways. A breaking change ships as v2, with a sunset timeline for v1.'],
+      ['Correlation', 'Send X-Correlation-Id to tie a call to your logs; it is echoed back on every response.'],
+      ['Checkout safety', 'Use a short timeout for inquiries and never block checkout: on failure, show list prices and retry the transaction later with the same requestId.'],
+    ],
+    webhooksTitle: 'Webhooks',
+    webhooksLead: 'Receive loyalty events as signed HTTP POSTs. Ino Loyalty follows the Standard Webhooks specification, so the official libraries verify our requests in one call.',
+    headers: [
+      ['webhook-id', 'Delivery id, the same on every retry. Use it to deduplicate.'],
+      ['webhook-timestamp', 'Unix seconds the request was signed at. Reject anything older than 5 minutes.'],
+      ['webhook-signature', 'v1,<base64 HMAC-SHA256> over "{id}.{timestamp}.{raw body}". During a secret rotation two signatures are sent; accept either.'],
+    ],
+    delivery: [
+      'At-least-once delivery, in order per subscription (best effort)',
+      '10-second timeout; only 2xx counts as success',
+      'Retries for about six and a half days, up to 20 attempts',
+      'Paused or suspended subscriptions keep queuing events',
+      'Suspended only after 24 hours of failures, never for a short outage',
+    ],
+    catalogTitle: 'Event catalog',
+    catalogLead: 'Every event is a CloudEvents 1.0 envelope with a versioned data payload. Example payloads are in the API reference.',
+    moreTitle: 'More ways to integrate',
+    more: [
+      ['Event stream', 'Pull events with a cursor when polling suits you better than webhooks.'],
+      ['Async jobs', 'Bulk operations run as jobs; poll status and download results with per-row errors.'],
+      ['Batch file import', 'Drop CSV files of transactions or point corrections for legacy POS and end-of-day runs.'],
+      ['Offline POS', 'Store and forward: send the real sale time and reconcile when the connection returns.'],
+      ['Apache Kafka', 'Receive events on your own broker or push transactions through it.'],
+      ['Data exports', 'Incremental Parquet exports of transactions and customer facts for your data lake.'],
+    ],
+    helpTitle: 'Need a sandbox or a hand?',
+    helpText: 'We set up a test channel for your team and answer integration questions.',
+    helpMail: 'Write to support@tryino.com',
+  },
+  tr: {
+    title: 'Geliştiriciler için Ino Loyalty — API, webhook\'lar ve olay kataloğu',
+    description: 'İmzalı isteklerle gerçek zamanlı kanal API\'si, yeniden denemeli Standard Webhooks, olay kataloğu, asenkron işler ve Ino Loyalty için OpenAPI 3.1 referansı.',
+    pill: 'Geliştiriciler için',
+    h1: 'Ino Loyalty üzerine geliştirin',
+    lead: 'Kasanız, mağazanız ve uygulamalarınız için gerçek zamanlı bir API, olan her şey için imzalı webhook\'lar ve eksiksiz bir OpenAPI referansı. Herkese açık belgelenmiş.',
+    ref: 'API referansını açın',
+    quickTitle: 'Üç adımda ilk isteğiniz',
+    steps: [
+      ['Kimlik bilgilerinizi alın', 'Kurulumda API adresinizi ve bir kanal kodu (örneğin MODERN_ECOM) alırsınız. BT yöneticiniz API anahtarını ve gizli anahtarı Ino Loyalty\'nin Developers konsolunda oluşturur.'],
+      ['İsteği imzalayın', 'Her çağrı X-Api-Key, X-Timestamp (Unix saniye, 5 dakika içinde) ve X-Signature taşır: gizli anahtarla "{timestamp}.{ham gövde}" üzerinden HMAC-SHA256, küçük harf hex. Tam olarak gönderdiğiniz baytları imzalayın.'],
+      ['Bir alışveriş kaydedin', 'Sipariş ve liste fiyatlarıyla transaction.create çağırın. Ino Loyalty kampanyaları değerlendirir, puan kazandırır ya da harcatır ve sonucu döner.'],
+    ],
+    conceptsTitle: 'Bilmeniz gerekenler',
+    concepts: [
+      ['Kanallar ve işlemler', 'Kanal başına tek uç: POST /api/v1/{channelCode}/{operation}; örneğin transaction.create, campaign.inquiry ya da voucher.redeem.'],
+      ['Kimlik doğrulama', 'HMAC imzalı API anahtarı ya da OAuth2 client-credentials bearer token. Kanal bazında seçilir.'],
+      ['İdempotent istekler', 'requestId tekrar anahtarınızdır: 24 saat içinde aynı istek ilk yanıtı döner; tekrar gönderim asla iki kez puan kazandırmaz.'],
+      ['Hatalar', 'HTTP durumu, makinenin okuyacağı bir kod ve yeniden denemenin güvenli olup olmadığıyla standart hata kataloğu.'],
+      ['İstek sınırı', 'Varsayılan olarak kanal başına dakikada 600 istek. Sınırı aşınca Retry-After ile 429 alırsınız.'],
+      ['Sürümleme', 'v1 yalnız ekleme yoluyla değişir. Uyumu bozan bir değişiklik v2 olarak gelir; v1 için kapanış takvimi verilir.'],
+      ['İzleme', 'Bir çağrıyı kendi kayıtlarınıza bağlamak için X-Correlation-Id gönderin; her yanıtta geri döner.'],
+      ['Ödeme güvenliği', 'Sorgularda kısa bir zaman aşımı kullanın ve ödemeyi asla engellemeyin: hata olursa liste fiyatlarını gösterin, işlemi sonra aynı requestId ile yeniden deneyin.'],
+    ],
+    webhooksTitle: 'Webhook\'lar',
+    webhooksLead: 'Sadakat olaylarını imzalı HTTP POST olarak alın. Ino Loyalty Standard Webhooks belirtimini izler; resmi kütüphaneler isteklerimizi tek çağrıyla doğrular.',
+    headers: [
+      ['webhook-id', 'Gönderim kimliği; her yeniden denemede aynıdır. Tekrarları ayıklamak için kullanın.'],
+      ['webhook-timestamp', 'İsteğin imzalandığı Unix saniye. 5 dakikadan eski olanları reddedin.'],
+      ['webhook-signature', '"{id}.{timestamp}.{ham gövde}" üzerinden v1,<base64 HMAC-SHA256>. Gizli anahtar yenilenirken iki imza gelir; herhangi birini kabul edin.'],
+    ],
+    delivery: [
+      'En az bir kez teslim; abonelik içinde sıralı (elden geldiğince)',
+      '10 saniyelik zaman aşımı; yalnız 2xx başarı sayılır',
+      'Yaklaşık altı buçuk gün boyunca, en çok 20 deneme',
+      'Durdurulan ya da askıya alınan abonelikler olayları biriktirmeye devam eder',
+      'Kısa bir kesintide değil, ancak 24 saat boyunca hata alınırsa askıya alınır',
+    ],
+    catalogTitle: 'Olay kataloğu',
+    catalogLead: 'Her olay, sürümlü bir veri içeriğine sahip bir CloudEvents 1.0 zarfıdır. Örnek içerikler API referansında.',
+    moreTitle: 'Bağlanmanın diğer yolları',
+    more: [
+      ['Olay akışı', 'Webhook yerine sorgulamayı tercih ederseniz olayları bir imleçle çekin.'],
+      ['Asenkron işler', 'Toplu işlemler iş olarak çalışır; durumu sorgulayın, satır hatalarıyla sonucu indirin.'],
+      ['Dosyayla toplu aktarım', 'Eski kasalar ve gün sonu işlemleri için işlem ya da puan düzeltmesi CSV\'leri bırakın.'],
+      ['Çevrimdışı kasa', 'Biriktir ve gönder: gerçek satış zamanını gönderin, bağlantı gelince mutabakat yapın.'],
+      ['Apache Kafka', 'Olayları kendi sunucunuzda alın ya da işlemleri onun üzerinden gönderin.'],
+      ['Veri aktarımı', 'Veri gölünüz için alışveriş ve müşteri verisinin artımlı Parquet aktarımı.'],
+    ],
+    helpTitle: 'Test ortamı ya da yardım mı lazım?',
+    helpText: 'Ekibiniz için bir test kanalı kuruyor, entegrasyon sorularınızı yanıtlıyoruz.',
+    helpMail: 'support@tryino.com adresine yazın',
+  },
+}[lang];
+
+const code = {
+  node: `import crypto from 'node:crypto';
+
+const body = JSON.stringify({
+  requestId: crypto.randomUUID(),
+  orderNumber: 'ORD-10482',
+  customerId: '6f0c2b1e-8a54-4d2e-9b9e-2f1d7c3a4b10',
+  cart: {
+    currentTotal: '119.00', originalTotal: '119.00', totalDiscount: '0',
+    lineItems: [{lineNumber: 1, sku: 'MR-DJ-001', qty: 1, unitPrice: '89.00', originalUnitPrice: '89.00'}],
+  },
+  payments: [{type: 'CREDIT_CARD', amount: '119.00'}],
+});
+const timestamp = Math.floor(Date.now() / 1000).toString();
+const signature = crypto
+  .createHmac('sha256', process.env.INO_HMAC_SECRET)
+  .update(\`\${timestamp}.\${body}\`)
+  .digest('hex');
+
+const res = await fetch(\`https://\${host}/api/v1/MODERN_ECOM/transaction.create\`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Api-Key': process.env.INO_API_KEY,
+    'X-Timestamp': timestamp,
+    'X-Signature': signature,
+  },
+  body,
+});`,
+  python: `import hashlib, hmac, json, os, time, uuid
+import requests
+
+body = json.dumps({
+    "requestId": str(uuid.uuid4()),
+    "orderNumber": "ORD-10482",
+    "customerId": "6f0c2b1e-8a54-4d2e-9b9e-2f1d7c3a4b10",
+    "cart": {"currentTotal": "119.00", "originalTotal": "119.00", "totalDiscount": "0",
+             "lineItems": [{"lineNumber": 1, "sku": "MR-DJ-001", "qty": 1,
+                            "unitPrice": "89.00", "originalUnitPrice": "89.00"}]},
+    "payments": [{"type": "CREDIT_CARD", "amount": "119.00"}],
+}, separators=(",", ":"))
+timestamp = str(int(time.time()))
+signature = hmac.new(os.environ["INO_HMAC_SECRET"].encode(),
+                     f"{timestamp}.{body}".encode(), hashlib.sha256).hexdigest()
+
+res = requests.post(f"https://{host}/api/v1/MODERN_ECOM/transaction.create", data=body, headers={
+    "Content-Type": "application/json",
+    "X-Api-Key": os.environ["INO_API_KEY"],
+    "X-Timestamp": timestamp,
+    "X-Signature": signature,
+})`,
+  csharp: `using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+
+var body = JsonSerializer.Serialize(new {
+    requestId = Guid.NewGuid(),
+    orderNumber = "ORD-10482",
+    customerId = "6f0c2b1e-8a54-4d2e-9b9e-2f1d7c3a4b10",
+    cart = new {
+        currentTotal = "119.00", originalTotal = "119.00", totalDiscount = "0",
+        lineItems = new[] { new { lineNumber = 1, sku = "MR-DJ-001", qty = 1, unitPrice = "89.00", originalUnitPrice = "89.00" } },
+    },
+    payments = new[] { new { type = "CREDIT_CARD", amount = "119.00" } },
+});
+var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes($"{timestamp}.{body}"))).ToLowerInvariant();
+
+var request = new HttpRequestMessage(HttpMethod.Post, $"https://{host}/api/v1/MODERN_ECOM/transaction.create") {
+    Content = new StringContent(body, Encoding.UTF8, "application/json"),
+};
+request.Headers.Add("X-Api-Key", apiKey);
+request.Headers.Add("X-Timestamp", timestamp);
+request.Headers.Add("X-Signature", signature);`,
+  verify: `import {Webhook} from 'standardwebhooks'; // npm i standardwebhooks (also for Python, .NET, Go, Java…)
+
+const wh = new Webhook(process.env.INO_WEBHOOK_SECRET); // whsec_…
+
+app.post('/ino-webhook', express.raw({type: 'application/json'}), (req, res) => {
+  // Throws if the signature does not match or the timestamp is older than 5 minutes.
+  const event = wh.verify(req.body, req.headers);
+  // event.type, e.g. "points.earned"; deduplicate with req.headers['webhook-id']
+  res.sendStatus(204);
+});`,
+};
+const tabs = [
+  ['node', 'Node.js'],
+  ['python', 'Python'],
+  ['csharp', 'C#'],
+] as const;
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="d-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-200px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-200px" aria-hidden="true"></div>
+    <div class="container d-hero-grid">
+      <div class="d-text">
+        <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+        <h1 data-reveal>{copy.h1}</h1>
+        <p class="lead" data-reveal>{copy.lead}</p>
+        <div class="ctas" data-reveal>
+          <a class="btn btn-primary" href={href(lang, 'apiReference')}>{copy.ref} <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="terminal" data-reveal aria-hidden="true">
+        <div class="t-bar"><i></i><i></i><i></i><span>POST /api/v1/MODERN_ECOM/transaction.create</span></div>
+        <pre><code><span class="c">HTTP/1.1 200 OK</span>
+<span class="c">X-Correlation-Id: 7d2f9c1a-5b3e-4f60-a8d2-1c4e6b9f0a37</span>
+{'{'}
+  <span class="k">"httpStatus"</span>: <span class="n">200</span>,
+  <span class="k">"message"</span>: <span class="s">"Success"</span>,
+  <span class="k">"transactionId"</span>: <span class="s">"b3a1d0c4-1e2f-4a5b-8c9d-0e1f2a3b4c5d"</span>
+{'}'}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="developers" />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head left" data-reveal>
+        <h2>{copy.quickTitle}</h2>
+      </div>
+      <div class="quick">
+        <ol class="steps">
+          {copy.steps.map(([t, d], i) => (
+            <li data-reveal><span class="no">{i + 1}</span><div><h3>{t}</h3><p>{d}</p></div></li>
+          ))}
+        </ol>
+        <div class="code-card" data-reveal data-tabs>
+          <div class="tabs" role="tablist">
+            {tabs.map(([id, label], i) => (
+              <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={id}>{label}</button>
+            ))}
+          </div>
+          {tabs.map(([id], i) => (
+            <pre data-pane={id} hidden={i !== 0}><code>{code[id]}</code></pre>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section concepts">
+    <div class="container">
+      <div class="section-head left" data-reveal>
+        <h2>{copy.conceptsTitle}</h2>
+      </div>
+      <div class="concept-grid">
+        {copy.concepts.map(([t, d], i) => (
+          <article class="concept" data-reveal style={`transition-delay:${(i % 4) * 60}ms`}>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container wh-grid">
+      <div class="wh-text" data-reveal>
+        <h2>{copy.webhooksTitle}</h2>
+        <p class="lead">{copy.webhooksLead}</p>
+        <dl class="headers">
+          {copy.headers.map(([h, d]) => (
+            <div><dt><code>{h}</code></dt><dd>{d}</dd></div>
+          ))}
+        </dl>
+        <ul class="delivery">
+          {copy.delivery.map((d) => <li>{d}</li>)}
+        </ul>
+      </div>
+      <div class="code-card" data-reveal>
+        <div class="tabs"><span class="tab-static">verify-webhook.js</span></div>
+        <pre><code>{code.verify}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="section catalog">
+    <div class="container">
+      <div class="section-head left" data-reveal>
+        <h2>{copy.catalogTitle}</h2>
+        <p class="lead">{copy.catalogLead}</p>
+      </div>
+      <div class="cat-grid" data-reveal>
+        {groups.map((g) => (
+          <div class="cat">
+            <p class="cat-name">{g}</p>
+            <ul>
+              {events.filter((e) => e.type.startsWith(`${g}.`)).map((e) => (
+                <li><code>{e.type}</code><span>{e.summary}</span></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section more">
+    <div class="container">
+      <div class="section-head left" data-reveal>
+        <h2>{copy.moreTitle}</h2>
+      </div>
+      <div class="more-grid">
+        {copy.more.map(([t, d], i) => (
+          <article class="more-card" data-reveal style={`transition-delay:${(i % 3) * 60}ms`}>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </article>
+        ))}
+      </div>
+      <div class="help" data-reveal>
+        <div>
+          <h3>{copy.helpTitle}</h3>
+          <p>{copy.helpText}</p>
+        </div>
+        <a class="btn btn-dark" href="mailto:support@tryino.com">{copy.helpMail}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = root.querySelectorAll<HTMLButtonElement>('[data-tab]');
+    tabs.forEach((tab) =>
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+        root.querySelectorAll<HTMLElement>('[data-pane]').forEach((p) => (p.hidden = p.dataset.pane !== tab.dataset.tab));
+      }),
+    );
+  });
+</script>
+
+<style>
+  .d-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 150px 0 100px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #b9c6d9;
+  }
+  .d-hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .d-text {
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .d-text img {
+    width: 16px;
+    height: 16px;
+  }
+  .d-hero h1 {
+    color: #fff;
+    font-size: clamp(40px, 5.4vw, 66px);
+  }
+  .d-hero .lead {
+    color: #b9c6d9;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .terminal,
+  .code-card {
+    border-radius: var(--r-lg);
+    background: #0a1730;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .terminal {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  .t-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 14px 18px;
+    background: #0f1f3d;
+    color: #8ea0b9;
+    font: 500 12.5px/1 ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  .t-bar i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+  .t-bar i:nth-child(2) {
+    background: #febc2e;
+  }
+  .t-bar i:nth-child(3) {
+    background: #28c840;
+  }
+  .t-bar span {
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  pre {
+    margin: 0;
+    padding: 20px 22px 24px;
+    overflow-x: auto;
+    font: 13px/1.7 ui-monospace, 'SF Mono', Menlo, monospace;
+    color: #d6e2f3;
+  }
+  pre[hidden] {
+    display: none;
+  }
+  .k {
+    color: #8fb4ff;
+  }
+  .s {
+    color: #7fe0c3;
+  }
+  .c {
+    color: #6b7f9e;
+  }
+  .n {
+    color: #ffc685;
+  }
+
+  .quick {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .steps li {
+    display: flex;
+    gap: 16px;
+    padding: 22px;
+    border-radius: var(--r-lg);
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .no {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: var(--grad);
+    color: #fff;
+    font: 650 16px/1 var(--font-display);
+  }
+  .steps h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .steps p {
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 10px 12px 0;
+    background: #0f1f3d;
+  }
+  .tabs button,
+  .tab-static {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 10px 10px 0 0;
+    background: none;
+    color: #8ea0b9;
+    font: 600 13px/1 var(--font-text);
+    cursor: pointer;
+  }
+  .tabs button[aria-selected='true'],
+  .tab-static {
+    background: #0a1730;
+    color: #fff;
+  }
+
+  .concepts {
+    background: #fff;
+  }
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .concept {
+    padding: 22px;
+    border-radius: var(--r);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .concept h3 {
+    font-size: 18px;
+  }
+  .concept p {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .wh-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+  .wh-text {
+    display: grid;
+    gap: 20px;
+  }
+  .headers {
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .headers div {
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .headers dt code {
+    font: 600 14px/1 ui-monospace, 'SF Mono', Menlo, monospace;
+    color: var(--indigo);
+  }
+  .headers dd {
+    margin: 6px 0 0;
+    font-size: 14.5px;
+    color: var(--ink-2);
+  }
+  .delivery {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+  .delivery li {
+    position: relative;
+    padding-left: 24px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .delivery li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--grad);
+  }
+
+  .catalog {
+    background: #fff;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .cat {
+    padding: 20px;
+    border-radius: var(--r);
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .cat-name {
+    font: 600 12.5px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .cat ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .cat li {
+    display: grid;
+    gap: 2px;
+  }
+  .cat code {
+    font: 600 13.5px/1.3 ui-monospace, 'SF Mono', Menlo, monospace;
+    color: var(--indigo);
+  }
+  .cat span {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .more-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .more-card {
+    padding: 22px;
+    border-radius: var(--r);
+    background: #fff;
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 8px;
+  }
+  .more-card h3 {
+    font-size: 19px;
+  }
+  .more-card p {
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .help {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 28px 32px;
+    border-radius: var(--r-lg);
+    background: var(--grad-soft);
+  }
+  .help p {
+    color: var(--ink-2);
+    margin-top: 6px;
+  }
+  @media (max-width: 1000px) {
+    .d-hero-grid,
+    .quick,
+    .wh-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .concept-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .cat-grid,
+    .more-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .help {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 600px) {
+    .concept-grid,
+    .cat-grid,
+    .more-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

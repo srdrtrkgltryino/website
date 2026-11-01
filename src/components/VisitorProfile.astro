@@ -1,0 +1,997 @@
+---
+// The visitor loyalty program UI on every page: profile drawer (level, XP, points, quests, badges, rewards, activity),
+// "+XP" toasts and the header chip. Logic lives in src/lib/visitor.ts; nothing is stored until the visitor starts.
+import {href, type Lang} from '../i18n';
+import {vt} from '../i18n/visitor';
+import {company} from '../data/company';
+
+interface Props {
+  lang: Lang;
+  page?: string;
+}
+const {lang, page = ''} = Astro.props;
+const c = vt(lang);
+const links = {
+  ino: href(lang, 'ino'),
+  play: href(lang, 'play'),
+  apiReference: href(lang, 'apiReference'),
+  demo: href(lang, 'demo'),
+  home: href(lang, 'home'),
+  linkedin: company.linkedin,
+  linkedinProduct: company.linkedinProduct,
+  // Badge share pages live on the public site; LinkedIn fetches their preview image from there.
+  share: new URL(href(lang, 'play'), Astro.site ?? 'https://tryino.com').href + '/badge/',
+};
+---
+
+<dialog class="vp" data-vp data-lang={lang} data-page={page} data-copy={JSON.stringify(c)} data-links={JSON.stringify(links)} aria-labelledby="vp-title">
+  <div class="vp-inner">
+    <header class="vp-head">
+      <div class="vp-avatar" data-avatar></div>
+      <div class="vp-who">
+        <p class="vp-anon">{c.anon} <span data-vid></span></p>
+        <p class="vp-level" id="vp-title" data-level-name>{c.levels.visitor}</p>
+      </div>
+      <button class="vp-close" type="button" data-vp-close aria-label={c.close}><span aria-hidden="true"></span></button>
+    </header>
+
+    <section class="vp-intro" data-vp-intro>
+      <p>{c.intro}</p>
+      <div class="vp-intro-cta">
+        <button class="btn btn-primary" type="button" data-profile-start>{c.startCta} <span class="arrow">→</span></button>
+        <a class="vp-link" href={links.play}>{c.play}</a>
+      </div>
+      <p class="vp-privacy">{c.privacy}</p>
+    </section>
+
+    <section class="vp-main" data-vp-main hidden>
+      <div class="vp-progress">
+        <div class="vp-bar"><span data-xp-bar></span></div>
+        <div class="vp-row"><span data-xp></span><span data-to-next></span></div>
+      </div>
+      <div class="vp-stats">
+        <div class="vp-wallet">
+          <small>{c.pointsLabel}</small>
+          <strong data-points>0</strong>
+        </div>
+        <div class="vp-streak" data-streak></div>
+      </div>
+
+      <div class="vp-tabs" role="tablist">
+        {(['quests', 'badges', 'rewards', 'activity'] as const).map((t, i) => (
+          <button role="tab" type="button" id={`vp-tab-${t}`} aria-controls={`vp-panel-${t}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab={t}>
+            {c.tabs[t]}
+          </button>
+        ))}
+      </div>
+      <div class="vp-panel" role="tabpanel" id="vp-panel-quests" aria-labelledby="vp-tab-quests" data-panel="quests"><ul class="vp-quests" data-quests></ul></div>
+      <div class="vp-panel" role="tabpanel" id="vp-panel-badges" aria-labelledby="vp-tab-badges" data-panel="badges" hidden><ul class="vp-badges" data-badges></ul></div>
+      <div class="vp-panel" role="tabpanel" id="vp-panel-rewards" aria-labelledby="vp-tab-rewards" data-panel="rewards" hidden><div data-vp-rewards></div></div>
+      <div class="vp-panel" role="tabpanel" id="vp-panel-activity" aria-labelledby="vp-tab-activity" data-panel="activity" hidden><ul class="vp-activity" data-activity></ul></div>
+
+      <footer class="vp-foot">
+        <p>{c.privacy}</p>
+        <button type="button" class="vp-reset" data-reset>{c.reset}</button>
+      </footer>
+    </section>
+  </div>
+</dialog>
+<div class="vp-toasts" aria-live="polite" data-toasts></div>
+
+<script>
+  import * as V from '../lib/visitor';
+  import {analytics, avatarSvg, confetti, fmt, icon, linkedinStep, num} from '../lib/visitor-ui';
+  import type {VisitorCopy} from '../i18n/visitor';
+
+  const dlg = document.querySelector<HTMLDialogElement>('[data-vp]')!;
+  const c = JSON.parse(dlg.dataset.copy!) as VisitorCopy;
+  const links = JSON.parse(dlg.dataset.links!) as Record<string, string>;
+  const liLinks = {linkedin: links.linkedin, product: links.linkedinProduct, share: links.share};
+  const lang = dlg.dataset.lang!;
+  const page = dlg.dataset.page!;
+  const $ = <T extends Element = HTMLElement>(s: string, root: ParentNode = dlg) => root.querySelector<T>(s)!;
+  const levelName = (id: V.LevelId) => c.levels[id];
+  const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
+  const timeFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'});
+
+  // Tabs
+  const tabs = [...dlg.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+  const selectTab = (name: string) =>
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === name;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      $(`[data-panel="${t.dataset.tab}"]`).hidden = !on;
+    });
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => selectTab(t.dataset.tab!));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      const next = tabs[(i + d + tabs.length) % tabs.length];
+      next.focus();
+      selectTab(next.dataset.tab!);
+    });
+  });
+
+  // Open / close
+  const open = (tab?: string) => {
+    render();
+    if (tab) selectTab(tab);
+    if (!dlg.open) dlg.showModal();
+    document.documentElement.classList.add('vp-lock');
+  };
+  dlg.addEventListener('close', () => document.documentElement.classList.remove('vp-lock'));
+  $('[data-vp-close]').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => {
+    if (e.target === dlg) dlg.close();
+  });
+  document.addEventListener('visitor:open', (e) => open((e as CustomEvent).detail));
+  document.addEventListener('click', (e) => {
+    const el = (e.target as Element).closest('[data-profile-open],[data-profile-start]');
+    if (!el) return;
+    e.preventDefault();
+    if (el.hasAttribute('data-profile-start')) V.start(page);
+    open();
+  });
+  // LinkedIn steps open in a new tab. LinkedIn can't confirm a follow or a share, so the step counts once the visitor
+  // comes back after a few seconds there.
+  let pending: {action: string; at: number} | null = null;
+  document.addEventListener('click', (e) => {
+    const ext = (e.target as Element).closest<HTMLElement>('[data-ext]');
+    if (ext) {
+      pending = {action: ext.dataset.ext!, at: Date.now()};
+      analytics('vp_linkedin_click', {step: ext.dataset.ext!.split(':')[0]});
+    }
+  });
+  dlg.addEventListener('click', (e) => {
+    const go = (e.target as Element).closest<HTMLElement>('[data-goto]');
+    if (go) selectTab(go.dataset.goto!);
+  });
+  const settle = () => {
+    if (!pending || document.hidden) return;
+    if (Date.now() - pending.at >= 4000) V.track(pending.action);
+    pending = null;
+  };
+  document.addEventListener('visibilitychange', settle);
+  window.addEventListener('focus', settle);
+
+  $('[data-reset]').addEventListener('click', () => {
+    if (confirm(c.resetConfirm)) V.reset();
+  });
+
+  function quests(s: V.State) {
+    const tourDone = V.TOUR.filter((t) => s.done.includes(`page:${t}`)).length;
+    const ch = V.chance();
+    const list = [
+      {key: 'scratch', done: !!ch?.scratch?.claimed, xp: 100, upTo: true, link: `${links.play}#daily`},
+      {key: 'wheel', done: !!ch?.wheel?.claimed, xp: 100, upTo: true, link: `${links.play}#daily`},
+      {key: 'tour', done: s.done.includes('tour'), progress: [tourDone, V.TOUR.length], xp: V.RULES.page * 4 + V.RULES.tourBonus, link: links.ino},
+      {key: 'game', done: s.game.plays > 0, xp: V.RULES.gamePerRound, upTo: true, link: links.play},
+      {key: 'video', done: s.done.includes('video'), xp: V.RULES.video, link: `${links.home}#video`},
+      {key: 'apiReference', done: s.done.includes('apiReference'), xp: V.RULES.apiReference, link: links.apiReference},
+      {key: 'linkedin', done: s.done.includes('linkedin'), xp: V.RULES.linkedin, link: links.linkedin, ext: 'linkedin'},
+      ...(links.linkedinProduct
+        ? [{key: 'linkedinProduct', done: s.done.includes('linkedinProduct'), xp: V.RULES.linkedinProduct, link: links.linkedinProduct, ext: 'linkedinProduct'}]
+        : []),
+      {key: 'share', done: s.done.includes('share'), xp: V.RULES.share, tab: 'badges'},
+      {key: 'streak3', done: s.done.includes('streak3'), progress: [Math.min(s.streak.count, 3), 3], xp: V.RULES.streakBonus},
+    ] as {key: string; done: boolean; xp: number; progress?: number[]; upTo?: boolean; link?: string; ext?: string; tab?: string}[];
+    return list
+      .map((q) => {
+        const title = c.quests[q.key as keyof typeof c.quests];
+        const desc = c.quests[`${q.key}Desc` as keyof typeof c.quests];
+        const prog = q.progress ?? null;
+        const reward = `${q.upTo ? '≤ ' : '+'}${q.xp} XP`;
+        const inner = `
+          <span class="q-icon">${icon(q.done ? 'check' : 'level')}</span>
+          <span class="q-text"><strong>${title}</strong><small>${desc}</small>
+            ${prog ? `<span class="q-bar"><span style="width:${(prog[0] / prog[1]) * 100}%"></span></span>` : ''}
+          </span>
+          <span class="q-xp">${q.done ? '' : reward}${prog && !q.done ? `<small>${prog[0]}/${prog[1]}</small>` : ''}</span>`;
+        const link = !q.done ? q.link : null;
+        const attrs = q.ext ? ` target="_blank" rel="noopener" data-ext="${q.ext}"` : '';
+        if (link) return `<li class="q"><a href="${link}"${attrs}>${inner}</a></li>`;
+        if (q.tab && !q.done) return `<li class="q"><button type="button" data-goto="${q.tab}">${inner}</button></li>`;
+        return `<li class="q${q.done ? ' done' : ''}"><div>${inner}</div></li>`;
+      })
+      .join('');
+  }
+
+  function badges(s: V.State) {
+    return V.BADGES.map((id) => {
+      const got = s.badges.find((b) => b.id === id);
+      const [name, desc] = c.badges[id];
+      const url = `${links.share}${id}?utm_source=linkedin&utm_medium=social&utm_campaign=badge`;
+      const share = got
+        ? `<a class="b-share" href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}" target="_blank" rel="noopener" data-ext="share:${id}">${icon('share')}${c.shareLinkedIn}</a>`
+        : '';
+      return `<li class="b${got ? ' got' : ''}" title="${desc}">
+        <span class="b-icon">${icon(got ? id : 'lock')}</span>
+        <strong>${name}</strong><small>${desc}</small>${share}</li>`;
+    }).join('');
+  }
+
+  function rewards(s: V.State) {
+    const lvl = V.levelFor(s.xp);
+    const needIdx = V.LEVELS.findIndex((l) => l.id === V.COUPON.level);
+    const cc = c.coupon;
+    if (s.coupon) {
+      return `<div class="coupon-card has">
+        <span class="cc-eyebrow">${icon('deal')} ${cc.title}</span>
+        <p class="cc-label">${cc.yours}</p>
+        <p class="cc-code" data-code>${s.coupon.code}</p>
+        <p class="cc-exp">${fmt(cc.expires, {date: dateFmt.format(new Date(s.coupon.expires))})}</p>
+        <div class="cc-actions">
+          <button type="button" class="btn btn-sm btn-light" data-copy-code>${cc.copy}</button>
+          <button type="button" class="btn btn-sm btn-glass" data-save-coupon>${cc.save}</button>
+        </div>
+        <a class="btn btn-primary cc-book" href="${links.demo.replace('#', `?coupon=${encodeURIComponent(s.coupon.code)}#`)}">${cc.book} <span class="arrow">→</span></a>
+      </div>`;
+    }
+    const needFollow = V.COUPON.linkedin && !s.done.includes('linkedin');
+    const why =
+      lvl.index < needIdx
+        ? fmt(cc.needLevel, {level: levelName(V.COUPON.level)})
+        : s.points < V.COUPON.cost
+          ? fmt(cc.needPoints, {n: V.COUPON.cost - s.points})
+          : needFollow
+            ? cc.needLinkedIn
+            : '';
+    const pct = Math.min(1, s.points / V.COUPON.cost) * 100;
+    return `<div class="coupon-card">
+      <span class="cc-eyebrow">${icon('deal')} ${cc.title}</span>
+      <p class="cc-text">${cc.text} <a class="cc-more" href="${links.play}#poc">${cc.included} →</a></p>
+      <p class="cc-cost">${fmt(cc.cost, {n: V.COUPON.cost, level: levelName(V.COUPON.level)})}</p>
+      <div class="vp-bar amber"><span style="width:${pct}%"></span></div>
+      ${why ? `<p class="cc-why">${icon('lock')} ${why}</p>` : ''}
+      ${needFollow ? linkedinStep(s, liLinks, c) : ''}
+      <button type="button" class="btn btn-primary" data-redeem ${why ? 'disabled' : ''}>${fmt(cc.redeem, {n: V.COUPON.cost})}</button>
+    </div>`;
+  }
+
+  const reasonText = (h: V.State['history'][number]) => {
+    const detail = h.reason === 'page' ? c.pages[h.detail as keyof typeof c.pages] ?? h.detail : h.detail;
+    return fmt(c.reasons[h.reason], {detail: detail ?? ''});
+  };
+  function activity(s: V.State) {
+    if (!s.history.length) return `<li class="a-empty">${c.activityEmpty}</li>`;
+    return s.history
+      .map(
+        (h) => `<li><span class="a-text"><strong>${reasonText(h)}</strong><small>${timeFmt.format(new Date(h.at))}</small></span>
+        <span class="a-amt ${h.points < 0 ? 'neg' : ''}">${h.points > 0 ? '+' : ''}${num(h.points, lang)}</span></li>`,
+      )
+      .join('');
+  }
+
+  function render() {
+    const s = V.get();
+    $('[data-vp-intro]').hidden = !!s;
+    $('[data-vp-main]').hidden = !s;
+    if (!s) {
+      $('[data-avatar]').innerHTML = avatarSvg('tryino');
+      $('[data-vid]').textContent = '';
+      $('[data-level-name]').textContent = c.levels.visitor;
+      return;
+    }
+    const lvl = V.levelFor(s.xp);
+    $('[data-avatar]').innerHTML = avatarSvg(s.id);
+    $('[data-vid]').textContent = `#${s.id.slice(0, 4)}`;
+    $('[data-level-name]').textContent = levelName(lvl.id);
+    $('[data-xp-bar]').style.width = `${lvl.progress * 100}%`;
+    $('[data-xp]').textContent = `${num(s.xp, lang)} ${c.xp}`;
+    $('[data-to-next]').textContent = lvl.next ? fmt(c.toNext, {n: lvl.toNext, level: levelName(lvl.next)}) : c.maxLevel;
+    $('[data-points]').textContent = num(s.points, lang);
+    $('[data-streak]').innerHTML = `${icon('streak3')}<span>${fmt(c.streak, {n: s.streak.count})}</span>`;
+    $('[data-quests]').innerHTML = quests(s);
+    $('[data-badges]').innerHTML = badges(s);
+    $('[data-vp-rewards]').innerHTML = rewards(s);
+    $('[data-activity]').innerHTML = activity(s);
+  }
+
+  // Reward actions (delegated: the rewards panel is re-rendered)
+  dlg.addEventListener('click', async (e) => {
+    const t = e.target as Element;
+    if (t.closest('[data-redeem]')) {
+      const r = V.redeemCoupon();
+      if (r.ok) {
+        const b = t.closest('button')!.getBoundingClientRect();
+        confetti(b.left + b.width / 2, b.top);
+      }
+    }
+    const copyBtn = t.closest<HTMLButtonElement>('[data-copy-code]');
+    if (copyBtn) {
+      try {
+        await navigator.clipboard.writeText(V.get()?.coupon?.code ?? '');
+        copyBtn.textContent = c.coupon.copied;
+        setTimeout(() => (copyBtn.textContent = c.coupon.copy), 1800);
+      } catch {
+        const code = $('[data-code]');
+        getSelection()?.selectAllChildren(code);
+      }
+    }
+    if (t.closest('[data-save-coupon]')) saveCoupon();
+  });
+
+  async function saveCoupon() {
+    const s = V.get();
+    if (!s?.coupon) return;
+    await document.fonts.ready;
+    const W = 1200;
+    const H = 630;
+    const cv = document.createElement('canvas');
+    cv.width = W;
+    cv.height = H;
+    const g = cv.getContext('2d')!;
+    const bg = g.createRadialGradient(W, 0, 40, W * 0.7, H * 0.3, W);
+    bg.addColorStop(0, '#4F46E5');
+    bg.addColorStop(0.45, '#1A2F6B');
+    bg.addColorStop(1, '#0B1F3A');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, W, H);
+    const logo = new Image();
+    logo.src = '/brand/ino-loyalty-logo-horizontal-dark.svg';
+    await logo.decode().catch(() => {});
+    if (logo.naturalWidth) g.drawImage(logo, 80, 70, 260, (260 * logo.naturalHeight) / logo.naturalWidth);
+    g.fillStyle = '#9FB3C8';
+    g.font = '500 30px "Inter Variable", system-ui, sans-serif';
+    g.fillText(c.coupon.imageTitle, 80, 220);
+    // Ticket
+    g.fillStyle = '#FFFFFF';
+    g.beginPath();
+    g.roundRect(80, 260, W - 160, 170, 28);
+    g.fill();
+    g.setLineDash([14, 10]);
+    g.strokeStyle = '#FFB547';
+    g.lineWidth = 4;
+    g.beginPath();
+    g.roundRect(96, 276, W - 192, 138, 18);
+    g.stroke();
+    g.fillStyle = '#0B1F3A';
+    g.font = '650 76px "Outfit Variable", system-ui, sans-serif';
+    g.textAlign = 'center';
+    g.fillText(s.coupon.code, W / 2, 372);
+    g.textAlign = 'left';
+    g.fillStyle = '#FFFFFF';
+    g.font = '500 28px "Inter Variable", system-ui, sans-serif';
+    g.fillText(fmt(c.coupon.expires, {date: dateFmt.format(new Date(s.coupon.expires))}), 80, 500);
+    g.fillStyle = '#9FB3C8';
+    g.font = '400 24px "Inter Variable", system-ui, sans-serif';
+    g.fillText(c.coupon.imageNote, 80, 548);
+    cv.toBlob((blob) => {
+      if (!blob) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ino-loyalty-${s.coupon!.code}.png`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, 'image/png');
+  }
+
+  // Header chip
+  const chip = document.querySelector<HTMLButtonElement>('[data-vchip]');
+  function renderChip() {
+    if (!chip) return;
+    const s = V.get();
+    chip.hidden = !s;
+    if (!s) return;
+    const lvl = V.levelFor(s.xp);
+    chip.querySelector<SVGCircleElement>('[data-vchip-prog]')!.style.strokeDashoffset = String(100 - lvl.progress * 100);
+    chip.querySelector('[data-vchip-av]')!.innerHTML = avatarSvg(s.id);
+    chip.querySelector('[data-vchip-pts]')!.textContent = num(s.points, lang);
+    chip.title = `${levelName(lvl.id)} · ${num(s.xp, lang)} XP`;
+  }
+  chip?.addEventListener('click', () => open());
+
+  // Toasts
+  const toasts = document.querySelector<HTMLElement>('[data-toasts]')!;
+  const toast = (html: string, kind = '') => {
+    const el = document.createElement('div');
+    el.className = `vp-toast ${kind}`;
+    el.innerHTML = html;
+    toasts.appendChild(el);
+    setTimeout(() => el.classList.add('out'), 3600);
+    setTimeout(() => el.remove(), 4000);
+  };
+  document.addEventListener('visitor:award', (e) => {
+    const a = (e as CustomEvent<V.Award>).detail;
+    // Funnel measurement (only with analytics consent): what visitors do in the program, never who they are.
+    const lvl = V.levelFor(V.get()?.xp ?? 0).id;
+    analytics(`vp_${a.reason}`, {xp: a.xp, level: lvl, ...(a.reason === 'page' && a.detail ? {page_key: a.detail} : {})});
+    a.badges.forEach((b) => analytics('vp_badge', {badge: b}));
+    if (a.levelUp) analytics('vp_level_up', {level: a.levelUp});
+    if (a.points > 0 || a.xp > 0) {
+      const h = {at: '', reason: a.reason, detail: a.detail, xp: a.xp, points: a.points};
+      toast(`<span class="t-icon">${icon('plus')}</span><span><strong>+${a.xp} XP · +${a.points} ${c.points}</strong><small>${reasonText(h)}</small></span>`);
+    }
+    a.badges.forEach((b) =>
+      toast(`<span class="t-icon badge">${icon(b)}</span><span><strong>${c.badgeUnlocked}</strong><small>${c.badges[b][0]}</small></span>`, 'badge'),
+    );
+    if (a.levelUp) {
+      toast(`<span class="t-icon level">${icon('level')}</span><span><strong>${fmt(c.levelUp, {level: levelName(a.levelUp)})}</strong></span>`, 'level');
+      confetti();
+    }
+  });
+
+  document.addEventListener('visitor:change', () => {
+    renderChip();
+    if (dlg.open) render();
+  });
+  document.addEventListener('visitor:track', (e) => V.track((e as CustomEvent<string>).detail));
+
+  renderChip();
+  if (page) V.track(`page:${page}`);
+  if (location.hash === '#profile') open();
+</script>
+
+<style>
+  :global(html.vp-lock) {
+    overflow: hidden;
+  }
+  .vp {
+    margin: 0 0 0 auto;
+    width: min(440px, 100vw);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    color: #c9d6e8;
+    background: radial-gradient(120% 60% at 100% 0%, #3a3bb8 0%, #15296a 38%, var(--navy) 72%);
+    box-shadow: -30px 0 80px rgba(7, 20, 39, 0.4);
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+  }
+  .vp[open] {
+    animation: vp-in 0.38s var(--ease);
+  }
+  .vp::backdrop {
+    background: rgba(7, 20, 39, 0.45);
+    backdrop-filter: blur(4px);
+  }
+  @keyframes vp-in {
+    from {
+      transform: translateX(40px);
+      opacity: 0;
+    }
+  }
+  .vp-inner {
+    display: grid;
+    gap: 22px;
+    padding: 26px 24px 28px;
+    min-height: 100%;
+    align-content: start;
+  }
+  .vp-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .vp-avatar {
+    width: 56px;
+    height: 56px;
+    flex: none;
+    padding: 9px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+  }
+  .vp-who {
+    flex: 1;
+    min-width: 0;
+  }
+  .vp-anon {
+    font-size: 13.5px;
+    color: #9fb3c8;
+  }
+  .vp-level {
+    color: #fff;
+    font: 650 28px/1.06 var(--font-display);
+    letter-spacing: -0.025em;
+  }
+  .vp-close {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 12px;
+    border: 0;
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    position: relative;
+  }
+  .vp-close span::before,
+  .vp-close span::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    top: 19px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+  .vp-close span::after {
+    transform: rotate(-45deg);
+  }
+  .vp-close:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .vp-intro {
+    display: grid;
+    gap: 22px;
+    padding: 24px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #dbe6f3;
+  }
+  .vp-intro-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .vp-link {
+    color: #fff;
+    font-weight: 600;
+  }
+  .vp-privacy,
+  .vp-foot p {
+    font-size: 13.5px;
+    color: #8ea3bc;
+  }
+  .vp-main {
+    display: grid;
+    gap: 18px;
+  }
+  .vp-bar {
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+  .vp-bar span {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #5fd0ff, #a79bff);
+    transition: width 0.8s var(--ease);
+  }
+  .vp-bar.amber span {
+    background: linear-gradient(90deg, var(--amber), #ffd36e);
+  }
+  .vp-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .vp-row span:first-child {
+    color: #fff;
+    font-weight: 600;
+  }
+  .vp-stats {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .vp-wallet {
+    flex: 1;
+    display: grid;
+    gap: 4px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255, 181, 71, 0.2), rgba(255, 181, 71, 0.06));
+    border: 1px solid rgba(255, 181, 71, 0.35);
+  }
+  .vp-wallet small {
+    font-size: 13px;
+    color: #f3d9ae;
+  }
+  .vp-wallet strong {
+    font: 650 34px/1 var(--font-display);
+    color: #fff;
+  }
+  .vp-streak {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 6px;
+    min-width: 110px;
+    padding: 12px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13.5px;
+    color: #fff;
+    text-align: center;
+  }
+  .vp-streak :global(svg) {
+    width: 26px;
+    height: 26px;
+    color: var(--coral);
+  }
+  .vp-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .vp-tabs button {
+    flex: 1;
+    height: 38px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    color: #b6c6da;
+    font: 600 14px/1 var(--font-text);
+    cursor: pointer;
+  }
+  .vp-tabs button[aria-selected='true'] {
+    background: #fff;
+    color: var(--navy);
+  }
+  .vp-panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .vp-quests :global(li > a),
+  .vp-quests :global(li > button),
+  .vp-quests :global(li > div) {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+  }
+  .vp-quests :global(li > button) {
+    width: 100%;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .vp-quests :global(li > a:hover),
+  .vp-quests :global(li > button:hover) {
+    background: rgba(255, 255, 255, 0.11);
+  }
+  .vp-quests :global(.q-icon),
+  .vp-badges :global(.b-icon) {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #a79bff;
+  }
+  .vp-quests :global(svg),
+  .vp-badges :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+  .vp-quests :global(.done .q-icon) {
+    background: rgba(47, 191, 143, 0.18);
+    color: var(--mint);
+  }
+  .vp-quests :global(.q-text) {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 3px;
+  }
+  .vp-quests :global(.q-text strong) {
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.3;
+  }
+  .vp-quests :global(.done .q-text strong) {
+    color: #9fb3c8;
+    text-decoration: line-through;
+    text-decoration-color: rgba(159, 179, 200, 0.5);
+  }
+  .vp-quests :global(.q-text small) {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #8ea3bc;
+  }
+  .vp-quests :global(.q-bar) {
+    display: block;
+    height: 5px;
+    margin-top: 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+  .vp-quests :global(.q-bar span) {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #5fd0ff, #a79bff);
+  }
+  .vp-quests :global(.q-xp) {
+    display: grid;
+    justify-items: end;
+    gap: 2px;
+    font: 650 14px/1 var(--font-display);
+    color: var(--amber);
+    white-space: nowrap;
+  }
+  .vp-quests :global(.q-xp small) {
+    font: 500 12px/1 var(--font-text);
+    color: #8ea3bc;
+  }
+  .vp-badges {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .vp-badges :global(li) {
+    display: grid;
+    justify-items: start;
+    gap: 6px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed rgba(255, 255, 255, 0.14);
+    opacity: 0.65;
+  }
+  .vp-badges :global(li.got) {
+    opacity: 1;
+    border-style: solid;
+    background: linear-gradient(140deg, rgba(95, 208, 255, 0.14), rgba(167, 155, 255, 0.12));
+    border-color: rgba(167, 155, 255, 0.4);
+  }
+  .vp-badges :global(li.got .b-icon) {
+    background: var(--grad);
+    color: #fff;
+  }
+  .vp-badges :global(.b-share) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #0a66c2;
+    color: #fff;
+    font: 600 12.5px/1 var(--font-text);
+    text-decoration: none;
+  }
+  .vp-badges :global(.b-share svg) {
+    width: 14px;
+    height: 14px;
+  }
+  .vp-badges :global(.b-share:hover) {
+    background: #004182;
+  }
+  .vp-badges :global(strong) {
+    color: #fff;
+    font-size: 14.5px;
+  }
+  .vp-badges :global(small) {
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: #8ea3bc;
+  }
+  .vp-panel :global(.coupon-card) {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 181, 71, 0.35);
+  }
+  .vp-panel :global(.coupon-card.has) {
+    background: linear-gradient(150deg, rgba(255, 181, 71, 0.16), rgba(79, 70, 229, 0.18));
+  }
+  .vp-panel :global(.cc-eyebrow) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 650 16px/1.2 var(--font-display);
+    color: #fff;
+  }
+  .vp-panel :global(.cc-eyebrow svg) {
+    width: 22px;
+    height: 22px;
+    color: var(--amber);
+  }
+  .vp-panel :global(.cc-text) {
+    font-size: 14.5px;
+    color: #c9d6e8;
+  }
+  .vp-panel :global(.cc-more) {
+    color: #fff;
+    font-weight: 600;
+  }
+  .vp-panel :global(.cc-cost) {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f3d9ae;
+  }
+  .vp-panel :global(.cc-why) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: #9fb3c8;
+  }
+  .vp-panel :global(.cc-why svg) {
+    width: 16px;
+    height: 16px;
+  }
+  .vp-panel :global(.coupon-card .btn[disabled]) {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .vp-panel :global(.cc-label) {
+    font-size: 13px;
+    color: #9fb3c8;
+    margin-bottom: -8px;
+  }
+  .vp-panel :global(.cc-code) {
+    padding: 16px;
+    border-radius: 14px;
+    background: #fff;
+    border: 2px dashed var(--amber);
+    color: var(--navy);
+    font: 650 clamp(20px, 6vw, 26px)/1 var(--font-display);
+    letter-spacing: 0.06em;
+    text-align: center;
+    user-select: all;
+  }
+  .vp-panel :global(.cc-exp) {
+    font-size: 13.5px;
+    color: #c9d6e8;
+  }
+  .vp-panel :global(.cc-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vp-panel :global(.btn-light) {
+    background: #fff;
+    color: var(--navy);
+  }
+  .vp-panel :global(.btn-glass) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+  .vp-activity :global(li) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .vp-activity :global(.a-text) {
+    display: grid;
+    gap: 2px;
+  }
+  .vp-activity :global(.a-text strong) {
+    color: #fff;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .vp-activity :global(.a-text small) {
+    font-size: 12.5px;
+    color: #8ea3bc;
+  }
+  .vp-activity :global(.a-amt) {
+    font: 650 16px/1 var(--font-display);
+    color: var(--amber);
+  }
+  .vp-activity :global(.a-amt.neg) {
+    color: #a79bff;
+  }
+  .vp-activity :global(.a-empty) {
+    color: #8ea3bc;
+    font-size: 14px;
+  }
+  .vp-foot {
+    display: grid;
+    gap: 10px;
+    padding-top: 6px;
+  }
+  .vp-reset {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #b6c6da;
+    font-size: 13.5px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* Toasts */
+  .vp-toasts {
+    position: fixed;
+    top: 96px;
+    right: max(16px, var(--gutter));
+    z-index: 120;
+    display: grid;
+    gap: 10px;
+    justify-items: end;
+    pointer-events: none;
+  }
+  .vp-toasts :global(.vp-toast) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px 12px 12px;
+    border-radius: 18px;
+    background: rgba(11, 31, 58, 0.92);
+    backdrop-filter: blur(12px);
+    color: #c9d6e8;
+    box-shadow: 0 16px 40px rgba(7, 20, 39, 0.35);
+    animation: toast-in 0.45s var(--ease);
+    transition: opacity 0.35s, transform 0.35s var(--ease);
+    max-width: min(360px, calc(100vw - 32px));
+  }
+  .vp-toasts :global(.vp-toast.out) {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  .vp-toasts :global(.vp-toast strong) {
+    display: block;
+    color: #fff;
+    font: 650 15px/1.25 var(--font-display);
+  }
+  .vp-toasts :global(.vp-toast small) {
+    display: block;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .vp-toasts :global(.t-icon) {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--amber), #ffd36e);
+    color: var(--navy);
+  }
+  .vp-toasts :global(.t-icon.badge) {
+    background: var(--grad);
+    color: #fff;
+  }
+  .vp-toasts :global(.t-icon.level) {
+    background: linear-gradient(135deg, var(--mint), #5fd0ff);
+    color: #fff;
+  }
+  .vp-toasts :global(.t-icon svg) {
+    width: 20px;
+    height: 20px;
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.96);
+    }
+  }
+  @media (max-width: 640px) {
+    .vp-inner {
+      padding: 20px 16px 24px;
+    }
+    .vp-toasts {
+      top: 84px;
+      left: 16px;
+      right: 16px;
+      justify-items: stretch;
+    }
+  }
+</style>

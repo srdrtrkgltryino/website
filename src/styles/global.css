@@ -1,0 +1,345 @@
+/* Tryino design system.
+   Brand: Ino Navy #0B1F3A, Tryino Blue #00A4E4, accent gradient to indigo #4F46E5 (see the brand packages).
+   Type: Outfit for display, Inter for text, both self-hosted (no requests to Google). */
+@import '@fontsource-variable/outfit';
+@import '@fontsource-variable/inter';
+
+:root {
+  --navy: #0b1f3a;
+  --navy-2: #13294b;
+  --navy-deep: #071427;
+  --blue: #00a4e4;
+  --blue-ink: #0086bd;
+  --indigo: #4f46e5;
+  --violet: #7c6cf2;
+  --amber: #ffb547; /* rewards, XP, coins */
+  --mint: #2fbf8f; /* success */
+  --coral: #ff7a59;
+
+  --ink: #0b1f3a;
+  --ink-2: #3c4a63;
+  --muted: #64718a;
+  --line: #e3e8f1;
+  --line-2: #d4dbe8;
+  --bg: #f6f8fc;
+  --bg-2: #eef2f9;
+  --card: #ffffff;
+  --app-bg: #eef1f8;
+
+  --grad: linear-gradient(100deg, var(--blue) 0%, var(--indigo) 100%);
+  --grad-soft: linear-gradient(160deg, #e6f6fd 0%, #eceafe 100%);
+  --grad-navy: linear-gradient(160deg, var(--navy) 0%, var(--navy-deep) 100%);
+
+  --font-display: 'Outfit Variable', 'Outfit', system-ui, sans-serif;
+  --font-text: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --r-sm: 10px;
+  --r: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(11, 31, 58, 0.06), 0 2px 8px rgba(11, 31, 58, 0.04);
+  --shadow: 0 10px 30px rgba(11, 31, 58, 0.08), 0 2px 6px rgba(11, 31, 58, 0.04);
+  --shadow-lg: 0 30px 80px rgba(11, 31, 58, 0.16);
+
+  --maxw: 1200px;
+  --gutter: clamp(16px, 4vw, 32px);
+  --section: clamp(72px, 10vw, 128px);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+img,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+button {
+  font: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+::selection {
+  background: rgba(0, 164, 228, 0.22);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  font-weight: 650;
+}
+h1 {
+  font-size: clamp(42px, 6.4vw, 78px);
+  letter-spacing: -0.035em;
+}
+h2 {
+  font-size: clamp(32px, 4.4vw, 54px);
+}
+h3 {
+  font-size: clamp(21px, 2vw, 26px);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+p {
+  margin: 0;
+}
+.lead {
+  font-size: clamp(18px, 1.6vw, 21px);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.muted {
+  color: var(--muted);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.section {
+  padding: var(--section) 0;
+  position: relative;
+}
+.section-head {
+  max-width: 780px;
+  margin: 0 auto clamp(40px, 6vw, 64px);
+  text-align: center;
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+.section-head.left {
+  margin-left: 0;
+  text-align: left;
+  justify-items: start;
+}
+
+/* Pills / eyebrows */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--pill);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--line);
+  font: 500 14px/1.2 var(--font-text);
+  color: var(--ink-2);
+  backdrop-filter: blur(8px);
+}
+.pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--blue);
+}
+.pill.on-dark {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cfe3f5;
+}
+
+/* Gradient text */
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Buttons */
+.btn {
+  --h: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: var(--h);
+  padding: 0 26px;
+  border-radius: var(--pill);
+  border: 0;
+  font: 600 16px/1 var(--font-text);
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+.btn-primary {
+  color: #fff;
+  background: var(--grad);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.btn-primary:hover {
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.btn-dark {
+  color: #fff;
+  background: var(--navy);
+}
+.btn-ghost {
+  color: var(--ink);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+.btn-ghost:hover {
+  box-shadow: inset 0 0 0 1px var(--ink-2);
+}
+.btn-glass {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.btn-sm {
+  --h: 42px;
+  padding: 0 18px;
+  font-size: 15px;
+}
+.btn .arrow {
+  transition: transform 0.2s var(--ease);
+}
+.btn:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Glow blobs for section backgrounds */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+.glow.blue {
+  background: radial-gradient(circle, rgba(0, 164, 228, 0.45), transparent 65%);
+}
+.glow.indigo {
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.35), transparent 65%);
+}
+
+/* Scroll reveal (progressive: without JS everything is visible). The first section of a page is never hidden, so the
+   hero paints at once. */
+.js main > :not(:first-child) [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.js main > :not(:first-child) [data-reveal].in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js main > :not(:first-child) [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* The next LinkedIn step of the visitor program (built by linkedinStep in src/lib/visitor-ui.ts) */
+.li-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 10px 14px 10px 12px;
+  border-radius: 999px;
+  background: #0a66c2;
+  color: #fff;
+  font: 600 14.5px/1.25 var(--font-text);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(10, 102, 194, 0.35);
+  transition: background 0.2s, transform 0.2s var(--ease);
+}
+.li-next:hover {
+  background: #004182;
+  transform: translateY(-1px);
+}
+.li-next svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+.li-next em {
+  flex: none;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--navy);
+  font: 700 12.5px/1 var(--font-display);
+  font-style: normal;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

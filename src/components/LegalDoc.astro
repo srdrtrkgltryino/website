@@ -1,0 +1,229 @@
+---
+// Long-form document page (privacy, cookies, terms, app privacy notices, support): a quiet header, a sticky table of
+// contents and readable prose. Sections carry trusted HTML written in src/views/legal/*.
+import Base from '../layouts/Base.astro';
+import {company} from '../data/company';
+import type {Lang} from '../i18n';
+
+export type Section = {id: string; title: string; html: string};
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  eyebrow: string;
+  h1: string;
+  intro?: string;
+  sections: Section[];
+  related?: {label: string; href: string}[];
+  noindex?: boolean;
+}
+const {lang, title, description, eyebrow, h1, intro, sections, related = [], noindex} = Astro.props;
+const updated = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(company.updated));
+const t = {
+  en: {updated: 'Last updated', toc: 'On this page', related: 'Related'},
+  tr: {updated: 'Son güncelleme', toc: 'Bu sayfada', related: 'İlgili sayfalar'},
+}[lang];
+---
+
+<Base lang={lang} title={title} description={description} noindex={noindex}>
+  <header class="doc-hero">
+    <div class="container">
+      <span class="pill"><span class="dot"></span>{eyebrow}</span>
+      <h1>{h1}</h1>
+      {intro && <p class="lead">{intro}</p>}
+      <p class="updated">{t.updated}: <time datetime={company.updated}>{updated}</time></p>
+    </div>
+  </header>
+  <div class="container doc">
+    <nav class="toc" aria-label={t.toc}>
+      <p>{t.toc}</p>
+      <ol>
+        {sections.map((s) => (
+          <li><a href={`#${s.id}`}>{s.title}</a></li>
+        ))}
+      </ol>
+      {related.length > 0 && (
+        <>
+          <p class="toc-related">{t.related}</p>
+          <ul>
+            {related.map((r) => (
+              <li><a href={r.href}>{r.label}</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+    </nav>
+    <article class="prose">
+      {sections.map((s) => (
+        <section id={s.id}>
+          <h2>{s.title}</h2>
+          <Fragment set:html={s.html} />
+        </section>
+      ))}
+    </article>
+  </div>
+</Base>
+
+<style>
+  .doc-hero {
+    padding: 150px 0 48px;
+    background: var(--grad-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .doc-hero .container {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+    max-width: 960px;
+  }
+  .doc-hero h1 {
+    font-size: clamp(38px, 5.2vw, 60px);
+  }
+  .doc-hero .lead {
+    max-width: 760px;
+  }
+  .updated {
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+  .doc {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 80px);
+    padding-top: 56px;
+    padding-bottom: var(--section);
+    max-width: 1140px;
+  }
+  .toc {
+    position: sticky;
+    top: 110px;
+    align-self: start;
+    font-size: 14.5px;
+  }
+  .toc p {
+    font: 600 12px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .toc .toc-related {
+    margin-top: 28px;
+  }
+  .toc ol,
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    border-left: 1px solid var(--line);
+  }
+  .toc a {
+    display: block;
+    padding: 6px 0 6px 14px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--ink-2);
+    text-decoration: none;
+    line-height: 1.35;
+  }
+  .toc a:hover {
+    color: var(--ink);
+    border-left-color: var(--blue);
+  }
+  .prose {
+    max-width: 760px;
+    display: grid;
+    gap: 48px;
+  }
+  .prose section {
+    scroll-margin-top: 110px;
+    display: grid;
+    gap: 14px;
+  }
+  .prose h2 {
+    font-size: clamp(24px, 2.6vw, 30px);
+    letter-spacing: -0.02em;
+  }
+  .prose :global(h3) {
+    font-size: 19px;
+    margin-top: 10px;
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    color: var(--ink-2);
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0;
+    padding-left: 22px;
+    display: grid;
+    gap: 6px;
+  }
+  .prose :global(a) {
+    color: var(--blue-ink);
+    text-underline-offset: 3px;
+  }
+  .prose :global(strong) {
+    color: var(--ink);
+  }
+  .prose :global(.table) {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    background: #fff;
+  }
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    padding: 12px 14px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .prose :global(th) {
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--bg);
+    white-space: nowrap;
+  }
+  .prose :global(tr:last-child td) {
+    border-bottom: 0;
+  }
+  .prose :global(code) {
+    font: 500 14px/1.4 ui-monospace, 'SF Mono', Menlo, monospace;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--bg-2);
+    color: var(--ink);
+  }
+  .prose :global(.callout) {
+    padding: 18px 20px;
+    border-radius: var(--r);
+    background: var(--grad-soft);
+    border: 1px solid var(--line);
+  }
+  .prose :global(.btn) {
+    justify-self: start;
+    color: #fff;
+    text-decoration: none;
+  }
+  @media (max-width: 900px) {
+    .doc {
+      grid-template-columns: 1fr;
+      padding-top: 32px;
+    }
+    .toc {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,170 @@
+---
+// The product tour: a light muted loop (720p, ~1.3 MB) in a rounded stage, and a "watch" button that opens the full
+// video with sound and optional subtitles (English and Turkish) in a dialog.
+import type {Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+  dark?: boolean;
+}
+const {lang, dark = false} = Astro.props;
+const v = lang === 'tr' ? 'tr' : 'en';
+const c = {
+  en: {watch: 'Watch the 1-minute tour', close: 'Close video'},
+  tr: {watch: '1 dakikalık turu izleyin', close: 'Videoyu kapat'},
+}[lang];
+---
+
+<div class:list={['stage', {dark}]}>
+  <video src={`/video/loop-${v}.mp4`} poster={`/video/poster-${v}.jpg`} autoplay muted loop playsinline preload="metadata" aria-hidden="true" data-loop></video>
+  <button class="watch" type="button" data-watch>
+    <span class="play-icon" aria-hidden="true"></span>{c.watch}
+  </button>
+</div>
+
+<dialog class="player" data-player>
+  <button class="close" type="button" data-close aria-label={c.close}>×</button>
+  <video controls playsinline preload="none" poster={`/video/poster-${v}.jpg`}>
+    <source src={`/video/ino-loyalty-tour-${v}.mp4`} type="video/mp4" />
+    <track kind="subtitles" src={`/video/tour-${v}.en.vtt`} srclang="en" label="English" />
+    <track kind="subtitles" src={`/video/tour-${v}.tr.vtt`} srclang="tr" label="Türkçe" />
+  </video>
+</dialog>
+
+<script>
+  // Respect data-saver and reduced-motion settings: show the poster instead of the moving loop.
+  const calm =
+    (navigator as Navigator & {connection?: {saveData?: boolean}}).connection?.saveData ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (calm)
+    document.querySelectorAll<HTMLVideoElement>('[data-loop]').forEach((v) => {
+      v.removeAttribute('autoplay');
+      v.pause();
+    });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-watch]').forEach((btn) => {
+    const dialog = btn.closest('.stage')!.nextElementSibling as HTMLDialogElement;
+    const video = dialog.querySelector('video')!;
+    const close = () => {
+      video.pause();
+      dialog.close();
+    };
+    btn.addEventListener('click', () => {
+      dialog.showModal();
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+    dialog.querySelector('[data-close]')!.addEventListener('click', close);
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+    dialog.addEventListener('cancel', () => video.pause());
+    // Visitor program quest: counts once half of the tour has been watched.
+    video.addEventListener('timeupdate', () => {
+      if (video.duration && video.currentTime > video.duration / 2)
+        document.dispatchEvent(new CustomEvent('visitor:track', {detail: 'video'}));
+    });
+  });
+</script>
+
+<style>
+  .stage {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: var(--navy);
+    box-shadow: 0 40px 120px rgba(11, 31, 58, 0.28), 0 0 0 1px rgba(11, 31, 58, 0.08);
+    aspect-ratio: 16 / 9;
+  }
+  .stage.dark {
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  .stage video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .watch {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 48px;
+    padding: 0 20px 0 8px;
+    border: 0;
+    border-radius: var(--pill);
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--ink);
+    font: 600 15px/1 var(--font-text);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s var(--ease);
+  }
+  .watch:hover {
+    transform: translateY(-2px);
+  }
+  .play-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--grad);
+    position: relative;
+  }
+  .play-icon::after {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 10px;
+    border-left: 11px solid #fff;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  }
+  .player {
+    width: min(1100px, 94vw);
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-lg);
+    background: #000;
+    overflow: visible;
+  }
+  .player::backdrop {
+    background: rgba(7, 20, 39, 0.75);
+    backdrop-filter: blur(6px);
+  }
+  .player video {
+    width: 100%;
+    border-radius: var(--r-lg);
+  }
+  .player .close {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    background: #fff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  @media (max-width: 640px) {
+    .stage {
+      border-radius: var(--r-lg);
+    }
+    .watch {
+      left: 10px;
+      bottom: 10px;
+      height: 38px;
+      gap: 8px;
+      padding: 0 14px 0 6px;
+      font-size: 13px;
+    }
+  }
+</style>

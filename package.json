@@ -1,0 +1,21 @@
+{
+  "name": "tryino-website",
+  "private": true,
+  "type": "module",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "predev": "node scripts/copy_scalar.mjs",
+    "prebuild": "node scripts/copy_scalar.mjs && node scripts/check_public_docs.mjs public/developers/openapi"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource-variable/outfit": "5.3.0",
+    "@scalar/api-reference": "1.75.1",
+    "astro": "7.4.2",
+    "yaml": "2.6.1"
+  }
+}

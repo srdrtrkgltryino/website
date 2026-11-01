@@ -1,0 +1,385 @@
+---
+// The visitor program's home: the daily chance games, the Points Rush game, how points and levels work, and the free POC.
+import Base from '../layouts/Base.astro';
+import PointsRush from '../components/PointsRush.astro';
+import ChanceGames from '../components/ChanceGames.astro';
+import {href, type Lang} from '../i18n';
+import {COUPON, LEVELS, RULES, SCRATCH, WHEEL} from '../lib/visitor';
+import {vt} from '../i18n/visitor';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const v = vt(lang);
+const range = (list: {prize: number}[]) => `${Math.min(...list.map((p) => p.prize))}–${Math.max(...list.map((p) => p.prize))}`;
+const copy = {
+  en: {
+    title: 'Play, earn XP and unlock a free Ino Loyalty POC · Tryino',
+    description: 'This site runs its own loyalty program. Play a 45-second game, earn XP and points, level up and unlock a free 30-day Ino Loyalty POC for your company.',
+    pill: 'Visitor loyalty program',
+    h1: ['A loyalty program,', 'running on this page'],
+    rushTitle: 'Points Rush',
+    rushText: 'A 45-second round: catch points, skip the % codes.',
+    lead: 'Scratch a card, spin the wheel, play Points Rush and unlock a real reward. It is the same idea Ino Loyalty runs for retailers: earn, progress, redeem. No sign-up; your profile stays in your browser.',
+    open: 'Open my profile',
+    start: 'Start my visitor profile',
+    howTitle: 'How it works',
+    steps: [
+      ['Earn', 'XP and points for the daily games, the product tour and coming back. XP sets your level, points fill your wallet. Rewards are small, so it takes a few visits.'],
+      ['Level up', `Four levels: ${LEVELS.map((l) => v.levels[l.id]).join(', ')}. Higher levels open rewards, just like tiers in a loyalty program.`],
+      ['Redeem', `At ${v.levels[COUPON.level]} level, after following Tryino on LinkedIn, spend ${COUPON.cost} points on a free 30-day Ino Loyalty POC.`],
+    ],
+    rulesTitle: 'Ways to earn',
+    rules: [
+      ['Start a visitor profile', `+${RULES.welcome}`],
+      ['Daily scratch card', `${range(SCRATCH)}, once a day`],
+      ['Spin the wheel (after the scratch card)', `${range(WHEEL)}, once a day`],
+      ['Visit each Ino Loyalty page (4)', `+${RULES.page} each, +${RULES.tourBonus} for all four`],
+      ['Watch the product tour', `+${RULES.video}`],
+      ['Open the API reference', `+${RULES.apiReference}`],
+      ['Play Points Rush', `score ÷ ${RULES.gameDivisor}, up to ${RULES.gamePerRound} a round, ${RULES.gamePerDay} a day`],
+      ['Follow Tryino on LinkedIn (needed for the free POC)', `+${RULES.linkedin}`],
+      ['Add Ino Loyalty to your LinkedIn profile', `+${RULES.linkedinProduct}`],
+      ['Share a badge on LinkedIn', `+${RULES.share}`],
+      ['Daily visit', `+${RULES.daily}, +${RULES.streakBonus} on day three`],
+    ],
+    note: 'One free POC per company, for companies that are not yet Ino Loyalty customers. The code is valid for 90 days.',
+    demo: 'Book a demo',
+    pocTitle: 'What is in the free POC',
+    pocLead: 'A proof of concept is the fastest way to see Ino Loyalty work for your business: on your own channel, with your brand, for 30 days.',
+    pocIncluded: 'Included',
+    pocList: [
+      'Your own Ino Loyalty sandbox for 30 days',
+      'One channel connected: your Shopify or ikas store, or one POS or e-commerce system through the API',
+      'A starter program designed with your team in a one-hour workshop: points, tiers and two campaigns',
+      'The Rewards panel in your brand and an Apple Wallet member card',
+      'A weekly check-in and a closing report: members, transactions, campaign results and next steps',
+    ],
+    pocNeed: 'What we need from you',
+    pocNeedList: ['A test or live store we can connect', 'One project contact on your side', 'Sample customers or products, if you want to use your own data'],
+    pocAfter: 'After 30 days you can go live with what you built, or we delete the POC data. No obligation.',
+  },
+  tr: {
+    title: 'Oynayın, XP kazanın, ücretsiz Ino Loyalty POC\'si açın · Tryino',
+    description: 'Bu sitenin kendi sadakat programı var. 45 saniyelik bir oyun oynayın, XP ve puan kazanın, seviye atlayın, şirketiniz için ücretsiz 30 günlük Ino Loyalty POC\'si açın.',
+    pill: 'Ziyaretçi sadakat programı',
+    h1: ['Bu sayfada çalışan', 'bir sadakat programı'],
+    rushTitle: 'Puan Yağmuru',
+    rushText: '45 saniyelik bir tur: puanları yakalayın, % kodlarından kaçının.',
+    lead: 'Kart kazıyın, çarkı çevirin, Puan Yağmuru oynayın ve gerçek bir ödül açın. Ino Loyalty\'nin perakendeciler için çalıştırdığı fikrin aynısı: kazan, ilerle, harca. Üyelik yok; profiliniz tarayıcınızda kalır.',
+    open: 'Profilimi aç',
+    start: 'Ziyaretçi profilimi başlat',
+    howTitle: 'Nasıl çalışır',
+    steps: [
+      ['Kazanın', 'Günlük oyunlardan, ürün turundan ve geri geldikçe XP ve puan. XP seviyenizi belirler, puan cüzdanınızı doldurur. Ödüller küçük; birkaç ziyaret gerekir.'],
+      ['Seviye atlayın', `Dört seviye: ${LEVELS.map((l) => v.levels[l.id]).join(', ')}. Üst seviyeler ödülleri açar; tıpkı sadakat programındaki kademeler gibi.`],
+      ['Harcayın', `${v.levels[COUPON.level]} seviyesinde, Tryino'yu LinkedIn'de takip ettikten sonra ${COUPON.cost} puanla ücretsiz 30 günlük Ino Loyalty POC'si açın.`],
+    ],
+    rulesTitle: 'Kazanma yolları',
+    rules: [
+      ['Ziyaretçi profili başlatın', `+${RULES.welcome}`],
+      ['Günlük kazı kazan', `${range(SCRATCH)}, günde bir kez`],
+      ['Çarkıfelek (kazı kazandan sonra)', `${range(WHEEL)}, günde bir kez`],
+      ['Her Ino Loyalty sayfasını gezin (4)', `her biri +${RULES.page}, dördü birden +${RULES.tourBonus}`],
+      ['Ürün tanıtımını izleyin', `+${RULES.video}`],
+      ['API referansını açın', `+${RULES.apiReference}`],
+      ['Puan Yağmuru oynayın', `skor ÷ ${RULES.gameDivisor}; turda en çok ${RULES.gamePerRound}, günde ${RULES.gamePerDay}`],
+      ['Tryino\'yu LinkedIn\'de takip edin (ücretsiz POC için gerekli)', `+${RULES.linkedin}`],
+      ['Ino Loyalty\'yi LinkedIn profilinize ekleyin', `+${RULES.linkedinProduct}`],
+      ['LinkedIn\'de rozet paylaşın', `+${RULES.share}`],
+      ['Günlük ziyaret', `+${RULES.daily}, üçüncü gün +${RULES.streakBonus}`],
+    ],
+    note: 'Şirket başına bir ücretsiz POC; henüz Ino Loyalty müşterisi olmayan şirketler için. Kod 90 gün geçerlidir.',
+    demo: 'Demo planlayın',
+    pocTitle: 'Ücretsiz POC\'de neler var',
+    pocLead: 'POC (kavram kanıtı), Ino Loyalty\'nin işinizde nasıl çalıştığını görmenin en hızlı yolu: kendi kanalınızda, markanızla, 30 gün boyunca.',
+    pocIncluded: 'Dahil olanlar',
+    pocList: [
+      '30 gün boyunca size özel bir Ino Loyalty sandbox\'ı',
+      'Bir kanal bağlantısı: Shopify ya da ikas mağazanız veya API ile bir kasa ya da e-ticaret sistemi',
+      'Ekibinizle bir saatlik atölyede tasarlanan başlangıç programı: puanlar, kademeler ve iki kampanya',
+      'Markanızla Rewards paneli ve Apple Wallet üye kartı',
+      'Haftalık kontrol görüşmesi ve kapanış raporu: üyeler, işlemler, kampanya sonuçları ve sonraki adımlar',
+    ],
+    pocNeed: 'Sizden beklediklerimiz',
+    pocNeedList: ['Bağlanabileceğimiz bir test ya da canlı mağaza', 'Sizin tarafınızda bir proje sorumlusu', 'Kendi verinizle denemek isterseniz örnek müşteri ya da ürünler'],
+    pocAfter: '30 günün sonunda kurduklarınızla canlıya geçebilir ya da POC verilerinin silinmesini isteyebilirsiniz. Hiçbir yükümlülük yok.',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="p-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-220px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:680px;height:680px;right:-260px;top:-160px" aria-hidden="true"></div>
+    <div class="container p-head">
+      <span class="pill on-dark" data-reveal><span class="dot"></span>{copy.pill}</span>
+      <h1 data-reveal>{copy.h1[0]} <span class="grad-text">{copy.h1[1]}</span></h1>
+      <p class="lead" data-reveal>{copy.lead}</p>
+      <div class="p-ctas" data-reveal>
+        <button class="btn btn-glass" type="button" data-profile-open data-when="started" hidden>{copy.open}</button>
+        <button class="btn btn-glass" type="button" data-profile-start data-when="new">{copy.start}</button>
+      </div>
+    </div>
+    <div class="container p-daily" id="daily" data-reveal>
+      <div class="p-sub">
+        <h2>{v.chance.title}</h2>
+        <p>{v.chance.text}</p>
+      </div>
+      <ChanceGames lang={lang} />
+    </div>
+    <div class="container p-game" id="rush" data-reveal>
+      <div class="p-sub">
+        <h2>{copy.rushTitle}</h2>
+        <p>{copy.rushText}</p>
+      </div>
+      <PointsRush lang={lang} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>{copy.howTitle}</h2>
+      </div>
+      <ol class="steps">
+        {copy.steps.map(([t, d], i) => (
+          <li class="card" data-reveal>
+            <span class="n">{i + 1}</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="poc card" id="poc" data-reveal>
+        <div class="poc-head">
+          <h3>{copy.pocTitle}</h3>
+          <p>{copy.pocLead}</p>
+        </div>
+        <div class="poc-cols">
+          <div>
+            <h4>{copy.pocIncluded}</h4>
+            <ul>{copy.pocList.map((i) => <li>{i}</li>)}</ul>
+          </div>
+          <div>
+            <h4>{copy.pocNeed}</h4>
+            <ul>{copy.pocNeedList.map((i) => <li>{i}</li>)}</ul>
+            <p class="poc-after">{copy.pocAfter}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rules card" data-reveal>
+        <h3>{copy.rulesTitle}</h3>
+        <dl>
+          {copy.rules.map(([k, val]) => (
+            <div>
+              <dt>{k}</dt>
+              <dd>{val}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="note">{copy.note}</p>
+        <a class="btn btn-primary" href={href(lang, 'demo')}>{copy.demo} <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import * as V from '../lib/visitor';
+  const sync = () =>
+    document.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => {
+      el.hidden = (el.dataset.when === 'started') !== V.isStarted();
+    });
+  sync();
+  document.addEventListener('visitor:change', sync);
+</script>
+
+<style>
+  .p-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 150px 0 clamp(56px, 8vw, 96px);
+    background: var(--grad-navy);
+    color: #c9d6e8;
+  }
+  .p-head {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    text-align: center;
+    max-width: 900px;
+  }
+  .p-head h1 {
+    color: #fff;
+    font-size: clamp(40px, 6vw, 72px);
+  }
+  .p-head .lead {
+    color: #b6c6da;
+    max-width: 720px;
+  }
+  .p-ctas [hidden] {
+    display: none;
+  }
+  .p-daily {
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(40px, 6vw, 72px);
+    max-width: 1000px;
+    scroll-margin-top: 100px;
+  }
+  .p-sub {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+  .p-sub h2 {
+    color: #fff;
+    font-size: clamp(28px, 3.4vw, 40px);
+  }
+  .p-sub p {
+    color: #b6c6da;
+  }
+  .p-game {
+    scroll-margin-top: 100px;
+    position: relative;
+    z-index: 1;
+    margin-top: clamp(36px, 5vw, 56px);
+    max-width: 1000px;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .steps li {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding: 28px;
+  }
+  .steps .n {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--grad);
+    color: #fff;
+    font: 650 18px/1 var(--font-display);
+  }
+  .steps p {
+    color: var(--ink-2);
+  }
+  .poc {
+    margin-top: 20px;
+    padding: clamp(24px, 4vw, 40px);
+    display: grid;
+    gap: 24px;
+    scroll-margin-top: 100px;
+    background: var(--grad-soft);
+  }
+  .poc-head {
+    display: grid;
+    gap: 10px;
+    max-width: 720px;
+  }
+  .poc-head p {
+    color: var(--ink-2);
+  }
+  .poc-cols {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(20px, 4vw, 48px);
+  }
+  .poc h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .poc ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .poc li {
+    position: relative;
+    padding-left: 28px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .poc li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--grad);
+  }
+  .poc-after {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  @media (max-width: 760px) {
+    .poc-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+  .rules {
+    margin-top: 20px;
+    padding: clamp(24px, 4vw, 40px);
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .rules dl {
+    margin: 0;
+    width: 100%;
+    display: grid;
+  }
+  .rules dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .rules dt {
+    font-weight: 500;
+  }
+  .rules dd {
+    margin: 0;
+    font: 600 15.5px/1.4 var(--font-text);
+    color: var(--indigo);
+    text-align: right;
+  }
+  .note {
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+  @media (max-width: 860px) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+    .rules dl div {
+      flex-direction: column;
+      gap: 4px;
+    }
+    .rules dd {
+      text-align: left;
+    }
+  }
+</style>

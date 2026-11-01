@@ -1,0 +1,1125 @@
+---
+import {company} from '../data/company';
+import {Image} from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import VideoStage from '../components/VideoStage.astro';
+import {href, type Lang} from '../i18n';
+import programImg from '../assets/tiles/program.jpg';
+import tierImg from '../assets/tiles/tiers.jpg';
+import campaignImg from '../assets/tiles/campaign.jpg';
+import c360Img from '../assets/tiles/member.jpg';
+import walletImg from '../assets/tiles/wallet.jpg';
+import privacyImg from '../assets/tiles/privacy.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Tryino — Loyalty software and CRM for retail and e-commerce',
+    description: 'Tryino builds Ino Loyalty, the loyalty and promotion platform for retail and e-commerce, and delivers CRM implementation projects.',
+    eyebrow: 'Makers of Ino Loyalty',
+    h1a: 'Loyalty that goes live in weeks',
+    h1b: 'and pays back fast.',
+    lead: 'Ino Loyalty is the loyalty and promotion platform for retail and e-commerce. It plugs into the store, POS and CRM you already run, your marketing team changes it without IT, and you start seeing returns sooner.',
+    ctaIno: 'Explore Ino Loyalty',
+    ctaDemo: 'Book a demo',
+    chips: ['Points and currencies', 'Flexible tiers', 'Campaigns in five steps', 'Segments in plain words', 'Apple Wallet cards', 'Customer 360', 'Privacy desk for KVKK and GDPR', 'Shopify and ikas apps', 'Real-time API and webhooks'],
+    worldsEyebrow: 'What we do',
+    worldsTitle: 'Two areas of expertise',
+    worldsLead: 'Our own loyalty platform, and the Dynamics 365 CRM projects around it.',
+    productPill: 'Our product',
+    productText: 'A loyalty and promotion engine for retail and e-commerce: points, tiers, campaigns, vouchers, wallet cards and a privacy desk. Apps for Shopify and ikas, connectors for SAP Commerce Cloud and Akinon, and an API for everything else.',
+    productCta: 'Discover Ino Loyalty',
+    servicesPill: 'Our services',
+    servicesTitle: 'CRM implementation',
+    servicesText: 'We design and implement Microsoft Dynamics 365 for sales, marketing and customer service teams, and make loyalty data part of the customer view your teams work with every day.',
+    servicesCta: 'See our services',
+    whyEyebrow: 'Why loyalty',
+    whyTitle: 'A discount code is not loyalty',
+    whyCards: [
+      ['WELCOME10', 'trains customers to wait for the next code, and your margin pays for it every time.'],
+      ['“You have 3,240 points”', 'means nothing if nobody knows what they are worth or what to do next.'],
+      ['“Ask IT to change it”', 'is how most loyalty programs stay the same for years.'],
+    ],
+    whyAnswer: 'Ino Loyalty rewards what customers do, shows them how close the next reward is, and lets your team change the program in minutes.',
+    featEyebrow: 'Inside Ino Loyalty',
+    featTitle: 'Everything a loyalty program needs, in one place',
+    feats: [
+      ['Program Designer', 'Points, currency, earning, spending and expiry, set up step by step.'],
+      ['Tiers', 'Levels with their own rules and perks, re-evaluated automatically.'],
+      ['Campaigns', 'Five steps from idea to live, with a test basket before anyone is affected.'],
+      ['Customer 360', 'Balance, tier, purchases and consents for every member.'],
+      ['Wallet cards', 'Apple Wallet cards in your brand that update themselves.'],
+      ['Privacy desk', 'Erasure requests reviewed and completed end to end.'],
+    ],
+    featCta: 'All features',
+    howEyebrow: 'How it works',
+    howTitle: 'From first call to first reward',
+    how: [
+      ['Connect', 'Install the Shopify or ikas app, use a connector for SAP Commerce Cloud or Akinon, or call the API from your POS and ERP.'],
+      ['Design', 'Set up points, tiers and rewards in the Program Designer. Your brand, your rules.'],
+      ['Launch', 'Build campaigns in five steps, test them on a sample basket, then publish.'],
+      ['Grow', 'Watch the points economy, refine segments and keep members coming back.'],
+    ],
+    playEyebrow: 'Try it here',
+    playTitle: 'This site has a loyalty program too',
+    playText: 'Explore, play a short game and earn XP as you go. Reach the next level to unlock a free 30-day Ino Loyalty POC for your company. No sign-up needed.',
+    playCta: 'Start my visitor profile',
+    playOpen: 'Open my visitor profile',
+    playGame: 'Play Points Rush',
+    playLevel: 'Visitor',
+    playNext: '100 XP to Explorer',
+    playPoints: 'points',
+    playLocked: 'Free POC · locked',
+    playUnlocked: 'Free POC · unlocked',
+    playBadges: ['First step', 'Navigator', 'On a roll'],
+    devEyebrow: 'For developers',
+    devTitle: 'An API your team will enjoy',
+    devText: 'Signed requests, webhooks with a full event catalog, idempotency and clear errors. Everything documented, nothing hidden behind a sales call.',
+    devPoints: ['Real-time channel API for POS, e-commerce and apps', 'Webhooks signed with the Standard Webhooks scheme', 'Event catalog with example payloads', 'Async jobs for bulk imports'],
+    devCta: 'Read the developer docs',
+    faqEyebrow: 'Questions',
+    faqTitle: 'Before you ask',
+    faq: [
+      ['Do we have to replace our e-commerce platform?', 'No. Ino Loyalty plugs into what you run: apps for Shopify and ikas, connectors for SAP Commerce Cloud and Akinon, and an API for POS, ERP and mobile apps.'],
+      ['Can marketing run campaigns without IT?', 'Yes. Campaigns are built in five guided steps, tested on a sample basket and published by your team. IT sets up the connection once.'],
+      ['How do members see their points?', 'In your store (a Rewards panel and a My Rewards page), on an Apple Wallet card and through any channel you connect.'],
+      ['What about KVKK and GDPR?', 'Consents are recorded per member, and the privacy desk handles erasure requests end to end, keeping only the anonymised financial records the law requires.'],
+      ['Do you only sell software?', 'No. We also deliver CRM implementation projects on Microsoft Dynamics 365, and connect loyalty to them.'],
+    ],
+    endTitleA: 'Let’s design',
+    endTitleB: 'your loyalty program',
+    endText: 'A 30-minute call: your goals, a live demo, and a plan.',
+    endOr: 'or write to',
+  },
+  tr: {
+    title: 'Tryino — Perakende ve e-ticaret için sadakat yazılımı ve CRM',
+    description: 'Tryino; perakende ve e-ticaret için sadakat ve promosyon platformu Ino Loyalty\'yi geliştirir, CRM implementasyon projeleri yapar.',
+    eyebrow: 'Ino Loyalty\'nin geliştiricisi',
+    h1a: 'Haftalar içinde yayında,',
+    h1b: 'hızla kendini ödeyen sadakat.',
+    lead: 'Ino Loyalty, perakende ve e-ticaret için sadakat ve promosyon platformu. Kullandığınız mağaza, kasa ve CRM\'e bağlanır; pazarlama ekibiniz BT\'ye ihtiyaç duymadan yönetir, yatırımın karşılığını daha erken görürsünüz.',
+    ctaIno: 'Ino Loyalty\'yi keşfedin',
+    ctaDemo: 'Demo planlayın',
+    chips: ['Puan ve para birimleri', 'Esnek kademeler', 'Beş adımda kampanya', 'Anlaşılır segmentler', 'Apple Wallet kartları', 'Customer 360', 'KVKK ve GDPR için gizlilik masası', 'Shopify ve ikas uygulamaları', 'Gerçek zamanlı API ve webhook\'lar'],
+    worldsEyebrow: 'Ne yapıyoruz',
+    worldsTitle: 'İki uzmanlık alanı',
+    worldsLead: 'Kendi sadakat platformumuz ve çevresindeki Dynamics 365 CRM projeleri.',
+    productPill: 'Ürünümüz',
+    productText: 'Perakende ve e-ticaret için sadakat ve promosyon motoru: puan, kademe, kampanya, kupon, cüzdan kartı ve gizlilik masası. Shopify ve ikas uygulamaları, SAP Commerce Cloud ve Akinon bağlayıcıları, geri kalan her şey için bir API.',
+    productCta: 'Ino Loyalty\'yi keşfedin',
+    servicesPill: 'Hizmetlerimiz',
+    servicesTitle: 'CRM implementasyonu',
+    servicesText: 'Satış, pazarlama ve müşteri hizmetleri ekipleri için Microsoft Dynamics 365\'i tasarlayıp kuruyoruz; sadakat verisini ekiplerinizin her gün çalıştığı müşteri görünümünün parçası yapıyoruz.',
+    servicesCta: 'Hizmetlerimizi görün',
+    whyEyebrow: 'Neden sadakat',
+    whyTitle: 'İndirim kodu sadakat değildir',
+    whyCards: [
+      ['HOSGELDIN10', 'müşteriye bir sonraki kodu beklemeyi öğretir; bedelini her seferinde marjınız öder.'],
+      ['“3.240 puanınız var”', 'ne işe yaradığı ve sırada ne olduğu bilinmiyorsa hiçbir şey ifade etmez.'],
+      ['“BT ekibi değiştirsin”', 'çoğu sadakat programının yıllarca aynı kalmasının sebebidir.'],
+    ],
+    whyAnswer: 'Ino Loyalty müşterinin yaptığını ödüllendirir, bir sonraki ödüle ne kadar kaldığını gösterir ve programı ekibinizin dakikalar içinde değiştirmesini sağlar.',
+    featEyebrow: 'Ino Loyalty\'nin içinden',
+    featTitle: 'Bir sadakat programının ihtiyacı olan her şey, tek yerde',
+    feats: [
+      ['Program Designer', 'Puan, para birimi, kazanma, harcama ve sona erme; adım adım.'],
+      ['Kademeler', 'Kendi kuralı ve ayrıcalığı olan seviyeler, otomatik değerlendirme.'],
+      ['Kampanyalar', 'Fikirden yayına beş adım; kimse etkilenmeden önce örnek sepetle test.'],
+      ['Customer 360', 'Her üye için bakiye, kademe, alışverişler ve izinler.'],
+      ['Cüzdan kartları', 'Markanızı taşıyan, kendiliğinden güncellenen Apple Wallet kartları.'],
+      ['Gizlilik masası', 'Silme talepleri incelenir ve uçtan uca tamamlanır.'],
+    ],
+    featCta: 'Tüm özellikler',
+    howEyebrow: 'Nasıl çalışır',
+    howTitle: 'İlk görüşmeden ilk ödüle',
+    how: [
+      ['Bağlayın', 'Shopify ya da ikas uygulamasını kurun, SAP Commerce Cloud veya Akinon için bağlayıcıyı kullanın ya da POS ve ERP\'nizden API\'yi çağırın.'],
+      ['Tasarlayın', 'Puanları, kademeleri ve ödülleri Program Designer\'da kurun. Markanız, kurallarınız.'],
+      ['Yayına alın', 'Kampanyaları beş adımda kurun, örnek bir sepetle deneyin, sonra yayınlayın.'],
+      ['Büyütün', 'Puan ekonomisini izleyin, segmentleri iyileştirin, üyelerinizin geri gelmesini sağlayın.'],
+    ],
+    playEyebrow: 'Burada deneyin',
+    playTitle: 'Bu sitenin de bir sadakat programı var',
+    playText: 'Siteyi gezin, kısa bir oyun oynayın, ilerledikçe XP kazanın. Bir sonraki seviyeye ulaşınca şirketiniz için ücretsiz 30 günlük Ino Loyalty POC\'si açılır. Üyelik gerekmez.',
+    playCta: 'Ziyaretçi profilimi başlat',
+    playOpen: 'Ziyaretçi profilimi aç',
+    playGame: 'Puan Yağmuru oyna',
+    playLevel: 'Ziyaretçi',
+    playNext: 'Kaşif seviyesine 100 XP',
+    playPoints: 'puan',
+    playLocked: 'Ücretsiz POC · kilitli',
+    playUnlocked: 'Ücretsiz POC · açık',
+    playBadges: ['İlk adım', 'Gezgin', 'Seri'],
+    devEyebrow: 'Geliştiriciler için',
+    devTitle: 'Ekibinizin seveceği bir API',
+    devText: 'İmzalı istekler, eksiksiz olay kataloğuyla webhook\'lar, idempotent istekler ve anlaşılır hatalar. Her şey belgeli; hiçbir şey bir satış görüşmesinin arkasında saklı değil.',
+    devPoints: ['POS, e-ticaret ve uygulamalar için gerçek zamanlı kanal API\'si', 'Standard Webhooks şemasıyla imzalanan webhook\'lar', 'Örnek içerikli olay kataloğu', 'Toplu içe aktarma için asenkron işler'],
+    devCta: 'Geliştirici belgelerini okuyun',
+    faqEyebrow: 'Sorular',
+    faqTitle: 'Sık sorulan sorular',
+    faq: [
+      ['E-ticaret platformumuzu değiştirmemiz gerekir mi?', 'Hayır. Ino Loyalty kullandığınız sisteme bağlanır: Shopify ve ikas uygulamaları, SAP Commerce Cloud ve Akinon bağlayıcıları, POS, ERP ve mobil uygulamalar için bir API.'],
+      ['Pazarlama ekibi kampanyayı BT\'siz yürütebilir mi?', 'Evet. Kampanyalar beş yönlendirmeli adımda kurulur, örnek bir sepetle denenir ve ekibiniz tarafından yayınlanır. BT bağlantıyı bir kez kurar.'],
+      ['Üyeler puanlarını nerede görür?', 'Mağazanızda (Rewards paneli ve My Rewards sayfası), Apple Wallet kartında ve bağladığınız her kanalda.'],
+      ['KVKK ve GDPR ne olacak?', 'İzinler üye bazında kaydedilir; gizlilik masası silme taleplerini uçtan uca yürütür ve yalnız yasanın gerektirdiği anonim mali kayıtları saklar.'],
+      ['Yalnız yazılım mı satıyorsunuz?', 'Hayır. Microsoft Dynamics 365 üzerinde CRM implementasyon projeleri de yapıyor, sadakati bunlara bağlıyoruz.'],
+    ],
+    endTitleA: 'Sadakat programınızı',
+    endTitleB: 'birlikte tasarlayalım',
+    endText: '30 dakikalık bir görüşme: hedefleriniz, canlı bir demo ve bir plan.',
+    endOr: 'ya da yazın:',
+  },
+}[lang];
+
+const featImgs = [programImg, tierImg, campaignImg, c360Img, walletImg, privacyImg];
+// Tile images are pre-cut to the region that tells the story (scripts/crop_tiles.py).
+const featPos = ['0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%'];
+---
+
+<Base
+  lang={lang}
+  title={copy.title}
+  description={copy.description}
+  jsonld={{
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Tryino',
+    url: 'https://tryino.com',
+    logo: 'https://tryino.com/brand/tryino-logo-horizontal.svg',
+    email: company.infoEmail,
+    address: {'@type': 'PostalAddress', addressLocality: 'İstanbul', addressCountry: 'TR'},
+    sameAs: [company.linkedin],
+  }}
+>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="glow blue" style="width:720px;height:720px;left:-220px;top:-260px"></div>
+      <div class="glow indigo" style="width:760px;height:760px;right:-260px;top:-120px"></div>
+    </div>
+    <div class="container hero-inner">
+      <div class="eyebrows" data-reveal>
+        <span class="pill"><img src="/brand/ino-loyalty-symbol-color.svg" alt="" width="16" height="16" />{copy.eyebrow}</span>
+      </div>
+      <h1 data-reveal>{copy.h1a}<br /><span class="grad-text">{copy.h1b}</span></h1>
+      <p class="lead hero-lead" data-reveal>{copy.lead}</p>
+      <div class="hero-ctas" data-reveal>
+        <a class="btn btn-primary" href={href(lang, 'ino')}>{copy.ctaIno} <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href={href(lang, 'demo')}>{copy.ctaDemo}</a>
+      </div>
+    </div>
+
+    <div class="container stage-wrap" id="video" data-reveal>
+      <VideoStage lang={lang} />
+    </div>
+
+    <div class="marquee">
+      <div class="track">
+        {[...copy.chips, ...copy.chips].map((c, i) => (
+          <span class="chip" aria-hidden={i >= copy.chips.length ? 'true' : undefined}><span class="tick" aria-hidden="true"></span>{c}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Why loyalty, what is inside, how it works: one section -->
+  <section class="section story">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.whyEyebrow}</span>
+        <h2>{copy.whyTitle}</h2>
+      </div>
+      <div class="why-grid">
+        {copy.whyCards.map(([quote, text], i) => (
+          <div class={`why-card c${i}`} data-reveal style={`transition-delay:${i * 80}ms`}>
+            <p class="quote">{quote}</p>
+            <p>{text}</p>
+          </div>
+        ))}
+      </div>
+      <p class="why-answer" data-reveal>{copy.whyAnswer}</p>
+      <div class="block">
+        <div class="section-head" data-reveal>
+          <span class="pill"><img src="/brand/ino-loyalty-symbol-color.svg" alt="" width="16" height="16" />{copy.featEyebrow}</span>
+          <h2>{copy.featTitle}</h2>
+        </div>
+        <div class="bento">
+          {copy.feats.map(([title, text], i) => (
+            <article class={`tile t${i}`} data-reveal style={`transition-delay:${(i % 3) * 70}ms`}>
+              <div class="tile-text">
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+              <div class="tile-shot">
+                <Image src={featImgs[i]} alt="" widths={[600, 1100, 1534]} sizes="(max-width: 900px) 100vw, 770px" style={`object-position:${featPos[i]}`} />
+              </div>
+            </article>
+          ))}
+        </div>
+        <div class="center" data-reveal>
+          <a class="btn btn-ghost" href={href(lang, 'features')}>{copy.featCta} <span class="arrow">→</span></a>
+        </div>
+      </div>
+      <div class="block">
+        <div class="section-head left" data-reveal>
+          <span class="pill"><span class="dot"></span>{copy.howEyebrow}</span>
+          <h2>{copy.howTitle}</h2>
+        </div>
+        <ol class="steps">
+          {copy.how.map(([title, text], i) => (
+            <li class="step" data-reveal style={`transition-delay:${i * 90}ms`}>
+              <span class="step-no">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two worlds -->
+  <section class="section worlds">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.worldsEyebrow}</span>
+        <h2>{copy.worldsTitle}</h2>
+        <p class="lead">{copy.worldsLead}</p>
+      </div>
+      <div class="worlds-grid">
+        <article class="world product" data-reveal>
+          <div class="world-glow" aria-hidden="true"></div>
+          <span class="pill on-dark">{copy.productPill}</span>
+          <img class="world-logo" src="/brand/ino-loyalty-logo-horizontal-dark.svg" alt="Ino Loyalty" width="300" height="66" />
+          <p>{copy.productText}</p>
+          <div class="progress" aria-hidden="true"><span></span></div>
+          <a class="btn btn-primary" href={href(lang, 'ino')}>{copy.productCta} <span class="arrow">→</span></a>
+        </article>
+        <article class="world services" data-reveal>
+          <span class="pill">{copy.servicesPill}</span>
+          <h3>{copy.servicesTitle}</h3>
+          <p>{copy.servicesText}</p>
+          <div class="pixels" aria-hidden="true">
+            {Array.from({length: 9}).map((_, i) => <i class={[0, 1, 2, 5, 8].includes(i) ? 'b' : [4, 6].includes(i) ? 'n' : ''}></i>)}
+          </div>
+          <a class="btn btn-ghost" href={href(lang, 'crm')}>{copy.servicesCta} <span class="arrow">→</span></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Developers -->
+  <section class="section dev">
+    <div class="container dev-grid">
+      <div class="dev-text" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.devEyebrow}</span>
+        <h2>{copy.devTitle}</h2>
+        <p class="lead">{copy.devText}</p>
+        <ul>
+          {copy.devPoints.map((p) => <li>{p}</li>)}
+        </ul>
+        <a class="btn btn-dark" href={href(lang, 'developers')}>{copy.devCta} <span class="arrow">→</span></a>
+      </div>
+      <div class="code" data-reveal>
+        <div class="code-bar"><i></i><i></i><i></i><span>sign-request.js</span></div>
+        <pre><code><span class="k">const</span> crypto = require(<span class="s">'crypto'</span>);
+
+<span class="c">// Sign exactly the bytes you send.</span>
+<span class="k">const</span> body = JSON.stringify(payload);
+<span class="k">const</span> timestamp = Math.floor(Date.now() / <span class="n">1000</span>).toString();
+<span class="k">const</span> signature = crypto
+  .createHmac(<span class="s">'sha256'</span>, SECRET)
+  .update(<span class="s">`${'{'}timestamp{'}'}.${'{'}body{'}'}`</span>)
+  .digest(<span class="s">'hex'</span>);
+
+<span class="k">await</span> fetch(<span class="s">`${'{'}host{'}'}/api/v1/ECOM/transaction.create`</span>, {'{'}
+  method: <span class="s">'POST'</span>,
+  headers: {'{'} <span class="s">'X-Api-Key'</span>: KEY, <span class="s">'X-Timestamp'</span>: timestamp, <span class="s">'X-Signature'</span>: signature {'}'},
+  body,
+{'}'});</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamification teaser -->
+  <section class="section play">
+    <div class="container">
+      <div class="play-card" data-reveal>
+        <div class="play-text">
+          <span class="pill on-dark">{copy.playEyebrow}</span>
+          <h2>{copy.playTitle}</h2>
+          <p>{copy.playText}</p>
+          <div class="play-ctas">
+            <button class="btn btn-primary" type="button" data-profile-start data-when="new">{copy.playCta} <span class="arrow">→</span></button>
+            <button class="btn btn-primary" type="button" data-profile-open data-when="started" hidden>{copy.playOpen} <span class="arrow">→</span></button>
+            <a class="btn btn-glass" href={href(lang, 'play')}>{copy.playGame}</a>
+          </div>
+        </div>
+        <div class="play-visual" data-play-visual data-locked={copy.playLocked} data-unlocked={copy.playUnlocked}>
+          <div class="profile">
+            <div class="avatar" data-pv-avatar aria-hidden="true"></div>
+            <div class="profile-meta">
+              <strong data-pv-level>{copy.playLevel}</strong>
+              <div class="xp"><span data-pv-xp style="width:38%"></span></div>
+              <small data-pv-next>{copy.playNext}</small>
+            </div>
+            <div class="pv-points"><strong data-pv-points>50</strong><small>{copy.playPoints}</small></div>
+          </div>
+          <div class="badges" data-pv-badges>
+            {copy.playBadges.map((b, i) => <span class={`badge b${i}`}>{b}</span>)}
+          </div>
+          <div class="coupon" data-pv-coupon>
+            <span data-pv-code>INOPOC-····-····</span>
+            <small data-pv-coupon-state>{copy.playLocked}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section faq">
+    <div class="container faq-grid">
+      <div class="section-head left" data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.faqEyebrow}</span>
+        <h2>{copy.faqTitle}</h2>
+      </div>
+      <div class="faq-list" data-reveal>
+        {copy.faq.map(([q, a]) => (
+          <details>
+            <summary>{q}<span class="plus" aria-hidden="true"></span></summary>
+            <p>{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="end">
+    <div class="glow blue" style="width:640px;height:640px;left:-160px;bottom:-320px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-160px;top:-260px" aria-hidden="true"></div>
+    <div class="container end-inner" data-reveal>
+      <h2>{copy.endTitleA}<br /><span class="grad-text">{copy.endTitleB}</span></h2>
+      <p class="lead">{copy.endText}</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href={href(lang, 'demo')}>{copy.ctaDemo} <span class="arrow">→</span></a>
+      </div>
+      <p class="muted end-mail">{copy.endOr} <a href="mailto:info@tryino.com">info@tryino.com</a></p>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Gamification teaser: once the visitor has a profile, show their real level, points, badges and coupon.
+  import * as V from '../lib/visitor';
+  import {avatarSvg, fmt, num} from '../lib/visitor-ui';
+  import {visitorCopy} from '../i18n/visitor';
+
+  const box = document.querySelector<HTMLElement>('[data-play-visual]');
+  const lang = document.documentElement.lang === 'tr' ? 'tr' : 'en';
+  const c = visitorCopy[lang];
+  const q = (s: string) => box!.querySelector<HTMLElement>(s)!;
+  const preview = box?.innerHTML;
+  function render() {
+    document.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => (el.hidden = (el.dataset.when === 'started') !== V.isStarted()));
+    if (!box) return;
+    const s = V.get();
+    if (!s) {
+      box.innerHTML = preview!;
+      q('[data-pv-avatar]').innerHTML = avatarSvg('tryino');
+      return;
+    }
+    const lvl = V.levelFor(s.xp);
+    q('[data-pv-avatar]').innerHTML = avatarSvg(s.id);
+    q('[data-pv-level]').textContent = c.levels[lvl.id];
+    q('[data-pv-xp]').style.width = `${lvl.progress * 100}%`;
+    q('[data-pv-next]').textContent = lvl.next ? fmt(c.toNext, {n: lvl.toNext, level: c.levels[lvl.next]}) : c.maxLevel;
+    q('[data-pv-points]').textContent = num(s.points, lang);
+    q('[data-pv-badges]').innerHTML = V.BADGES.slice(0, 4)
+      .map((b) => `<span class="badge${s.badges.some((x) => x.id === b) ? ' b0' : ' off'}">${c.badges[b][0]}</span>`)
+      .join('');
+    q('[data-pv-code]').textContent = s.coupon?.code ?? 'INOPOC-····-····';
+    q('[data-pv-coupon-state]').textContent = s.coupon ? box.dataset.unlocked! : box.dataset.locked!;
+  }
+  render();
+  document.addEventListener('visitor:change', render);
+</script>
+
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 150px 0 40px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #f2f6fd 0%, var(--bg) 70%);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .hero-inner {
+    position: relative;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 26px;
+  }
+  .eyebrows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .eyebrows img {
+    width: 16px;
+    height: 16px;
+  }
+  .hero-lead {
+    max-width: 720px;
+  }
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .stage-wrap {
+    margin-top: 64px;
+  }
+  .marquee {
+    position: relative;
+    margin-top: 56px;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: scroll 50s linear infinite;
+  }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .track {
+      animation: none;
+    }
+  }
+  @keyframes scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: var(--pill);
+    background: #fff;
+    border: 1px solid var(--line);
+    font: 500 15px/1 var(--font-text);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .tick {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--grad);
+    position: relative;
+  }
+  .tick::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    width: 4px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* Two worlds */
+  .worlds-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 24px;
+  }
+  .world {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: var(--r-xl);
+    display: grid;
+    gap: 22px;
+    align-content: start;
+    justify-items: start;
+  }
+  .world p {
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .product {
+    background: var(--grad-navy);
+    color: #c9d6e8;
+  }
+  .world-glow {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    right: -180px;
+    bottom: -260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 164, 228, 0.4), transparent 65%);
+  }
+  .world-logo {
+    height: 60px;
+    width: auto;
+  }
+  .progress {
+    width: 100%;
+    max-width: 380px;
+    height: 12px;
+    border-radius: 6px;
+    background: #1e3a5f;
+    overflow: hidden;
+  }
+  .progress span {
+    display: block;
+    height: 100%;
+    width: 66%;
+    border-radius: 6px;
+    background: var(--blue);
+  }
+  .services {
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+  .pixels {
+    position: absolute;
+    right: 28px;
+    top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 14px);
+    gap: 4px;
+    opacity: 0.9;
+  }
+  .pixels i {
+    width: 14px;
+    height: 14px;
+  }
+  .pixels i.b {
+    background: var(--blue);
+  }
+  .pixels i.n {
+    background: var(--navy);
+  }
+
+  /* Why */
+  .why {
+    background: linear-gradient(180deg, var(--bg) 0%, #fff 100%);
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .why-card {
+    padding: 30px;
+    border-radius: var(--r-lg);
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .why-card.c0 {
+    background: #fff1ec;
+  }
+  .why-card.c1 {
+    background: #efedfe;
+  }
+  .why-card.c2 {
+    background: #e7f5fc;
+  }
+  .quote {
+    font: 650 26px/1.15 var(--font-display);
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .why-answer {
+    max-width: 820px;
+    margin: 48px auto 0;
+    text-align: center;
+    font: 600 clamp(22px, 2.4vw, 30px)/1.35 var(--font-display);
+    letter-spacing: -0.015em;
+  }
+
+  /* Bento */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+  .tile {
+    grid-column: span 2;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border-radius: var(--r-lg);
+    background: #fff;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .tile:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+  .tile.t0 {
+    grid-column: span 4;
+  }
+  .tile.t2,
+  .tile.t3,
+  .tile.t4,
+  .tile.t5 {
+    grid-column: span 3;
+  }
+  .tile-text {
+    padding: 26px 26px 18px;
+    display: grid;
+    gap: 6px;
+  }
+  .tile-text p {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+  .tile-shot {
+    margin: 0 0 0 26px;
+    border-radius: 14px 0 0 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-right: 0;
+    border-bottom: 0;
+    background: var(--app-bg);
+    height: 260px;
+    max-height: 280px;
+  }
+  .tile-shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: 0 0;
+    transition: transform 0.6s var(--ease);
+  }
+  .tile:hover .tile-shot :global(img) {
+    transform: scale(1.04);
+  }
+  .center {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  /* How */
+  .story {
+    background: linear-gradient(180deg, var(--bg) 0%, #fff 22%);
+  }
+  .story .block {
+    margin-top: clamp(80px, 10vw, 128px);
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    counter-reset: s;
+  }
+  .step {
+    position: relative;
+    padding: 28px 24px;
+    border-radius: var(--r-lg);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .step::after {
+    content: '';
+    position: absolute;
+    top: 44px;
+    right: -20px;
+    width: 20px;
+    border-top: 2px dashed var(--line-2);
+  }
+  .step:last-child::after {
+    display: none;
+  }
+  .step-no {
+    font: 650 15px/1 var(--font-display);
+    color: var(--blue-ink);
+    background: #e3f4fc;
+    width: fit-content;
+    padding: 7px 11px;
+    border-radius: 9px;
+  }
+  .step p {
+    color: var(--muted);
+    font-size: 15.5px;
+  }
+
+  /* Gamification teaser */
+  .play-card {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    align-items: center;
+    padding: clamp(32px, 5vw, 64px);
+    border-radius: var(--r-xl);
+    background: radial-gradient(120% 120% at 100% 0%, #4f46e5 0%, #1a2f6b 40%, var(--navy) 75%);
+    color: #c9d6e8;
+  }
+  .play-text {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .play-text h2 {
+    color: #fff;
+  }
+  .play-visual {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+  .profile {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 18px 22px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    width: min(100%, 380px);
+  }
+  .avatar {
+    width: 56px;
+    height: 56px;
+    flex: none;
+    padding: 9px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
+  }
+  .pv-points {
+    display: grid;
+    justify-items: end;
+    gap: 4px;
+  }
+  .pv-points strong {
+    font: 650 24px/1 var(--font-display);
+    color: var(--amber);
+  }
+  .pv-points small {
+    font-size: 12.5px;
+    color: #9fb3c8;
+  }
+  .play-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .play-ctas [hidden] {
+    display: none;
+  }
+  .badges :global(.badge.off) {
+    opacity: 0.45;
+    border-style: dashed;
+  }
+  .profile-meta {
+    flex: 1;
+    display: grid;
+    gap: 8px;
+    color: #fff;
+  }
+  .profile-meta small {
+    color: #9fb3c8;
+  }
+  .xp {
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+  .xp span {
+    display: block;
+    height: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, var(--amber), #ffd36e);
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .badges :global(.badge) {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font: 600 13.5px/1 var(--font-text);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .badges :global(.badge.b0) {
+    background: rgba(255, 181, 71, 0.18);
+    border-color: rgba(255, 181, 71, 0.5);
+  }
+  .coupon {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--ink);
+    font: 650 clamp(15px, 4vw, 20px)/1 var(--font-display);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    border: 2px dashed var(--amber);
+  }
+  .coupon small {
+    font: 700 14px/1 var(--font-text);
+    color: var(--indigo);
+  }
+
+  /* Developers */
+  .dev-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .dev-text {
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+  .dev-text ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .dev-text li {
+    padding-left: 28px;
+    position: relative;
+    color: var(--ink-2);
+  }
+  .dev-text li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--grad);
+  }
+  .code {
+    border-radius: var(--r-lg);
+    background: #0a1730;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .code-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 14px 18px;
+    background: #0f1f3d;
+    color: #8ea0b9;
+    font: 500 13px/1 var(--font-text);
+  }
+  .code-bar i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+  .code-bar i:nth-child(2) {
+    background: #febc2e;
+  }
+  .code-bar i:nth-child(3) {
+    background: #28c840;
+  }
+  .code-bar span {
+    margin-left: 10px;
+  }
+  pre {
+    margin: 0;
+    padding: 22px 24px 26px;
+    overflow-x: auto;
+    font: 13.5px/1.7 ui-monospace, 'SF Mono', Menlo, monospace;
+    color: #d6e2f3;
+  }
+  @media (max-width: 600px) {
+    pre {
+      padding: 18px 16px 20px;
+      font-size: 12px;
+    }
+  }
+  .k {
+    color: #8fb4ff;
+  }
+  .s {
+    color: #7fe0c3;
+  }
+  .c {
+    color: #6b7f9e;
+  }
+  .n {
+    color: #ffc685;
+  }
+
+  /* FAQ */
+  .faq {
+    background: #fff;
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .faq-list {
+    display: grid;
+    gap: 12px;
+  }
+  details {
+    border-radius: 18px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 0 24px;
+  }
+  summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    padding: 20px 0;
+    font: 600 18px/1.35 var(--font-display);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .plus {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line-2);
+    position: relative;
+  }
+  .plus::before,
+  .plus::after {
+    content: '';
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 13px;
+    border-top: 1.6px solid var(--ink);
+    transition: transform 0.25s var(--ease);
+  }
+  .plus::after {
+    transform: rotate(90deg);
+  }
+  details[open] .plus::after {
+    transform: rotate(0);
+  }
+  details p {
+    padding: 0 0 22px;
+    color: var(--ink-2);
+  }
+
+  /* End */
+  .end {
+    position: relative;
+    overflow: hidden;
+    padding: var(--section) 0;
+    background: linear-gradient(180deg, #fff 0%, #eef3fc 100%);
+  }
+  .end-inner {
+    position: relative;
+    text-align: center;
+    display: grid;
+    gap: 22px;
+    justify-items: center;
+  }
+  .end h2 {
+    font-size: clamp(40px, 6vw, 72px);
+  }
+  .end-mail a {
+    color: var(--blue-ink);
+  }
+
+  @media (max-width: 1000px) {
+    .worlds-grid,
+    .dev-grid,
+    .faq-grid,
+    .play-card {
+      grid-template-columns: 1fr;
+    }
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+    .steps {
+      grid-template-columns: 1fr 1fr;
+    }
+    .step::after {
+      display: none;
+    }
+    .bento {
+      grid-template-columns: 1fr 1fr;
+    }
+    .tile,
+    .tile.t0,
+    .tile.t2,
+    .tile.t3,
+    .tile.t4,
+    .tile.t5 {
+      grid-column: span 1;
+    }
+  }
+  @media (max-width: 640px) {
+    .hero {
+      padding-top: 120px;
+    }
+    .stage-wrap {
+      margin-top: 40px;
+    }
+    .steps,
+    .bento {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

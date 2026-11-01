@@ -1,0 +1,224 @@
+---
+// Privacy policy and KVKK information notice for tryino.com visitors and enquiries.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const mail = (e: string) => `<a href="mailto:${e}">${e}</a>`;
+const link = (key: Parameters<typeof href>[1], label: string) => `<a href="${href(lang, key)}">${label}</a>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Privacy policy · Tryino',
+  description: 'How Tryino handles personal data on tryino.com and in demo and contact requests, and your rights under KVKK and GDPR.',
+  eyebrow: 'Legal',
+  h1: 'Privacy policy',
+  intro: 'This policy explains what personal data we process when you visit tryino.com or get in touch with us, why we do it and what your rights are. It is also our information notice under Article 10 of the Turkish Personal Data Protection Law No. 6698 (KVKK).',
+  sections: [
+    {
+      id: 'who',
+      title: 'Who we are',
+      html: `<p>${co.legalName} (“we”), ${co.address}, is the data controller for the personal data described in this policy. You can reach us at ${mail(co.privacyEmail)}.</p>
+      <p><strong>Ino Loyalty is different.</strong> When a company runs its loyalty program on Ino Loyalty, that company is the data controller for its members' data and Tryino processes it on the company's behalf. Members should contact the company that runs the program. The app-specific notices explain this in detail: ${link('privacyShopify', 'Ino Loyalty for Shopify')} and ${link('privacyIkas', 'Ino Loyalty for ikas')}.</p>`,
+    },
+    {
+      id: 'what',
+      title: 'What we process and why',
+      html: `<div class="table"><table>
+        <thead><tr><th>When</th><th>Data</th><th>Purpose</th><th>Legal basis (KVKK art. 5)</th></tr></thead>
+        <tbody>
+          <tr><td>You visit the site</td><td>IP address, browser and device type, requested page, time</td><td>Deliver the site securely, prevent abuse</td><td>Legitimate interest; necessary to provide the service</td></tr>
+          <tr><td>You allow analytics</td><td>A pseudonymous cookie identifier, pages viewed, device, approximate location (IP is shortened), and what you do in the visitor program (games played, quests and badges), without your name or coupon code</td><td>Understand which pages help visitors, improve the site</td><td>Your explicit consent, which you can withdraw at any time</td></tr>
+          <tr><td>You start a visitor profile or play the game</td><td>XP, points, badges and an optional coupon code, stored <strong>only in your browser</strong></td><td>Run the visitor program you asked for</td><td>Not sent to us; you delete it with “Reset profile”</td></tr>
+          <tr><td>You ask for a demo or contact us</td><td>Name, company, work e-mail, phone (optional), your message, preferred time, coupon code and LinkedIn profile if you share them</td><td>Reply, arrange a demo, prepare a proposal. The demo form opens an e-mail in your own mail app; nothing is sent until you send it.</td><td>Steps before a contract at your request; legitimate interest</td></tr>
+          <tr><td>You become a customer</td><td>Contact details of your team, contract and billing records</td><td>Deliver the service, invoicing, support</td><td>Performance of a contract; legal obligation</td></tr>
+        </tbody></table></div>
+      <p>We do not sell personal data, and we do not use it for automated decisions that affect you.</p>`,
+    },
+    {
+      id: 'cookies',
+      title: 'Cookies and browser storage',
+      html: `<p>We use only what the site needs, plus Google Analytics if you allow it. Details are in the ${link('cookies', 'cookie policy')}; you can change your choice at any time with “Cookie settings” at the bottom of every page.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Who receives your data',
+      html: `<p>We share personal data only with service providers that help us run the site and our business, under contracts that limit their use of it:</p>
+      <ul>
+        <li><strong>Cloudflare</strong>: hosting and protection of tryino.com.</li>
+        <li><strong>Microsoft</strong> (Microsoft 365): e-mail and our own records of enquiries.</li>
+        <li><strong>Google</strong> (Google Analytics): only if you allow analytics.</li>
+      </ul>
+      <p>We may also disclose data when the law requires it, for example to courts or public authorities.</p>`,
+    },
+    {
+      id: 'transfers',
+      title: 'Transfers outside Türkiye',
+      html: `<p>Some of these providers process data outside Türkiye (for example in the European Union or the United States). We carry out such transfers under Article 9 of KVKK: with appropriate safeguards such as standard contracts, or with your explicit consent where that is the applicable basis (analytics).</p>`,
+    },
+    {
+      id: 'retention',
+      title: 'How long we keep it',
+      html: `<ul>
+        <li>Demo and contact requests: up to 2 years after our last contact, unless a contract follows.</li>
+        <li>Customer and contract records: for the duration of the contract and then as long as commercial and tax law requires (generally 10 years).</li>
+        <li>Analytics data: 14 months in Google Analytics.</li>
+        <li>Server and security logs: a short period set by our hosting provider.</li>
+      </ul>
+      <p>When the period ends we delete, destroy or anonymise the data in line with our retention and destruction policy.</p>`,
+    },
+    {
+      id: 'rights',
+      title: 'Your rights',
+      html: `<p>Under Article 11 of KVKK you have the right to:</p>
+      <ul>
+        <li>learn whether we process your personal data and, if so, request information about it;</li>
+        <li>learn the purpose of processing and whether it is used accordingly;</li>
+        <li>know the third parties, in Türkiye or abroad, to whom it is transferred;</li>
+        <li>ask for incomplete or inaccurate data to be corrected, and for these corrections to be notified to the recipients;</li>
+        <li>ask for deletion or destruction of your data when the reasons for processing no longer apply, and for this to be notified to the recipients;</li>
+        <li>object to a result against you that arises only from automated analysis;</li>
+        <li>claim compensation if you suffer damage from unlawful processing.</li>
+      </ul>
+      <p>If the EU General Data Protection Regulation applies to you, you also have the rights to restrict processing, to data portability and to complain to your local supervisory authority.</p>`,
+    },
+    {
+      id: 'requests',
+      title: 'How to make a request',
+      html: `<p>Send your request to ${mail(co.privacyEmail)} from the e-mail address you used with us, or in writing to ${co.legalName}, ${co.address}. Tell us who you are and what you are asking for. We answer free of charge within 30 days at the latest, as set out in the Communiqué on the Procedures and Principles of Application to the Data Controller. You also have the right to complain to the Personal Data Protection Authority (KVKK Kurumu).</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Security',
+      html: `<p>We protect personal data with technical and organisational measures appropriate to the risk: encrypted connections (HTTPS), access only for people who need it, multi-factor authentication on our accounts and regular reviews of who has access.</p>`,
+    },
+    {
+      id: 'children',
+      title: 'Children',
+      html: `<p>tryino.com is a business website. It is not directed at children and we do not knowingly collect their data.</p>`,
+    },
+    {
+      id: 'changes',
+      title: 'Changes to this policy',
+      html: `<p>We update this policy when our practices or the law change. The date at the top shows the latest version; significant changes are announced on this page.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Gizlilik politikası ve KVKK aydınlatma metni · Tryino',
+  description: 'Tryino\'nun tryino.com\'da, demo ve iletişim taleplerinde kişisel verileri nasıl işlediği ve KVKK kapsamındaki haklarınız.',
+  eyebrow: 'Yasal',
+  h1: 'Gizlilik politikası ve aydınlatma metni',
+  intro: 'Bu metin, tryino.com\'u ziyaret ettiğinizde ya da bizimle iletişime geçtiğinizde hangi kişisel verilerinizi, hangi amaçla işlediğimizi ve haklarınızı açıklar. 6698 sayılı Kişisel Verilerin Korunması Kanunu\'nun (KVKK) 10. maddesi kapsamındaki aydınlatma metnimizdir.',
+  sections: [
+    {
+      id: 'who',
+      title: 'Veri sorumlusu',
+      html: `<p>Bu metinde anlatılan kişisel veriler için veri sorumlusu ${co.legalName}'dur (“biz”), ${co.address}. Bize ${mail(co.privacyEmail)} adresinden ulaşabilirsiniz.</p>
+      <p><strong>Ino Loyalty farklıdır.</strong> Bir şirket sadakat programını Ino Loyalty üzerinde çalıştırdığında, üyelerinin verileri için veri sorumlusu o şirkettir; Tryino bu verileri şirket adına işleyen (veri işleyen) konumundadır. Program üyeleri programı yürüten şirkete başvurmalıdır. Ayrıntılar uygulamalara özel metinlerde: ${link('privacyShopify', 'Shopify için Ino Loyalty')} ve ${link('privacyIkas', 'ikas için Ino Loyalty')}.</p>`,
+    },
+    {
+      id: 'what',
+      title: 'Hangi verileri, neden işliyoruz',
+      html: `<div class="table"><table>
+        <thead><tr><th>Ne zaman</th><th>Veri</th><th>Amaç</th><th>Hukuki sebep (KVKK md. 5)</th></tr></thead>
+        <tbody>
+          <tr><td>Siteyi ziyaret ettiğinizde</td><td>IP adresi, tarayıcı ve cihaz türü, istenen sayfa, zaman</td><td>Siteyi güvenle sunmak, kötüye kullanımı önlemek</td><td>Meşru menfaat; hizmetin sunulması için zorunluluk</td></tr>
+          <tr><td>Analize izin verdiğinizde</td><td>Takma adlı çerez kimliği, görüntülenen sayfalar, cihaz, yaklaşık konum (IP kısaltılır) ve ziyaretçi programında yaptıklarınız (oynanan oyunlar, görevler, rozetler); adınız ya da kupon kodunuz olmadan</td><td>Hangi sayfaların işe yaradığını anlamak, siteyi geliştirmek</td><td>Açık rızanız; dilediğiniz an geri alabilirsiniz</td></tr>
+          <tr><td>Ziyaretçi profili başlattığınızda ya da oyun oynadığınızda</td><td>XP, puan, rozetler ve isteğe bağlı kupon kodu; <strong>yalnızca tarayıcınızda</strong> saklanır</td><td>İstediğiniz ziyaretçi programını çalıştırmak</td><td>Bize gönderilmez; “Profili sıfırla” ile silersiniz</td></tr>
+          <tr><td>Demo ya da iletişim talebinde</td><td>Ad, şirket, iş e-postası, telefon (isteğe bağlı), mesajınız, tercih ettiğiniz zaman, paylaşırsanız kupon kodu ve LinkedIn profiliniz</td><td>Yanıt vermek, demo planlamak, teklif hazırlamak. Demo formu kendi e-posta uygulamanızda bir e-posta açar; siz gönderene kadar hiçbir şey iletilmez.</td><td>Talebiniz üzerine sözleşme öncesi adımlar; meşru menfaat</td></tr>
+          <tr><td>Müşterimiz olduğunuzda</td><td>Ekibinizin iletişim bilgileri, sözleşme ve fatura kayıtları</td><td>Hizmeti sunmak, faturalama, destek</td><td>Sözleşmenin ifası; hukuki yükümlülük</td></tr>
+        </tbody></table></div>
+      <p>Kişisel verileri satmayız ve sizi etkileyen otomatik kararlar için kullanmayız.</p>`,
+    },
+    {
+      id: 'cookies',
+      title: 'Çerezler ve tarayıcı depolaması',
+      html: `<p>Yalnızca sitenin ihtiyaç duyduklarını, izin verirseniz de Google Analytics'i kullanırız. Ayrıntılar ${link('cookies', 'çerez politikasında')}; seçiminizi her sayfanın altındaki “Çerez ayarları” ile istediğiniz zaman değiştirebilirsiniz.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Verileriniz kimlere aktarılır',
+      html: `<p>Kişisel verileri yalnızca siteyi ve işimizi yürütmemize yardım eden, kullanımı sözleşmeyle sınırlanmış hizmet sağlayıcılarla paylaşırız:</p>
+      <ul>
+        <li><strong>Cloudflare</strong>: tryino.com'un barındırılması ve korunması.</li>
+        <li><strong>Microsoft</strong> (Microsoft 365): e-posta ve taleplerin kaydı.</li>
+        <li><strong>Google</strong> (Google Analytics): yalnızca analize izin verirseniz.</li>
+      </ul>
+      <p>Kanunun gerektirdiği hallerde verileri yetkili kurum ve kuruluşlarla, örneğin mahkemelerle paylaşabiliriz.</p>`,
+    },
+    {
+      id: 'transfers',
+      title: 'Yurt dışına aktarım',
+      html: `<p>Bu sağlayıcıların bazıları verileri Türkiye dışında (örneğin Avrupa Birliği ya da ABD'de) işler. Bu aktarımları KVKK'nın 9. maddesine uygun olarak yaparız: standart sözleşme gibi uygun güvencelerle ya da dayanağın bu olduğu durumlarda (analiz) açık rızanızla.</p>`,
+    },
+    {
+      id: 'retention',
+      title: 'Saklama süreleri',
+      html: `<ul>
+        <li>Demo ve iletişim talepleri: sözleşme yapılmazsa son iletişimden itibaren en çok 2 yıl.</li>
+        <li>Müşteri ve sözleşme kayıtları: sözleşme süresince, sonra ticaret ve vergi mevzuatının öngördüğü süre (genellikle 10 yıl).</li>
+        <li>Analiz verileri: Google Analytics'te 14 ay.</li>
+        <li>Sunucu ve güvenlik kayıtları: barındırma sağlayıcısının belirlediği kısa süre.</li>
+      </ul>
+      <p>Süre dolduğunda veriler saklama ve imha politikamıza göre silinir, yok edilir ya da anonim hale getirilir.</p>`,
+    },
+    {
+      id: 'rights',
+      title: 'Haklarınız',
+      html: `<p>KVKK'nın 11. maddesi uyarınca:</p>
+      <ul>
+        <li>kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme,</li>
+        <li>işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme,</li>
+        <li>yurt içinde ya da yurt dışında aktarıldığı üçüncü kişileri bilme,</li>
+        <li>eksik ya da yanlış işlenmişse düzeltilmesini ve bunun aktarılan kişilere bildirilmesini isteme,</li>
+        <li>işlenmesini gerektiren sebepler ortadan kalkmışsa silinmesini ya da yok edilmesini ve bunun aktarılan kişilere bildirilmesini isteme,</li>
+        <li>yalnızca otomatik sistemlerle analiz edilmesi sonucu aleyhinize bir sonuç çıkmasına itiraz etme,</li>
+        <li>kanuna aykırı işleme nedeniyle zarara uğramanız halinde zararın giderilmesini talep etme</li>
+      </ul>
+      <p>haklarına sahipsiniz. AB Genel Veri Koruma Tüzüğü (GDPR) sizin için geçerliyse işlemenin kısıtlanması, veri taşınabilirliği ve yerel denetim makamına şikâyet haklarınız da vardır.</p>`,
+    },
+    {
+      id: 'requests',
+      title: 'Nasıl başvurursunuz',
+      html: `<p>Talebinizi bizimle kullandığınız e-posta adresinden ${mail(co.privacyEmail)} adresine ya da yazılı olarak ${co.legalName}, ${co.address} adresine iletin; kim olduğunuzu ve talebinizi belirtin. Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca en geç 30 gün içinde ücretsiz yanıt veririz. Kişisel Verileri Koruma Kurumu'na şikâyet hakkınız da saklıdır.</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Güvenlik',
+      html: `<p>Kişisel verileri riske uygun teknik ve idari tedbirlerle koruruz: şifreli bağlantı (HTTPS), yalnızca ihtiyacı olanlara erişim, hesaplarımızda çok faktörlü kimlik doğrulama ve erişimlerin düzenli gözden geçirilmesi.</p>`,
+    },
+    {
+      id: 'children',
+      title: 'Çocuklar',
+      html: `<p>tryino.com bir kurumsal web sitesidir. Çocuklara yönelik değildir ve çocuklara ait verileri bilerek toplamayız.</p>`,
+    },
+    {
+      id: 'changes',
+      title: 'Değişiklikler',
+      html: `<p>Uygulamalarımız ya da mevzuat değiştiğinde bu metni güncelleriz. Yukarıdaki tarih son sürümü gösterir; önemli değişiklikleri bu sayfada duyururuz.</p>`,
+    },
+  ],
+};
+const c = lang === 'tr' ? tr : en;
+const related =
+  lang === 'tr'
+    ? [
+        {label: 'Çerez politikası', href: href(lang, 'cookies')},
+        {label: 'Kullanım koşulları', href: href(lang, 'terms')},
+        {label: 'Shopify için Ino Loyalty gizliliği', href: href(lang, 'privacyShopify')},
+        {label: 'ikas için Ino Loyalty gizliliği', href: href(lang, 'privacyIkas')},
+      ]
+    : [
+        {label: 'Cookie policy', href: href(lang, 'cookies')},
+        {label: 'Terms of use', href: href(lang, 'terms')},
+        {label: 'Ino Loyalty for Shopify privacy', href: href(lang, 'privacyShopify')},
+        {label: 'Ino Loyalty for ikas privacy', href: href(lang, 'privacyIkas')},
+      ];
+---
+
+<LegalDoc lang={lang} {...c} related={related} />

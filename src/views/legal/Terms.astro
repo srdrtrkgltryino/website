@@ -1,0 +1,142 @@
+---
+// Terms of use for tryino.com, including the rules of the visitor program and its free POC code.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+import {COUPON} from '../../lib/visitor';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Terms of use · Tryino',
+  description: 'The terms for using tryino.com, the visitor program and its free Ino Loyalty POC.',
+  eyebrow: 'Legal',
+  h1: 'Terms of use',
+  intro: `These terms apply to your use of tryino.com, run by ${co.legalName}. By using the site you accept them. The Ino Loyalty service and our consulting services are governed by separate written agreements.`,
+  sections: [
+    {
+      id: 'site',
+      title: 'Using the site',
+      html: `<p>You may browse the site, read the documentation and share links to it. Please do not disrupt the site, try to access parts that are not public, or use automated tools in a way that puts load on it.</p>`,
+    },
+    {
+      id: 'content',
+      title: 'Content and accuracy',
+      html: `<p>We describe our products and services as accurately as we can, but the content is for general information and may change without notice. Screenshots may show demo data. A feature, integration or price is binding only when it is part of a signed agreement or proposal.</p>`,
+    },
+    {
+      id: 'ip',
+      title: 'Intellectual property',
+      html: `<p>The site, its text, design, images, videos and the Tryino and Ino Loyalty names and logos belong to Tryino or its licensors. Other product names, such as Microsoft Dynamics 365, Shopify, ikas, SAP or Akinon, are trademarks of their owners and are used only to describe compatibility; their mention does not imply endorsement or partnership unless we say so.</p>`,
+    },
+    {
+      id: 'developers',
+      title: 'Developer documentation',
+      html: `<p>The public API reference and webhook documentation are provided so customers and their partners can plan integrations. Access to the API itself requires credentials issued under an Ino Loyalty agreement.</p>`,
+    },
+    {
+      id: 'program',
+      title: 'Visitor program and free POC',
+      html: `<ul>
+        <li>The visitor program (XP, levels, points, badges, the Points Rush game) is a free demonstration. It runs in your browser; points have no cash value and cannot be transferred or exchanged for anything other than the reward shown.</li>
+        <li>The code unlocks a free 30-day proof of concept (POC) of Ino Loyalty for companies that are not yet customers: one sandbox, one connected channel, a starter program and a closing report, as described on the Points Rush page. It does not include custom development or more than one channel. It is valid for ${COUPON.days} days from unlocking, once per company. The start date is agreed after the demo.</li>
+        <li>To unlock the code you need the required level and points and to follow Tryino's LinkedIn page; we check this, and the other LinkedIn steps, using the LinkedIn profile you share when you request a demo.</li>
+        <li>Share the code when you request a demo or proposal. A code that was obtained by tampering with the site or the game, or that does not match our format, is not valid.</li>
+        <li>We may change or end the program at any time; codes already unlocked stay valid until their expiry date.</li>
+      </ul>`,
+    },
+    {
+      id: 'links',
+      title: 'Links to other sites',
+      html: `<p>The site links to other websites, such as app stores. We are not responsible for their content or privacy practices.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Liability',
+      html: `<p>The site is provided “as is”. To the extent the law allows, Tryino is not liable for indirect damages arising from the use of the site or from the temporary unavailability of the site. Nothing in these terms limits liability that cannot be limited by law.</p>`,
+    },
+    {
+      id: 'law',
+      title: 'Governing law',
+      html: `<p>These terms are governed by the laws of the Republic of Türkiye. The courts and enforcement offices of Istanbul have jurisdiction.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>${co.legalName}, ${co.address} · <a href="mailto:${co.infoEmail}">${co.infoEmail}</a>. See also the <a href="${href(lang, 'privacy')}">privacy policy</a>.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Kullanım koşulları · Tryino',
+  description: 'tryino.com\'un, ziyaretçi programının ve ücretsiz Ino Loyalty POC\'sinin kullanım koşulları.',
+  eyebrow: 'Yasal',
+  h1: 'Kullanım koşulları',
+  intro: `Bu koşullar ${co.legalName} tarafından işletilen tryino.com'un kullanımına uygulanır. Siteyi kullanarak koşulları kabul etmiş olursunuz. Ino Loyalty hizmeti ve danışmanlık hizmetlerimiz ayrı yazılı sözleşmelere tabidir.`,
+  sections: [
+    {
+      id: 'site',
+      title: 'Sitenin kullanımı',
+      html: `<p>Siteyi gezebilir, belgeleri okuyabilir ve bağlantılarını paylaşabilirsiniz. Lütfen siteyi aksatacak davranışlarda bulunmayın, herkese açık olmayan bölümlere erişmeye çalışmayın ve otomatik araçları siteye yük bindirecek şekilde kullanmayın.</p>`,
+    },
+    {
+      id: 'content',
+      title: 'İçerik ve doğruluk',
+      html: `<p>Ürün ve hizmetlerimizi olabildiğince doğru anlatırız; ancak içerik genel bilgi amaçlıdır ve haber verilmeden değişebilir. Ekran görüntüleri demo verisi içerebilir. Bir özellik, entegrasyon ya da fiyat yalnızca imzalı bir sözleşme ya da teklifin parçası olduğunda bağlayıcıdır.</p>`,
+    },
+    {
+      id: 'ip',
+      title: 'Fikri mülkiyet',
+      html: `<p>Site, metinleri, tasarımı, görselleri, videoları ile Tryino ve Ino Loyalty adları ve logoları Tryino'ya ya da lisans verenlerine aittir. Microsoft Dynamics 365, Shopify, ikas, SAP ya da Akinon gibi diğer ürün adları sahiplerinin markalarıdır ve yalnızca uyumluluğu anlatmak için kullanılır; aksini belirtmedikçe bir onay ya da iş ortaklığı anlamına gelmez.</p>`,
+    },
+    {
+      id: 'developers',
+      title: 'Geliştirici belgeleri',
+      html: `<p>Herkese açık API referansı ve webhook belgeleri, müşterilerimizin ve iş ortaklarının entegrasyon planlayabilmesi için sunulur. API'nin kendisine erişim, Ino Loyalty sözleşmesi kapsamında verilen kimlik bilgileri gerektirir.</p>`,
+    },
+    {
+      id: 'program',
+      title: 'Ziyaretçi programı ve ücretsiz POC',
+      html: `<ul>
+        <li>Ziyaretçi programı (XP, seviyeler, puan, rozetler, Puan Yağmuru oyunu) ücretsiz bir tanıtımdır. Tarayıcınızda çalışır; puanların nakit değeri yoktur, devredilemez ve gösterilen ödül dışında bir şeye çevrilemez.</li>
+        <li>Kod, henüz müşterimiz olmayan şirketler için Ino Loyalty'nin ücretsiz 30 günlük kavram kanıtını (POC) açar: bir sandbox, bir bağlı kanal, başlangıç programı ve kapanış raporu; ayrıntılar Puan Yağmuru sayfasında. Özel geliştirme ve birden fazla kanal dahil değildir. Açıldığı tarihten itibaren ${COUPON.days} gün, şirket başına bir kez geçerlidir. Başlangıç tarihi demodan sonra birlikte belirlenir.</li>
+        <li>Kodu açmak için gerekli seviye ve puana ulaşmanız ve Tryino'nun LinkedIn sayfasını takip etmeniz gerekir; bunu ve diğer LinkedIn adımlarını demo isterken paylaştığınız LinkedIn profilinden kontrol ederiz.</li>
+        <li>Demo ya da teklif isterken kodu paylaşın. Siteye ya da oyuna müdahale edilerek elde edilen veya biçimimize uymayan kodlar geçersizdir.</li>
+        <li>Programı dilediğimiz zaman değiştirebilir ya da sona erdirebiliriz; açılmış kodlar son geçerlilik tarihine kadar geçerli kalır.</li>
+      </ul>`,
+    },
+    {
+      id: 'links',
+      title: 'Başka sitelere bağlantılar',
+      html: `<p>Site, uygulama mağazaları gibi başka web sitelerine bağlantı verir. Bu sitelerin içeriğinden ya da gizlilik uygulamalarından sorumlu değiliz.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Sorumluluk',
+      html: `<p>Site “olduğu gibi” sunulur. Kanunun izin verdiği ölçüde Tryino, sitenin kullanımından ya da geçici olarak erişilemez olmasından doğan dolaylı zararlardan sorumlu değildir. Bu koşullardaki hiçbir hüküm, kanunen sınırlanamayan sorumluluğu sınırlamaz.</p>`,
+    },
+    {
+      id: 'law',
+      title: 'Uygulanacak hukuk',
+      html: `<p>Bu koşullara Türkiye Cumhuriyeti hukuku uygulanır. İstanbul mahkemeleri ve icra daireleri yetkilidir.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>${co.legalName}, ${co.address} · <a href="mailto:${co.infoEmail}">${co.infoEmail}</a>. Ayrıca bkz. <a href="${href(lang, 'privacy')}">gizlilik politikası</a>.</p>`,
+    },
+  ],
+};
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
+  {label: lang === 'tr' ? 'Çerez politikası' : 'Cookie policy', href: href(lang, 'cookies')},
+  {label: lang === 'tr' ? 'Puan Yağmuru' : 'Points Rush', href: href(lang, 'play')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} />

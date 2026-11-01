@@ -1,0 +1,105 @@
+---
+// Cookie policy: what the site stores in the browser, and the consent choice.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const settings = (label: string) => `<button class="btn btn-primary btn-sm" type="button" data-open-consent>${label}</button>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Cookie policy · Tryino',
+  description: 'The cookies and browser storage tryino.com uses, and how to change your choice.',
+  eyebrow: 'Legal',
+  h1: 'Cookie policy',
+  intro: 'tryino.com keeps browser storage to a minimum. Analytics runs only if you allow it, and the site loads no advertising or social media trackers.',
+  sections: [
+    {
+      id: 'what',
+      title: 'What cookies are',
+      html: `<p>Cookies are small text files a website stores in your browser. Sites can also keep data in your browser's local storage. Both can be strictly necessary for the site to work, or optional, such as analytics.</p>`,
+    },
+    {
+      id: 'list',
+      title: 'What we use',
+      html: `<div class="table"><table>
+        <thead><tr><th>Name</th><th>Type</th><th>Purpose</th><th>Duration</th></tr></thead>
+        <tbody>
+          <tr><td><code>tryino-consent</code></td><td>Necessary · local storage</td><td>Remembers your cookie choice so we don't ask on every page.</td><td>Until you clear it</td></tr>
+          <tr><td><code>tryino-visitor</code></td><td>Functional · local storage, only after you start a visitor profile</td><td>Keeps your XP, points, badges and coupon. Never sent to us.</td><td>Until you reset the profile or clear site data</td></tr>
+          <tr><td><code>_ga</code>, <code>_ga_*</code></td><td>Analytics · cookie, only with your consent</td><td>Google Analytics: counts visits and pages anonymously so we can improve the site.</td><td>Up to 2 years</td></tr>
+        </tbody></table></div>
+      <p>Fonts, images and the product video are served from tryino.com itself, so watching or reading does not contact other companies.</p>`,
+    },
+    {
+      id: 'choice',
+      title: 'Your choice',
+      html: `<p>When you first visit, you can allow analytics, keep only the necessary storage, or choose in the settings. Rejecting is as easy as accepting, and the site works the same either way. You can change your mind at any time; if you withdraw consent, we remove the analytics cookies straight away.</p>
+      ${settings('Open cookie settings')}`,
+    },
+    {
+      id: 'browser',
+      title: 'Browser controls',
+      html: `<p>You can also delete cookies and site data in your browser settings (in Safari: Settings → Privacy → Manage Website Data). Blocking necessary storage may mean we ask for your choice again.</p>`,
+    },
+    {
+      id: 'more',
+      title: 'More information',
+      html: `<p>How we handle personal data is explained in the <a href="${href(lang, 'privacy')}">privacy policy</a>. Questions: <a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Çerez politikası · Tryino',
+  description: 'tryino.com\'un kullandığı çerezler ve tarayıcı depolaması, seçiminizi nasıl değiştireceğiniz.',
+  eyebrow: 'Yasal',
+  h1: 'Çerez politikası',
+  intro: 'tryino.com tarayıcı depolamasını en aza indirir. Analiz yalnızca izin verirseniz çalışır; site reklam ya da sosyal medya izleyicisi yüklemez.',
+  sections: [
+    {
+      id: 'what',
+      title: 'Çerez nedir',
+      html: `<p>Çerezler, bir web sitesinin tarayıcınızda sakladığı küçük metin dosyalarıdır. Siteler tarayıcının yerel depolamasında da veri tutabilir. Her ikisi de sitenin çalışması için zorunlu ya da analiz gibi isteğe bağlı olabilir.</p>`,
+    },
+    {
+      id: 'list',
+      title: 'Kullandıklarımız',
+      html: `<div class="table"><table>
+        <thead><tr><th>Ad</th><th>Tür</th><th>Amaç</th><th>Süre</th></tr></thead>
+        <tbody>
+          <tr><td><code>tryino-consent</code></td><td>Zorunlu · yerel depolama</td><td>Çerez seçiminizi hatırlar; her sayfada yeniden sormayız.</td><td>Siz silene kadar</td></tr>
+          <tr><td><code>tryino-visitor</code></td><td>İşlevsel · yerel depolama, yalnızca ziyaretçi profili başlatırsanız</td><td>XP, puan, rozet ve kuponunuzu tutar. Bize hiç gönderilmez.</td><td>Profili sıfırlayana ya da site verilerini silene kadar</td></tr>
+          <tr><td><code>_ga</code>, <code>_ga_*</code></td><td>Analiz · çerez, yalnızca izninizle</td><td>Google Analytics: ziyaret ve sayfaları anonim sayar, siteyi geliştirmemize yardım eder.</td><td>En çok 2 yıl</td></tr>
+        </tbody></table></div>
+      <p>Yazı tipleri, görseller ve ürün videosu doğrudan tryino.com'dan sunulur; izlemek ya da okumak başka şirketlerle bağlantı kurmaz.</p>`,
+    },
+    {
+      id: 'choice',
+      title: 'Seçiminiz',
+      html: `<p>İlk ziyaretinizde analize izin verebilir, yalnızca zorunlu depolamayı seçebilir ya da ayarlardan karar verebilirsiniz. Reddetmek kabul etmek kadar kolaydır; site her iki durumda da aynı çalışır. Fikrinizi istediğiniz an değiştirebilirsiniz; izni geri alırsanız analiz çerezlerini hemen sileriz.</p>
+      ${settings('Çerez ayarlarını aç')}`,
+    },
+    {
+      id: 'browser',
+      title: 'Tarayıcı ayarları',
+      html: `<p>Çerezleri ve site verilerini tarayıcı ayarlarından da silebilirsiniz (Safari'de: Ayarlar → Gizlilik → Web Sitesi Verilerini Yönet). Zorunlu depolamayı engellerseniz seçiminizi yeniden sorabiliriz.</p>`,
+    },
+    {
+      id: 'more',
+      title: 'Daha fazla bilgi',
+      html: `<p>Kişisel verileri nasıl işlediğimiz <a href="${href(lang, 'privacy')}">gizlilik politikasında</a> anlatılır. Sorularınız için: <a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>.</p>`,
+    },
+  ],
+};
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
+  {label: lang === 'tr' ? 'Kullanım koşulları' : 'Terms of use', href: href(lang, 'terms')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} />

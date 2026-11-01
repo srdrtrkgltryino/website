@@ -1,0 +1,139 @@
+---
+// Hidden pricing page: not linked from navigation, noindex and left out of the sitemap (astro.config.mjs).
+// No prices yet; to be shaped with the user.
+import InfoPage, {type Block} from '../components/InfoPage.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const demo = href(lang, 'contact');
+const en = {
+  title: 'Ino Loyalty pricing · Tryino',
+  description: 'How Ino Loyalty is priced: by members, channels and modules, with a fixed written proposal. Shopify and ikas apps are free.',
+  hero: {
+    pill: 'Pricing',
+    h1: ['Pricing that grows', 'with your program'] as [string, string],
+    lead: 'Ino Loyalty is priced by the size of your program and the channels it runs on. Every proposal is fixed and written down: no surprises later.',
+    cta: {label: 'Get a proposal', href: demo},
+    secondary: {label: 'Play for a coupon', href: href(lang, 'play')},
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'What sets the price',
+      title: 'Three things decide your plan',
+      cols: 3,
+      items: [
+        {title: 'Members', text: 'The number of active loyalty members in your program.'},
+        {title: 'Channels and locations', text: 'Stores and POS, e-commerce platforms, apps and partner channels you connect.'},
+        {title: 'Modules', text: 'Tiers, campaigns, wallet, vouchers, partner programs, developer access and connectors.'},
+      ],
+    },
+    {
+      type: 'cards',
+      eyebrow: 'Always included',
+      title: 'In every plan',
+      cols: 4,
+      tone: 'dark',
+      items: [
+        {title: 'Program Designer', text: 'Points, rules and rewards set up from the console.'},
+        {title: 'Privacy tools', text: 'Consent records, data requests, erasure and retention for KVKK and GDPR.'},
+        {title: 'Shopify and ikas apps', text: 'Free to install for every customer.'},
+        {title: 'Support', text: 'Direct access to the team that builds the product.'},
+      ],
+    },
+    {
+      type: 'steps',
+      title: 'From demo to launch',
+      items: [
+        {title: 'Demo', text: 'We show Ino Loyalty with your channels and goals.'},
+        {title: 'Scope', text: 'Together we size members, channels and modules.'},
+        {title: 'Proposal', text: 'A written proposal with licence and setup, valid for 30 days.'},
+        {title: 'Launch', text: 'Setup, integrations and training, then the program goes live.'},
+      ],
+    },
+    {
+      type: 'faq',
+      title: 'Questions',
+      items: [
+        {q: 'Is there a setup fee?', a: 'Setup and integration work is quoted separately in the proposal, based on your channels.'},
+        {q: 'Do the Shopify and ikas apps cost extra?', a: 'No. The apps are free; they connect your store to your Ino Loyalty account.'},
+        {q: 'I unlocked a free POC on the site. What happens next?', a: 'Share the code when you book a demo. We agree the channel and start date together, then run a 30-day POC on your own Ino Loyalty sandbox, free of charge.'},
+      ],
+    },
+    {
+      type: 'cta',
+      title: 'Get a proposal for your program',
+      text: 'Tell us about your stores, channels and members.',
+      cta: {label: 'Book a demo', href: demo},
+    },
+  ] as Block[],
+};
+const tr: typeof en = {
+  title: 'Ino Loyalty fiyatlandırma · Tryino',
+  description: 'Ino Loyalty nasıl fiyatlandırılır: üye, kanal ve modüle göre, sabit ve yazılı teklifle. Shopify ve ikas uygulamaları ücretsiz.',
+  hero: {
+    pill: 'Fiyatlandırma',
+    h1: ['Programınızla birlikte', 'büyüyen fiyat'],
+    lead: 'Ino Loyalty, programınızın büyüklüğüne ve çalıştığı kanallara göre fiyatlandırılır. Her teklif sabittir ve yazılıdır: sonradan sürpriz yok.',
+    cta: {label: 'Teklif alın', href: demo},
+    secondary: {label: 'Kupon için oynayın', href: href(lang, 'play')},
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'Fiyatı ne belirler',
+      title: 'Planınızı üç şey belirler',
+      cols: 3,
+      items: [
+        {title: 'Üyeler', text: 'Programınızdaki aktif sadakat üyesi sayısı.'},
+        {title: 'Kanallar ve lokasyonlar', text: 'Bağladığınız mağazalar ve kasalar, e-ticaret platformları, uygulamalar ve iş ortağı kanalları.'},
+        {title: 'Modüller', text: 'Kademeler, kampanyalar, cüzdan, kuponlar, iş ortağı programları, geliştirici erişimi ve bağlayıcılar.'},
+      ],
+    },
+    {
+      type: 'cards',
+      eyebrow: 'Her zaman dahil',
+      title: 'Her planda',
+      cols: 4,
+      tone: 'dark',
+      items: [
+        {title: 'Program Designer', text: 'Puan, kural ve ödüller konsoldan kurulur.'},
+        {title: 'Gizlilik araçları', text: 'KVKK ve GDPR için izin kayıtları, veri talepleri, silme ve saklama.'},
+        {title: 'Shopify ve ikas uygulamaları', text: 'Her müşteri için ücretsiz kurulum.'},
+        {title: 'Destek', text: 'Ürünü geliştiren ekibe doğrudan erişim.'},
+      ],
+    },
+    {
+      type: 'steps',
+      title: 'Demodan canlıya',
+      items: [
+        {title: 'Demo', text: 'Ino Loyalty\'yi kanallarınız ve hedeflerinizle gösteririz.'},
+        {title: 'Kapsam', text: 'Üye, kanal ve modülleri birlikte belirleriz.'},
+        {title: 'Teklif', text: 'Lisans ve kurulumu içeren, 30 gün geçerli yazılı teklif.'},
+        {title: 'Canlıya geçiş', text: 'Kurulum, entegrasyonlar ve eğitim; ardından program yayında.'},
+      ],
+    },
+    {
+      type: 'faq',
+      title: 'Sorular',
+      items: [
+        {q: 'Kurulum ücreti var mı?', a: 'Kurulum ve entegrasyon çalışması, kanallarınıza göre teklifte ayrıca fiyatlanır.'},
+        {q: 'Shopify ve ikas uygulamaları ek ücretli mi?', a: 'Hayır. Uygulamalar ücretsizdir; mağazanızı Ino Loyalty hesabınıza bağlar.'},
+        {q: 'Sitede ücretsiz POC açtım. Sonra ne oluyor?', a: 'Demo randevusu alırken kodu paylaşın. Kanalı ve başlangıç tarihini birlikte belirliyor, kendi Ino Loyalty sandbox\'ınızda 30 günlük POC\'yi ücretsiz yürütüyoruz.'},
+      ],
+    },
+    {
+      type: 'cta',
+      title: 'Programınız için teklif alın',
+      text: 'Mağazalarınızı, kanallarınızı ve üyelerinizi anlatın.',
+      cta: {label: 'Demo planlayın', href: demo},
+    },
+  ] as Block[],
+};
+const c = lang === 'tr' ? tr : en;
+---
+
+<InfoPage lang={lang} title={c.title} description={c.description} hero={c.hero} blocks={c.blocks} noindex />

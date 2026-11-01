@@ -1,0 +1,686 @@
+---
+// Points Rush: a 45-second catch game on a canvas. Catch points, gifts, stars and hearts with the bag, skip the
+// % discount codes. Consecutive catches build a combo; the gold tier pill doubles the score for a few seconds.
+// The score turns into visitor-program points (src/lib/visitor.ts); without a profile the round can still be kept.
+import {type Lang} from '../i18n';
+import {vt} from '../i18n/visitor';
+import {href} from '../i18n';
+import {company} from '../data/company';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const g = vt(lang).game;
+const shareBase = new URL(href(lang, 'play'), Astro.site ?? 'https://tryino.com').href + '/badge/';
+---
+
+<div class="pr" data-pr data-copy={JSON.stringify(vt(lang))} data-lang={lang} data-share={shareBase} data-li={JSON.stringify({linkedin: company.linkedin, product: company.linkedinProduct, share: shareBase})}>
+  <div class="pr-hud" aria-hidden="true">
+    <span><small>{g.score}</small><strong data-score>0</strong></span>
+    <span><small>{g.combo}</small><strong data-combo>×1</strong></span>
+    <span class="pr-boost" data-boost hidden>{g.double}</span>
+    <span class="pr-time"><small>{g.time}</small><strong data-time>45</strong></span>
+  </div>
+  <canvas data-canvas tabindex="0" role="img" aria-label={g.canvasLabel}></canvas>
+
+  <div class="pr-overlay" data-overlay="start">
+    <div class="pr-legend" aria-hidden="true">
+      <span class="lg coin"></span><span class="lg gift"></span><span class="lg star"></span><span class="lg heart"></span><span class="lg bad">%</span>
+    </div>
+    <p class="pr-how">{g.howTo}</p>
+    <p class="pr-controls">{g.controls}</p>
+    <button class="btn btn-primary" type="button" data-play>{g.start} <span class="arrow">→</span></button>
+  </div>
+
+  <div class="pr-overlay" data-overlay="paused" hidden>
+    <h3>{g.paused}</h3>
+    <button class="btn btn-primary" type="button" data-resume>{g.resume}</button>
+  </div>
+
+  <div class="pr-overlay" data-overlay="over" role="status" hidden>
+    <p class="pr-eyebrow">{g.over}</p>
+    <p class="pr-final" data-final>0</p>
+    <p class="pr-best" data-best></p>
+    <p class="pr-earned" data-earned></p>
+    <div class="pr-actions">
+      <button class="btn btn-primary" type="button" data-keep hidden></button>
+      <button class="btn btn-ghost" type="button" data-play>{g.again}</button>
+      <a class="btn pr-share" data-share-link target="_blank" rel="noopener" href="#">{vt(lang).shareLinkedIn}</a>
+    </div>
+    <div class="pr-li" data-li-step>
+    </div>
+  </div>
+</div>
+
+<script>
+  import * as V from '../lib/visitor';
+  import {confetti, fmt, linkedinStep, num, openProfile, type LinkedInLinks} from '../lib/visitor-ui';
+  import type {VisitorCopy} from '../i18n/visitor';
+
+  type Kind = 'coin' | 'gift' | 'star' | 'heart' | 'tier' | 'bad';
+  type Item = {kind: Kind; x: number; y: number; vy: number; r: number; spin: number};
+  type Fx = {x: number; y: number; vx: number; vy: number; life: number; color: string; text?: string};
+
+  const VALUE: Record<Kind, number> = {coin: 10, heart: 15, gift: 25, star: 40, tier: 0, bad: -30};
+  const COLORS: Record<Kind, string> = {coin: '#FFB547', heart: '#FF7A59', gift: '#7C6CF2', star: '#2FBF8F', tier: '#5FD0FF', bad: '#E5484D'};
+  const DURATION = 45;
+
+  function init(root: HTMLElement) {
+    const c = JSON.parse(root.dataset.copy!) as VisitorCopy;
+    const lang = root.dataset.lang!;
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-canvas]')!;
+    const ctx = canvas.getContext('2d')!;
+    const q = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
+    const overlays = {start: q('[data-overlay="start"]'), paused: q('[data-overlay="paused"]'), over: q('[data-overlay="over"]')};
+    const show = (name?: keyof typeof overlays) => Object.entries(overlays).forEach(([k, el]) => (el.hidden = k !== name));
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let W = 0;
+    let H = 0;
+    const resize = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      W = root.clientWidth;
+      H = Math.round(Math.min(540, Math.max(400, W * 0.6)));
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.height = `${H}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bag.y = H - 58;
+      bag.x = Math.min(Math.max(bag.x || W / 2, bag.w / 2), W - bag.w / 2);
+      if (state !== 'running') draw(0);
+    };
+
+    const bag = {x: 0, y: 0, w: 92, target: 0};
+    let items: Item[] = [];
+    let fx: Fx[] = [];
+    let state: 'idle' | 'running' | 'paused' | 'over' = 'idle';
+    let score = 0;
+    let combo = 0;
+    let time = DURATION;
+    let boost = 0;
+    let spawnIn = 0;
+    let shake = 0;
+    let flash = 0;
+    let last = 0;
+    let lastScore = 0;
+    let localBest = 0;
+    const keys = {left: false, right: false};
+
+    const mult = () => Math.min(3, 1 + Math.floor(combo / 5) * 0.5) * (boost > 0 ? 2 : 1);
+
+    function spawn(elapsed: number) {
+      const t = elapsed / DURATION;
+      const roll = Math.random();
+      const badShare = 0.14 + t * 0.14;
+      const kind: Kind =
+        roll < badShare ? 'bad' : roll < badShare + 0.025 ? 'tier' : roll < badShare + 0.1 ? 'star' : roll < badShare + 0.22 ? 'gift' : roll < badShare + 0.36 ? 'heart' : 'coin';
+      const r = kind === 'tier' ? 22 : 19;
+      const speed = (H / 2.4) * (1 + t * 0.9) * (0.85 + Math.random() * 0.3);
+      items.push({kind, x: r + Math.random() * (W - 2 * r), y: -r, vy: speed, r, spin: Math.random() * Math.PI});
+    }
+
+    function burst(x: number, y: number, color: string, text: string) {
+      fx.push({x, y, vx: 0, vy: -50, life: 1, color, text});
+      if (reduced) return;
+      for (let i = 0; i < 12; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const v = 60 + Math.random() * 140;
+        fx.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 60, life: 0.6 + Math.random() * 0.4, color});
+      }
+    }
+
+    function catchItem(it: Item) {
+      if (it.kind === 'bad') {
+        combo = 0;
+        score = Math.max(0, score + VALUE.bad);
+        shake = reduced ? 0 : 0.3;
+        flash = 0.35;
+        burst(it.x, it.y, COLORS.bad, String(VALUE.bad));
+        return;
+      }
+      if (it.kind === 'tier') {
+        boost = 6;
+        burst(it.x, it.y, COLORS.tier, '×2');
+        return;
+      }
+      combo += 1;
+      const pts = Math.round(VALUE[it.kind] * mult());
+      score += pts;
+      burst(it.x, it.y, COLORS[it.kind], `+${pts}`);
+    }
+
+    function update(dt: number) {
+      time = Math.max(0, time - dt);
+      boost = Math.max(0, boost - dt);
+      shake = Math.max(0, shake - dt);
+      flash = Math.max(0, flash - dt);
+      const elapsed = DURATION - time;
+      spawnIn -= dt;
+      if (spawnIn <= 0) {
+        spawn(elapsed);
+        spawnIn = 0.62 - (elapsed / DURATION) * 0.3 + Math.random() * 0.12;
+      }
+      const speed = W * 1.1;
+      if (keys.left) bag.target -= speed * dt;
+      if (keys.right) bag.target += speed * dt;
+      bag.target = Math.min(Math.max(bag.target, bag.w / 2), W - bag.w / 2);
+      bag.x += (bag.target - bag.x) * Math.min(1, dt * 18);
+
+      for (const it of items) {
+        it.y += it.vy * dt;
+        it.spin += dt * 2;
+        const inX = Math.abs(it.x - bag.x) < bag.w / 2 + it.r * 0.4;
+        const inY = it.y + it.r > bag.y - 18 && it.y < bag.y + 20;
+        if (inX && inY) {
+          catchItem(it);
+          it.y = H + 100;
+        } else if (it.y - it.r > H && it.kind !== 'bad' && it.kind !== 'tier' && it.y < H + 50) {
+          combo = 0;
+          it.y = H + 100;
+        }
+      }
+      items = items.filter((it) => it.y < H + 60);
+      for (const p of fx) {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        if (!p.text) p.vy += 380 * dt;
+        p.life -= dt * (p.text ? 1.1 : 1.6);
+      }
+      fx = fx.filter((p) => p.life > 0);
+      if (time <= 0) end();
+    }
+
+    // Drawing
+    const rr = (x: number, y: number, w: number, h: number, r: number) => {
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+    };
+    function drawItem(it: Item) {
+      const {x, y, r} = it;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.shadowColor = `${COLORS[it.kind]}88`;
+      ctx.shadowBlur = 16;
+      if (it.kind === 'coin') {
+        const g = ctx.createLinearGradient(0, -r, 0, r);
+        g.addColorStop(0, '#FFE19A');
+        g.addColorStop(1, '#FFB547');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(11,31,58,.25)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, r - 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = '#0B1F3A';
+        ctx.font = `700 ${r}px "Outfit Variable", system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('P', 0, 1);
+      } else if (it.kind === 'gift') {
+        ctx.rotate(Math.sin(it.spin) * 0.15);
+        ctx.fillStyle = '#7C6CF2';
+        rr(-r, -r + 6, r * 2, r * 2 - 6, 7);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-3, -r + 6, 6, r * 2 - 6);
+        ctx.fillRect(-r, -2, r * 2, 6);
+        ctx.beginPath();
+        ctx.ellipse(-6, -r + 4, 6, 4, -0.5, 0, Math.PI * 2);
+        ctx.ellipse(6, -r + 4, 6, 4, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (it.kind === 'star') {
+        ctx.rotate(it.spin * 0.6);
+        ctx.fillStyle = '#2FBF8F';
+        ctx.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const a = (i * Math.PI) / 5 - Math.PI / 2;
+          const rad = i % 2 ? r * 0.45 : r * 1.05;
+          ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+        }
+        ctx.closePath();
+        ctx.fill();
+      } else if (it.kind === 'heart') {
+        const s = r / 16;
+        ctx.scale(s, s);
+        ctx.fillStyle = '#FF7A59';
+        ctx.beginPath();
+        ctx.moveTo(0, 14);
+        ctx.bezierCurveTo(-22, 0, -14, -20, 0, -8);
+        ctx.bezierCurveTo(14, -20, 22, 0, 0, 14);
+        ctx.fill();
+      } else if (it.kind === 'tier') {
+        const g = ctx.createLinearGradient(-r * 1.4, 0, r * 1.4, 0);
+        g.addColorStop(0, '#FFD36E');
+        g.addColorStop(1, '#FFB547');
+        ctx.fillStyle = g;
+        rr(-r * 1.4, -r * 0.75, r * 2.8, r * 1.5, r * 0.75);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#0B1F3A';
+        ctx.font = `700 ${r * 0.95}px "Outfit Variable", system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('×2', 0, 1);
+      } else {
+        ctx.rotate(Math.sin(it.spin) * 0.25);
+        ctx.fillStyle = '#E5484D';
+        ctx.beginPath();
+        ctx.moveTo(-r, -r * 0.7);
+        ctx.lineTo(r * 0.5, -r * 0.7);
+        ctx.lineTo(r * 1.1, 0);
+        ctx.lineTo(r * 0.5, r * 0.7);
+        ctx.lineTo(-r, r * 0.7);
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#fff';
+        ctx.font = `700 ${r}px "Outfit Variable", system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('%', -r * 0.15, 1);
+      }
+      ctx.restore();
+    }
+
+    function drawBag() {
+      const {x, y, w} = bag;
+      const h = 54;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.strokeStyle = 'rgba(255,255,255,.75)';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(0, -h / 2 + 4, 16, Math.PI, 0);
+      ctx.stroke();
+      const g = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      g.addColorStop(0, '#00A4E4');
+      g.addColorStop(1, '#4F46E5');
+      ctx.fillStyle = g;
+      ctx.shadowColor = boost > 0 ? 'rgba(255,181,71,.9)' : 'rgba(79,70,229,.6)';
+      ctx.shadowBlur = boost > 0 ? 30 : 20;
+      ctx.beginPath();
+      ctx.moveTo(-w / 2 + 6, -h / 2 + 4);
+      ctx.lineTo(w / 2 - 6, -h / 2 + 4);
+      ctx.lineTo(w / 2, h / 2 - 10);
+      ctx.quadraticCurveTo(w / 2, h / 2, w / 2 - 10, h / 2);
+      ctx.lineTo(-w / 2 + 10, h / 2);
+      ctx.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - 10);
+      ctx.closePath();
+      ctx.fill();
+      // Ino-style pill and progress mark
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(255,255,255,.95)';
+      rr(-16, -4, 9, 22, 4.5);
+      ctx.fill();
+      rr(-3, -4, 9, 22, 4.5);
+      ctx.fill();
+      ctx.fillStyle = '#FFB547';
+      rr(10, 9, 9, 9, 4.5);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawBackground() {
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#0B1F3A');
+      g.addColorStop(1, '#13294B');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(255,255,255,.035)';
+      for (let gx = 12; gx < W; gx += 36) for (let gy = 12; gy < H; gy += 36) ctx.fillRect(gx, gy, 4, 4);
+      ctx.fillStyle = 'rgba(255,255,255,.06)';
+      ctx.fillRect(0, H - 22, W, 1);
+    }
+
+    function draw(dt: number) {
+      ctx.save();
+      if (shake > 0) ctx.translate((Math.random() - 0.5) * 10 * shake * 3, (Math.random() - 0.5) * 6 * shake * 3);
+      drawBackground();
+      items.forEach(drawItem);
+      drawBag();
+      for (const p of fx) {
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life));
+        if (p.text) {
+          ctx.fillStyle = p.color;
+          ctx.font = '700 20px "Outfit Variable", system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.text, p.x, p.y);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x - 2.5, p.y - 2.5, 5, 5);
+        }
+      }
+      ctx.globalAlpha = 1;
+      if (flash > 0) {
+        ctx.fillStyle = `rgba(229,72,77,${flash * 0.5})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+      ctx.restore();
+      if (dt) hud();
+    }
+
+    const elScore = q('[data-score]');
+    const elCombo = q('[data-combo]');
+    const elTime = q('[data-time]');
+    const elBoost = q('[data-boost]');
+    function hud() {
+      elScore.textContent = num(score, lang);
+      elCombo.textContent = `×${mult().toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-US')}`;
+      elTime.textContent = String(Math.ceil(time));
+      elBoost.hidden = boost <= 0;
+    }
+
+    function loop(t: number) {
+      if (state !== 'running') return;
+      const dt = Math.min(0.05, (t - last) / 1000);
+      last = t;
+      update(dt);
+      draw(dt);
+      if (state === 'running') requestAnimationFrame(loop);
+    }
+
+    function play() {
+      items = [];
+      fx = [];
+      score = 0;
+      combo = 0;
+      boost = 0;
+      time = DURATION;
+      spawnIn = 0.3;
+      bag.target = bag.x = W / 2;
+      state = 'running';
+      show();
+      canvas.style.touchAction = 'none';
+      canvas.focus({preventScroll: true});
+      last = performance.now();
+      requestAnimationFrame(loop);
+    }
+
+    function pause() {
+      if (state !== 'running') return;
+      state = 'paused';
+      show('paused');
+    }
+    function resume() {
+      if (state !== 'paused') return;
+      state = 'running';
+      show();
+      last = performance.now();
+      requestAnimationFrame(loop);
+    }
+
+    function end() {
+      state = 'over';
+      canvas.style.touchAction = '';
+      lastScore = score;
+      hud();
+      const s = V.get();
+      const keep = q<HTMLButtonElement>('[data-keep]');
+      keep.hidden = true;
+      q('[data-final]').textContent = num(score, lang);
+      if (s) {
+        const award = V.recordGame(score);
+        const pts = award?.points ?? 0;
+        q('[data-earned]').textContent = pts > 0 ? fmt(c.game.earned, {n: pts}) : c.game.capped;
+        q('[data-best]').textContent = `${c.game.best}: ${num(V.get()!.game.best, lang)}`;
+      } else {
+        localBest = Math.max(localBest, score);
+        const pts = V.gamePoints(score, null);
+        q('[data-earned]').textContent = '';
+        q('[data-best]').textContent = `${c.game.best}: ${num(localBest, lang)}`;
+        keep.textContent = fmt(c.game.keep, {n: pts});
+        keep.hidden = pts <= 0;
+      }
+      const badge = score >= V.RULES.sharpshooter ? 'sharpshooter' : 'player';
+      const shareUrl = `${root.dataset.share}${badge}?utm_source=linkedin&utm_medium=social&utm_campaign=game`;
+      const shareLink = q<HTMLAnchorElement>('[data-share-link]');
+      shareLink.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+      shareLink.dataset.ext = `share:${badge}`;
+      // With a profile, the next LinkedIn step (follow, add the product, share) replaces the plain share button.
+      const next = linkedinStep(V.get(), JSON.parse(root.dataset.li!) as LinkedInLinks, c, badge);
+      q('[data-li-step]').innerHTML = next;
+      shareLink.hidden = !!next || !V.get();
+      show('over');
+      if (score >= V.RULES.sharpshooter) {
+        const b = root.getBoundingClientRect();
+        confetti(b.left + b.width / 2, b.top + b.height / 3);
+      }
+    }
+
+    // Input
+    const pointer = (e: PointerEvent) => {
+      if (state !== 'running') return;
+      const b = canvas.getBoundingClientRect();
+      bag.target = e.clientX - b.left;
+    };
+    canvas.addEventListener('pointermove', pointer);
+    canvas.addEventListener('pointerdown', pointer);
+    const setKey = (e: KeyboardEvent, down: boolean) => {
+      if (state !== 'running') return;
+      if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = down;
+      else if (e.key === 'ArrowRight' || e.key === 'd') keys.right = down;
+      else if (e.key === 'Escape' || e.key === 'p') {
+        if (down) pause();
+        return;
+      } else return;
+      e.preventDefault();
+    };
+    window.addEventListener('keydown', (e) => setKey(e, true));
+    window.addEventListener('keyup', (e) => setKey(e, false));
+    document.addEventListener('visibilitychange', () => document.hidden && pause());
+    window.addEventListener('blur', pause);
+
+    root.querySelectorAll('[data-play]').forEach((b) => b.addEventListener('click', play));
+    q('[data-resume]').addEventListener('click', resume);
+    q('[data-keep]').addEventListener('click', () => {
+      V.start(document.querySelector<HTMLElement>('[data-vp]')?.dataset.page);
+      const award = V.recordGame(lastScore);
+      q('[data-keep]').hidden = true;
+      q('[data-earned]').textContent = fmt(c.game.earned, {n: award?.points ?? 0});
+      openProfile();
+    });
+
+    new ResizeObserver(resize).observe(root);
+    document.fonts.ready.then(() => state !== 'running' && draw(0));
+  }
+
+  const root = document.querySelector<HTMLElement>('[data-pr]');
+  if (root) init(root);
+</script>
+
+<style>
+  .pr {
+    position: relative;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: var(--navy);
+    box-shadow: var(--shadow-lg);
+    isolation: isolate;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    touch-action: pan-y;
+    cursor: none;
+  }
+  canvas:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: -3px;
+  }
+  .pr-hud {
+    position: absolute;
+    inset: 14px 14px auto;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .pr-hud > span {
+    display: grid;
+    gap: 2px;
+    padding: 8px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .pr-hud small {
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #9fb3c8;
+  }
+  .pr-hud strong {
+    font: 650 20px/1 var(--font-display);
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .pr-hud .pr-boost {
+    align-self: center;
+    padding: 10px 14px;
+    font: 700 14px/1 var(--font-display);
+    color: var(--navy);
+    background: linear-gradient(90deg, #ffd36e, var(--amber));
+    border: 0;
+  }
+  .pr-hud .pr-boost[hidden] {
+    display: none;
+  }
+  .pr-time {
+    margin-left: auto;
+  }
+  .pr-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    color: #c9d6e8;
+    background: rgba(7, 20, 39, 0.72);
+    backdrop-filter: blur(6px);
+  }
+  .pr-overlay[hidden] {
+    display: none;
+  }
+  .pr-overlay h3 {
+    color: #fff;
+    font-size: clamp(28px, 4vw, 40px);
+  }
+  .pr-overlay p {
+    max-width: 460px;
+  }
+  .pr-how {
+    color: #fff;
+    font: 600 18px/1.45 var(--font-display);
+  }
+  .pr-controls {
+    font-size: 14px;
+    color: #8ea3bc;
+  }
+  .pr-legend {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .lg {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  .lg.coin {
+    background: linear-gradient(#ffe19a, var(--amber));
+  }
+  .lg.gift {
+    border-radius: 8px;
+    background: var(--violet);
+  }
+  .lg.star {
+    background: var(--mint);
+    clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    border-radius: 0;
+  }
+  .lg.heart {
+    background: var(--coral);
+    clip-path: path('M15 27C3 19 0 12 4 6s11-4 11 2c0-6 7-8 11-2s1 13-11 21z');
+    border-radius: 0;
+  }
+  .lg.bad {
+    display: grid;
+    place-items: center;
+    border-radius: 6px 50% 50% 6px;
+    background: #e5484d;
+    color: #fff;
+    font: 700 15px/1 var(--font-display);
+    position: relative;
+  }
+  .lg.bad::after {
+    content: '';
+    position: absolute;
+    inset: 50% -4px auto -4px;
+    height: 2px;
+    background: #fff;
+    transform: rotate(-35deg);
+  }
+  .pr-eyebrow {
+    font: 600 13px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9fb3c8;
+  }
+  .pr-final {
+    font: 650 clamp(56px, 9vw, 88px)/1 var(--font-display);
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+  .pr-earned {
+    font: 650 18px/1.3 var(--font-display);
+    color: var(--amber);
+  }
+  .pr-earned:empty {
+    display: none;
+  }
+  .pr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .pr-li {
+    display: flex;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .pr-li:empty {
+    display: none;
+  }
+  .pr-share {
+    color: #fff;
+    background: #0a66c2;
+  }
+  .pr-share:hover {
+    background: #004182;
+  }
+  .pr-actions [hidden] {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    .pr-hud > span {
+      padding: 6px 10px;
+    }
+    .pr-hud strong {
+      font-size: 17px;
+    }
+  }
+</style>
