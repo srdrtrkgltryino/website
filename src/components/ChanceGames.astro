@@ -13,7 +13,7 @@ interface Props {
 const {lang} = Astro.props;
 const v = vt(lang);
 const c = v.chance;
-const li = {linkedin: company.linkedin, product: company.linkedinProduct, share: new URL(href(lang, 'play'), Astro.site ?? 'https://tryino.com').href + '/badge/'};
+const li = {linkedin: company.linkedin, product: company.linkedinProduct, share: new URL(href(lang, 'play'), Astro.site ?? 'https://www.tryino.com').href + '/badge/'};
 
 // Wheel drawing: 8 segments, clockwise from the top.
 const R = 150;

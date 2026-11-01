@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tryino.com/sitemap-index.xml
+Sitemap: https://www.tryino.com/sitemap-index.xml
