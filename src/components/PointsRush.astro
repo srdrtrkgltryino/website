@@ -12,7 +12,7 @@ interface Props {
 }
 const {lang} = Astro.props;
 const g = vt(lang).game;
-const shareBase = new URL(href(lang, 'play'), Astro.site ?? 'https://tryino.com').href + '/badge/';
+const shareBase = new URL(href(lang, 'play'), Astro.site ?? 'https://www.tryino.com').href + '/badge/';
 ---
 
 <div class="pr" data-pr data-copy={JSON.stringify(vt(lang))} data-lang={lang} data-share={shareBase} data-li={JSON.stringify({linkedin: company.linkedin, product: company.linkedinProduct, share: shareBase})}>

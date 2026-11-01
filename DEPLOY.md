@@ -5,7 +5,7 @@ Publish only with Serdar's OK.
 ## Cloudflare Pages project
 - Connect the GitHub repo `srdrtrkgltryino/website`, production branch `main` (merge `redesign` first).
 - Build command: `npm run build` · Output directory: `dist` · Node version: from `.node-version` (24).
-- Custom domains: `tryino.com` and `www.tryino.com` (one redirects to the other).
+- Custom domains: `www.tryino.com` serves the site (canonical URLs use www); add `tryino.com` too and redirect it to www (Rules → Redirect Rules → "Redirect from root to WWW").
 - `public/_headers` sets the security headers (CSP, HSTS, frame and referrer rules); `public/_redirects` maps the old URLs.
   Test the CSP locally after changing scripts: `npm run build`, then `python3 scripts/serve_dist.py` and open http://127.0.0.1:4400.
 

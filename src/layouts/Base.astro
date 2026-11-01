@@ -17,7 +17,7 @@ interface Props {
   jsonld?: Record<string, unknown>; // structured data (schema.org) for search engines
 }
 const {lang, title, description, noindex = false, bodyClass, jsonld} = Astro.props;
-const site = Astro.site ?? new URL('https://tryino.com');
+const site = Astro.site ?? new URL('https://www.tryino.com');
 const path = cleanPath(Astro.url.pathname);
 const other = switchPath(lang, path);
 const enPath = lang === 'en' ? path : other;
