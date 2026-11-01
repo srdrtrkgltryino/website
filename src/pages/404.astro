@@ -1,0 +1,117 @@
+---
+// Not found page. Cloudflare Pages serves dist/404.html with status 404 for unknown URLs. One file for both languages:
+// the Turkish text shows when the missing URL starts with /tr.
+import Base from '../layouts/Base.astro';
+import {href} from '../i18n';
+
+const t = {
+  en: {
+    h1: 'This page doesn’t exist',
+    lead: 'The link may be old or mistyped. Try one of these instead:',
+    links: [['home', 'Home'], ['ino', 'Ino Loyalty'], ['play', 'Points Rush'], ['contact', 'Contact']],
+  },
+  tr: {
+    h1: 'Bu sayfa yok',
+    lead: 'Bağlantı eski ya da hatalı yazılmış olabilir. Bunlardan birini deneyin:',
+    links: [['home', 'Ana sayfa'], ['ino', 'Ino Loyalty'], ['play', 'Puan Yağmuru'], ['contact', 'İletişim']],
+  },
+} as const;
+---
+
+<Base lang="en" title="Page not found · Tryino" description="This page doesn’t exist on tryino.com." noindex>
+  <section class="nf">
+    <div class="glow blue" style="width:560px;height:560px;left:-200px;top:-220px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:600px;height:600px;right:-220px;top:-160px" aria-hidden="true"></div>
+    <div class="container nf-inner">
+      <div class="px" aria-hidden="true">
+        {Array.from({length: 9}).map((_, i) => <i class={[0, 1, 2, 5, 8].includes(i) ? 'b' : [4].includes(i) ? 'w' : [6].includes(i) ? 'w drop' : ''}></i>)}
+      </div>
+      <p class="code grad-text">404</p>
+      {(['en', 'tr'] as const).map((lang) => (
+        <div class="nf-text" data-nf={lang} hidden={lang === 'tr'}>
+          <h1>{t[lang].h1}</h1>
+          <p class="lead">{t[lang].lead}</p>
+          <div class="nf-links">
+            {t[lang].links.map(([key, label], i) => (
+              <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-glass']} href={href(lang, key)}>{label}</a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<script>
+  if (/^\/tr(\/|$)/.test(location.pathname)) {
+    document.documentElement.lang = 'tr';
+    document.title = 'Sayfa bulunamadı · Tryino';
+    document.querySelectorAll<HTMLElement>('[data-nf]').forEach((el) => (el.hidden = el.dataset.nf !== 'tr'));
+  }
+</script>
+
+<style>
+  .nf {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    display: grid;
+    align-items: center;
+    padding: 140px 0 96px;
+    background: var(--grad-navy);
+    color: #c9d6e8;
+  }
+  .nf-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+    text-align: center;
+  }
+  .px {
+    display: grid;
+    grid-template-columns: repeat(3, 26px);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .px i {
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+  }
+  .px i.b {
+    background: var(--blue);
+  }
+  .px i.w {
+    background: #fff;
+  }
+  .px i.drop {
+    transform: translate(-6px, 30px) rotate(-18deg);
+    opacity: 0.85;
+  }
+  .code {
+    font: 700 clamp(88px, 16vw, 160px)/1 var(--font-display);
+    letter-spacing: -0.04em;
+  }
+  .nf-text {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+  }
+  .nf-text h1 {
+    color: #fff;
+    font-size: clamp(30px, 4.4vw, 48px);
+  }
+  .nf-text .lead {
+    color: #b6c6da;
+    max-width: 560px;
+  }
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+</style>
