@@ -1,6 +1,6 @@
 ---
 // Demo booking: pick a preferred day and time (Türkiye time), fill in a short form, and our server e-mails the request
-// to the team (chat.tryino.com/demo-request on the Mac mini, Microsoft Graph). If the server can't be reached, the
+// to the team (functions/api/demo-request.js on Cloudflare, Microsoft Graph). If that fails, the
 // visitor gets a ready-made e-mail and a copy button instead, so no request is lost. A POC code is prefilled.
 import {href, type Lang} from '../i18n';
 import {company as co} from '../data/company';
@@ -46,7 +46,9 @@ const c = {
     doneText: 'Sorry, {name}: our server didn’t answer. Your request is ready as an e-mail; open it and press send, or copy it.',
     doneNoSlot: 'Sorry, {name}: our server didn’t answer. Your request is ready as an e-mail; open it and press send, or copy it.',
     manual: 'No mail app? Copy the request and send it to {mail}.',
-    ics: 'Add to my calendar (tentative)',
+    ics: 'Add it to your calendar',
+    icsNote: 'Tentative until we confirm by e-mail. A reminder is set 30 minutes before.',
+    icsApple: 'Apple / other (.ics)',
     icsTitle: 'Ino Loyalty demo with Tryino (to be confirmed)',
     weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   },
@@ -86,7 +88,9 @@ const c = {
     doneText: 'Üzgünüz {name}, sunucumuz yanıt vermedi. Talebiniz e-posta olarak hazır; açıp gönderebilir ya da kopyalayabilirsiniz.',
     doneNoSlot: 'Üzgünüz {name}, sunucumuz yanıt vermedi. Talebiniz e-posta olarak hazır; açıp gönderebilir ya da kopyalayabilirsiniz.',
     manual: 'E-posta uygulamanız yok mu? Talebi kopyalayıp {mail} adresine gönderin.',
-    ics: 'Takvimime ekle (kesinleşmedi)',
+    ics: 'Takviminize ekleyin',
+    icsNote: 'E-postayla onaylayana kadar kesinleşmemiş sayılır. 30 dakika önce hatırlatma kurulur.',
+    icsApple: 'Apple / diğer (.ics)',
     icsTitle: 'Tryino ile Ino Loyalty demosu (onay bekliyor)',
     weekdays: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum'],
   },
@@ -121,7 +125,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
           <select name="topic">{c.topics.map((t) => <option>{t}</option>)}</select>
         </label>
         <label class="wide"><span>{c.message}</span><textarea name="message" rows="3" placeholder={c.messagePh}></textarea></label>
-        <label data-coupon-row hidden><span>{c.coupon}</span><input name="coupon" autocomplete="off" spellcheck="false" data-coupon /></label>
+        <label data-coupon-row hidden><span>{c.coupon}</span><input name="coupon" readonly tabindex="-1" autocomplete="off" spellcheck="false" data-coupon /></label>
         <label data-coupon-row hidden><span>{c.linkedin}</span><input name="linkedin" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder={c.linkedinPh} /></label>
       </div>
         <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
@@ -135,7 +139,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
     <span class="b-check" aria-hidden="true">✓</span>
     <h3>{c.okTitle}</h3>
     <p data-ok-text></p>
-    <button type="button" class="btn btn-ghost" data-ok-ics hidden>{c.ics}</button>
+    <div class="b-cal-add" data-cal hidden></div>
   </div>
   <div class="b-result" data-done hidden tabindex="-1">
     <span class="b-check fail" aria-hidden="true">✉</span>
@@ -144,9 +148,9 @@ const copy = {...c, lang, mailto: co.infoEmail};
     <div class="b-actions">
       <a class="btn btn-primary" data-mailto href="#">{c.openAgain} <span class="arrow">→</span></a>
       <button type="button" class="btn btn-ghost" data-copy>{c.copy}</button>
-      <button type="button" class="btn btn-ghost" data-ics hidden>{c.ics}</button>
     </div>
     <p class="b-manual">{c.manual.replace('{mail}', co.infoEmail)}</p>
+    <div class="b-cal-add" data-cal hidden></div>
   </div>
 </div>
 
@@ -230,7 +234,8 @@ const copy = {...c, lang, mailto: co.infoEmail};
     const fromUrl = new URLSearchParams(location.search).get('coupon');
     const coupon = (fromUrl && /^INO(POC|3M)-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(fromUrl) ? fromUrl : '') || V.get()?.coupon?.code || '';
     q<HTMLInputElement>('[data-coupon]').value = coupon;
-    // Coupon and LinkedIn fields only for visitors who have a coupon, so the form doesn't advertise a discount.
+    // POC code and LinkedIn fields only for visitors who unlocked a code; the code is filled in and read-only, so it
+    // can't be typed by hand.
     root.querySelectorAll<HTMLElement>('[data-coupon-row]').forEach((el) => (el.hidden = !coupon));
 
     const form = q<HTMLFormElement>('[data-form]');
@@ -272,8 +277,13 @@ const copy = {...c, lang, mailto: co.infoEmail};
         `DTSTART:${z(start)}`,
         `DTEND:${z(end)}`,
         `SUMMARY:${c.icsTitle}`,
-        `DESCRIPTION:${data.topic}`,
+        `DESCRIPTION:${data.topic} · https://www.tryino.com`,
         'STATUS:TENTATIVE',
+        'BEGIN:VALARM',
+        'ACTION:DISPLAY',
+        `DESCRIPTION:${c.icsTitle}`,
+        'TRIGGER:-PT30M',
+        'END:VALARM',
         'END:VEVENT',
         'END:VCALENDAR',
       ].join('\r\n');
@@ -284,7 +294,27 @@ const copy = {...c, lang, mailto: co.infoEmail};
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }
 
-    const API = 'https://chat.tryino.com/demo-request';
+    // Calendar choices for the chosen slot: Google and Outlook links, and an .ics file for Apple and the rest.
+    function renderCal(box: HTMLElement, data: Record<string, string>) {
+      box.hidden = !(day && slot);
+      if (box.hidden) return;
+      const start = slotDate(day!, slot!);
+      const end = new Date(start.getTime() + 30 * 60e3);
+      const z = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const details = `${data.topic} · https://www.tryino.com`;
+      const google = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(c.icsTitle)}&dates=${z(start)}/${z(end)}&details=${encodeURIComponent(details)}`;
+      const outlook = `https://outlook.office.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(c.icsTitle)}&startdt=${encodeURIComponent(start.toISOString())}&enddt=${encodeURIComponent(end.toISOString())}&body=${encodeURIComponent(details)}`;
+      box.innerHTML = `<p class="b-cal-title">${c.ics}</p>
+        <div class="b-cal-btns">
+          <a class="btn btn-primary btn-sm" href="${google}" target="_blank" rel="noopener">Google</a>
+          <a class="btn btn-primary btn-sm" href="${outlook}" target="_blank" rel="noopener">Outlook</a>
+          <button type="button" class="btn btn-ghost btn-sm" data-ics-file>${c.icsApple}</button>
+        </div>
+        <p class="b-cal-note">${c.icsNote}</p>`;
+      box.querySelector<HTMLButtonElement>('[data-ics-file]')!.onclick = () => ics(data);
+    }
+
+    const API = '/api/demo-request';
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       error.hidden = true;
@@ -330,9 +360,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
         form.hidden = true;
         const ok = q('[data-ok]');
         q('[data-ok-text]').textContent = (data.slotLabel ? c.okText : c.okNoSlot).replace('{name}', first).replace('{slot}', data.slotLabel);
-        const okIcs = q('[data-ok-ics]');
-        okIcs.hidden = !data.slot;
-        okIcs.onclick = () => ics(data);
+        renderCal(ok.querySelector<HTMLElement>('[data-cal]')!, data);
         ok.hidden = false;
         ok.focus();
         analytics('generate_lead', {method: 'demo_form', topic: data.topic, has_slot: data.slot ? 1 : 0, has_coupon: data.coupon ? 1 : 0});
@@ -354,9 +382,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
           setTimeout(() => (copyBtn.textContent = c.copy), 1800);
         } catch {}
       };
-      const icsBtn = q('[data-ics]');
-      icsBtn.hidden = !data.slot;
-      icsBtn.onclick = () => ics(data);
+      renderCal(done.querySelector<HTMLElement>('[data-cal]')!, data);
       done.hidden = false;
       done.focus();
       analytics('demo_form_fallback', {topic: data.topic});
@@ -531,6 +557,11 @@ const copy = {...c, lang, mailto: co.infoEmail};
     border-color: var(--blue);
     box-shadow: 0 0 0 4px rgba(0, 164, 228, 0.15);
   }
+  .b-grid [data-coupon][readonly] {
+    background: var(--bg-2);
+    color: var(--ink-2);
+    cursor: default;
+  }
   .b-grid [data-coupon] {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
     letter-spacing: 0.04em;
@@ -568,6 +599,28 @@ const copy = {...c, lang, mailto: co.infoEmail};
   }
   .b-manual {
     font-size: 14px;
+    color: var(--muted);
+  }
+  .b-cal-add {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    padding: 18px;
+    border-radius: 16px;
+    background: var(--grad-soft);
+    border: 1px solid var(--line);
+  }
+  .b-cal-add :global(.b-cal-title) {
+    font: 650 16px/1.2 var(--font-display);
+    color: var(--ink);
+  }
+  .b-cal-add :global(.b-cal-btns) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .b-cal-add :global(.b-cal-note) {
+    font-size: 13.5px;
     color: var(--muted);
   }
   .hp {
