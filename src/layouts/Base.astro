@@ -1,0 +1,105 @@
+---
+// Every page: <head> (SEO, language alternates, social preview), header, footer, cookie consent.
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieConsent from '../components/CookieConsent.astro';
+import VisitorProfile from '../components/VisitorProfile.astro';
+import {cleanPath, href, routes, switchPath, type Lang, type RouteKey} from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  image?: string;
+  bodyClass?: string;
+  jsonld?: Record<string, unknown>; // structured data (schema.org) for search engines
+}
+const {lang, title, description, noindex = false, bodyClass, jsonld} = Astro.props;
+const site = Astro.site ?? new URL('https://tryino.com');
+const path = cleanPath(Astro.url.pathname);
+const other = switchPath(lang, path);
+const enPath = lang === 'en' ? path : other;
+const trPath = lang === 'tr' ? path : other;
+const canonical = new URL(path, site).href;
+const image = Astro.props.image ?? (/\/ino-loyalty(\/|$)/.test(path) ? '/og/ino-loyalty.png' : '/og/tryino.png');
+// Route key of this page, for the visitor program's page quests.
+const page = (Object.keys(routes) as RouteKey[]).find((k) => href(lang, k) === path) ?? '';
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={new URL(enPath, site).href} />
+    <link rel="alternate" hreflang="tr" href={new URL(trPath, site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(enPath, site).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0B1F3A" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Tryino" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, site).href} />
+    <meta property="og:locale" content={lang === 'tr' ? 'tr_TR' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body class={bodyClass}>
+    <a class="skip" href="#main">{lang === 'tr' ? 'İçeriğe geç' : 'Skip to content'}</a>
+    <Header lang={lang} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <CookieConsent lang={lang} />
+    <VisitorProfile lang={lang} page={page} />
+    <script>
+      // Reveal sections as they scroll into view.
+      const els = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          {rootMargin: '0px 0px -10% 0px', threshold: 0.08},
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('in'));
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 100;
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .skip:focus {
+    top: 16px;
+  }
+</style>

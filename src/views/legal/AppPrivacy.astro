@@ -1,0 +1,180 @@
+---
+// Privacy notice for the Ino Loyalty apps on Shopify and ikas (URLs entered in the app store listings).
+// Source: Ino-Loyalty-NET docs/shopify-store/privacy-policy.md, docs/KVKK_VERI_ENVANTERI.md and the ikas connector scopes.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  platform: 'shopify' | 'ikas';
+}
+const {lang, platform} = Astro.props;
+const P = platform === 'shopify' ? 'Shopify' : 'ikas';
+const mail = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
+
+const access = {
+  shopify: {
+    en: `<ul>
+      <li><strong>Orders</strong>: to award points and settle them on returns and cancellations.</li>
+      <li><strong>Customers</strong> (name, e-mail, phone, marketing consent): to recognise members and keep both systems in step.</li>
+      <li><strong>Products and discounts</strong>: to calculate rewards and apply member benefits in the cart.</li>
+      <li><strong>Store credit</strong>: only if the merchant turns on points-to-store-credit.</li>
+    </ul>
+    <p>The app does not access payment card data or customer addresses.</p>`,
+    tr: `<ul>
+      <li><strong>Siparişler</strong>: puan vermek, iade ve iptallerde puanı düzeltmek için.</li>
+      <li><strong>Müşteriler</strong> (ad, e-posta, telefon, pazarlama izni): üyeleri tanımak ve iki sistemi eşit tutmak için.</li>
+      <li><strong>Ürünler ve indirimler</strong>: ödülleri hesaplamak ve üye avantajlarını sepette uygulamak için.</li>
+      <li><strong>Mağaza kredisi</strong>: yalnızca mağaza puanı mağaza kredisine çevirmeyi açarsa.</li>
+    </ul>
+    <p>Uygulama ödeme kartı verilerine ve müşteri adreslerine erişmez.</p>`,
+  },
+  ikas: {
+    en: `<ul>
+      <li><strong>Orders</strong> (read): to award points and settle them on returns and cancellations.</li>
+      <li><strong>Customers</strong> (read: name, e-mail, phone, contact permissions): to recognise members when they sign in to the store.</li>
+      <li><strong>Campaigns</strong> (read and write): to apply member and tier benefits as ikas campaigns, so prices change in the cart without codes.</li>
+    </ul>
+    <p>The app does not access payment card data.</p>`,
+    tr: `<ul>
+      <li><strong>Siparişler</strong> (okuma): puan vermek, iade ve iptallerde puanı düzeltmek için.</li>
+      <li><strong>Müşteriler</strong> (okuma: ad, e-posta, telefon, iletişim izinleri): mağazada oturum açan üyeleri tanımak için.</li>
+      <li><strong>Kampanyalar</strong> (okuma ve yazma): üye ve kademe avantajlarını ikas kampanyası olarak uygulamak, böylece fiyatın sepette kodsuz değişmesi için.</li>
+    </ul>
+    <p>Uygulama ödeme kartı verilerine erişmez.</p>`,
+  },
+}[platform];
+
+const removal = {
+  shopify: {
+    en: `<p>When the merchant uninstalls the app, Shopify asks us to delete the store's data (shop/redact) and we do so within 48 hours, except records the merchant's Ino Loyalty agreement or the law requires us to keep. Shopper requests for access or deletion that reach Shopify are forwarded to us (customers/data_request, customers/redact) and we fulfil them.</p>`,
+    tr: `<p>Mağaza uygulamayı kaldırdığında Shopify bizden mağazanın verilerini silmemizi ister (shop/redact); Ino Loyalty sözleşmesinin ya da kanunun saklamamızı gerektirdiği kayıtlar dışında 48 saat içinde sileriz. Müşterilerin Shopify'a ilettiği erişim ve silme talepleri bize aktarılır (customers/data_request, customers/redact) ve yerine getirilir.</p>`,
+  },
+  ikas: {
+    en: `<p>When the merchant uninstalls the app, we stop accessing the store and delete its access credentials. Program data held in Ino Loyalty is then deleted or returned as the merchant's Ino Loyalty agreement sets out. Shopper requests for access or deletion go to the merchant, who handles them with the privacy tools in Ino Loyalty.</p>`,
+    tr: `<p>Mağaza uygulamayı kaldırdığında mağazaya erişimi durdurur, erişim bilgilerini sileriz. Ino Loyalty'de tutulan program verileri, mağazanın Ino Loyalty sözleşmesinde belirtildiği şekilde silinir ya da iade edilir. Müşterilerin erişim ve silme talepleri mağazaya iletilir; mağaza bunları Ino Loyalty'deki gizlilik araçlarıyla karşılar.</p>`,
+  },
+}[platform];
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: `Ino Loyalty for ${P} privacy policy · Tryino`,
+  description: `What data the Ino Loyalty app for ${P} accesses, why, who processes it and how shoppers and merchants can exercise their rights.`,
+  eyebrow: `Ino Loyalty for ${P}`,
+  h1: 'App privacy policy',
+  intro: `This policy covers the Ino Loyalty app for ${P}, which connects a ${P} store to the merchant's Ino Loyalty program.`,
+  sections: [
+    {
+      id: 'roles',
+      title: 'Who is responsible',
+      html: `<p>Ino Loyalty is a loyalty service by ${co.legalName}, ${co.address}. For the store's loyalty program, <strong>the merchant is the data controller</strong> and Tryino processes data on the merchant's behalf, under the merchant's Ino Loyalty agreement. Shoppers who have questions about their data should contact the store first.</p>`,
+    },
+    {id: 'access', title: `What the app accesses in the ${P} store`, html: access.en},
+    {
+      id: 'shoppers',
+      title: 'What we process about shoppers',
+      html: `<p>When a shopper joins the program: name, e-mail, mobile phone and contact permissions (each with the time it was given), and the points, tier, vouchers and activity that result from their orders. The phone number can be verified with a one-time SMS code.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'How we use it',
+      html: `<p>Only to run the merchant's loyalty program: earning and spending points, tiers, member offers, Apple Wallet cards and the communications the shopper agreed to. We do not sell personal data or use it for our own advertising.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Sub-processors',
+      html: `<ul>
+        <li><strong>Microsoft</strong> (Azure and Dataverse): hosting and data storage.</li>
+        <li><strong>Twilio</strong>: verification SMS.</li>
+        <li><strong>Apple</strong>: Apple Wallet pass updates, if the shopper adds a card.</li>
+        <li>Integrations the merchant turns on in Ino Loyalty (for example a marketing platform), on the merchant's instructions.</li>
+      </ul>`,
+    },
+    {
+      id: 'retention',
+      title: 'Retention and deletion',
+      html: `<p>Data is kept for as long as the merchant runs the program or until the shopper asks for deletion. Financial records of points are kept as long as the law requires, without the shopper's identity once they are erased. Technical records are short-lived: pending sign-up links 30 days, data-request reports 60 days.</p>${removal.en}`,
+    },
+    {
+      id: 'rights',
+      title: 'Shoppers’ rights',
+      html: `<p>Shoppers can ask the store for access to, correction of or deletion of their data, and can change their contact permissions on the Rewards page at any time. We help the merchant answer within the legal deadline (30 days under KVKK).</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Security',
+      html: `<p>Encryption in transit and at rest, access control with multi-factor authentication and audit logs of administrative actions.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>${mail} · Support: <a href="${href(lang, 'support')}">tryino.com/support</a>. Our general <a href="${href(lang, 'privacy')}">privacy policy</a> covers tryino.com itself.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: `${P} için Ino Loyalty gizlilik politikası · Tryino`,
+  description: `${P} için Ino Loyalty uygulamasının hangi verilere neden eriştiği, kimlerin işlediği ve haklarınızı nasıl kullanacağınız.`,
+  eyebrow: `${P} için Ino Loyalty`,
+  h1: 'Uygulama gizlilik politikası',
+  intro: `Bu metin, bir ${P} mağazasını mağazanın Ino Loyalty programına bağlayan ${P} için Ino Loyalty uygulamasını kapsar.`,
+  sections: [
+    {
+      id: 'roles',
+      title: 'Kim sorumlu',
+      html: `<p>Ino Loyalty, ${co.legalName}'nun (${co.address}) sadakat hizmetidir. Mağazanın sadakat programı için <strong>veri sorumlusu mağazadır</strong>; Tryino verileri mağazanın Ino Loyalty sözleşmesi kapsamında, mağaza adına işler. Verileriyle ilgili sorusu olan müşteriler önce mağazaya başvurmalıdır.</p>`,
+    },
+    {id: 'access', title: `Uygulamanın ${P} mağazasında eriştikleri`, html: access.tr},
+    {
+      id: 'shoppers',
+      title: 'Müşterilere ilişkin işlediklerimiz',
+      html: `<p>Müşteri programa katıldığında: ad, e-posta, cep telefonu ve iletişim izinleri (her biri verildiği zamanla birlikte); siparişlerinden doğan puan, kademe, kupon ve hareketler. Telefon numarası tek kullanımlık SMS koduyla doğrulanabilir.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'Nasıl kullanıyoruz',
+      html: `<p>Yalnızca mağazanın sadakat programını yürütmek için: puan kazanma ve harcama, kademeler, üye teklifleri, Apple Wallet kartları ve müşterinin izin verdiği iletişimler. Kişisel verileri satmayız, kendi reklamlarımız için kullanmayız.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Alt işleyenler',
+      html: `<ul>
+        <li><strong>Microsoft</strong> (Azure ve Dataverse): barındırma ve veri depolama.</li>
+        <li><strong>Twilio</strong>: doğrulama SMS'i.</li>
+        <li><strong>Apple</strong>: müşteri kart eklerse Apple Wallet kart güncellemeleri.</li>
+        <li>Mağazanın Ino Loyalty'de açtığı entegrasyonlar (örneğin bir pazarlama platformu), mağazanın talimatıyla.</li>
+      </ul>`,
+    },
+    {
+      id: 'retention',
+      title: 'Saklama ve silme',
+      html: `<p>Veriler mağaza programı yürüttüğü sürece ya da müşteri silinmesini isteyene kadar saklanır. Puanlara ilişkin mali kayıtlar kanunun gerektirdiği süre boyunca, müşteri silindikten sonra kimliği olmadan tutulur. Teknik kayıtlar kısa ömürlüdür: bekleyen kayıt bağlantıları 30 gün, veri talebi raporları 60 gün.</p>${removal.tr}`,
+    },
+    {
+      id: 'rights',
+      title: 'Müşterilerin hakları',
+      html: `<p>Müşteriler verilerine erişim, düzeltme ya da silme için mağazaya başvurabilir; iletişim izinlerini Rewards sayfasında istedikleri an değiştirebilir. Mağazanın yasal süre içinde (KVKK'da 30 gün) yanıt vermesine yardım ederiz.</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Güvenlik',
+      html: `<p>Aktarımda ve depolamada şifreleme, çok faktörlü kimlik doğrulamalı erişim denetimi ve yönetim işlemlerinin denetim kayıtları.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>${mail} · Destek: <a href="${href(lang, 'support')}">tryino.com/tr/support</a>. tryino.com'un kendisi için genel <a href="${href(lang, 'privacy')}">gizlilik politikamıza</a> bakın.</p>`,
+    },
+  ],
+};
+const c = lang === 'tr' ? tr : en;
+const other = platform === 'shopify' ? 'privacyIkas' : 'privacyShopify';
+const related = [
+  {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
+  {label: platform === 'shopify' ? (lang === 'tr' ? 'ikas için Ino Loyalty' : 'Ino Loyalty for ikas') : lang === 'tr' ? 'Shopify için Ino Loyalty' : 'Ino Loyalty for Shopify', href: href(lang, other)},
+  {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} />

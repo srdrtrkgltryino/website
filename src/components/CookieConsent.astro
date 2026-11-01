@@ -1,0 +1,190 @@
+---
+// Cookie consent (KVKK / GDPR). Analytics (Google Analytics) loads only after the visitor allows it.
+// The choice is stored in localStorage under `tryino-consent`; "Cookie settings" in the footer reopens this.
+import {href, t, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const c = t(lang).consent;
+const GA_ID = 'G-WN8X4YE3G3';
+---
+
+<div class="consent" data-consent hidden role="dialog" aria-live="polite" aria-labelledby="consent-title">
+  <div class="box">
+    <p class="title" id="consent-title">{c.title}</p>
+    <p class="body">{c.body} <a href={href(lang, 'cookies')}>{c.policy}</a></p>
+    <div class="choices" data-choices hidden>
+      <label class="row">
+        <span><strong>{c.necessary}</strong><small>{c.necessaryDesc}</small></span>
+        <input type="checkbox" checked disabled />
+      </label>
+      <label class="row">
+        <span><strong>{c.analytics}</strong><small>{c.analyticsDesc}</small></span>
+        <input type="checkbox" data-analytics />
+      </label>
+    </div>
+    <div class="buttons">
+      <button class="btn btn-dark btn-sm" type="button" data-reject>{c.reject}</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-settings>{c.settings}</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-save hidden>{c.save}</button>
+      <button class="btn btn-primary btn-sm" type="button" data-accept>{c.accept}</button>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{GA_ID}}>
+  const KEY = 'tryino-consent';
+  const root = document.querySelector('[data-consent]');
+  const choices = root.querySelector('[data-choices]');
+  const analyticsBox = root.querySelector('[data-analytics]');
+  const saveBtn = root.querySelector('[data-save]');
+  const settingsBtn = root.querySelector('[data-settings]');
+
+  const read = () => {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || 'null');
+    } catch {
+      return null;
+    }
+  };
+  const loadAnalytics = () => {
+    if (window.__gaLoaded) return;
+    window.__gaLoaded = true;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID, {anonymize_ip: true});
+  };
+  // Withdrawing consent: remove the Google Analytics cookies straight away (they are set on the site's domain).
+  const clearAnalytics = () => {
+    const host = location.hostname;
+    const domains = ['', host, `.${host}`, `.${host.split('.').slice(-2).join('.')}`];
+    document.cookie.split(';').forEach((c) => {
+      const name = c.split('=')[0].trim();
+      if (!/^_ga/.test(name)) return;
+      domains.forEach((d) => (document.cookie = `${name}=; Max-Age=0; path=/${d ? `; domain=${d}` : ''}`));
+    });
+  };
+  const store = (analytics) => {
+    const before = read();
+    if (!analytics && before && before.analytics) {
+      clearAnalytics();
+      if (window.__gaLoaded) setTimeout(() => location.reload(), 50);
+    }
+    try {
+      localStorage.setItem(KEY, JSON.stringify({analytics, at: new Date().toISOString(), v: 1}));
+    } catch {}
+    root.hidden = true;
+    if (analytics) loadAnalytics();
+    document.dispatchEvent(new CustomEvent('tryino:consent', {detail: {analytics}}));
+  };
+  const open = (withChoices) => {
+    const saved = read();
+    analyticsBox.checked = Boolean(saved && saved.analytics);
+    choices.hidden = !withChoices;
+    saveBtn.hidden = !withChoices;
+    settingsBtn.hidden = withChoices;
+    root.hidden = false;
+  };
+
+  root.querySelector('[data-accept]').addEventListener('click', () => store(true));
+  root.querySelector('[data-reject]').addEventListener('click', () => store(false));
+  settingsBtn.addEventListener('click', () => open(true));
+  saveBtn.addEventListener('click', () => store(analyticsBox.checked));
+  document.querySelectorAll('[data-open-consent]').forEach((b) => b.addEventListener('click', () => open(true)));
+
+  const saved = read();
+  if (!saved) open(false);
+  else if (saved.analytics) loadAnalytics();
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    left: var(--gutter);
+    bottom: var(--gutter);
+    z-index: 60;
+    max-width: 440px;
+  }
+  .consent[hidden] {
+    display: none;
+  }
+  .box {
+    padding: 22px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    gap: 12px;
+  }
+  .title {
+    font: 600 17px/1.2 var(--font-display);
+  }
+  .body {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .body a {
+    color: var(--blue-ink);
+  }
+  .choices {
+    display: grid;
+    gap: 8px;
+  }
+  .choices[hidden] {
+    display: none;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--bg);
+  }
+  .row span {
+    display: grid;
+    gap: 2px;
+  }
+  .row strong {
+    font-size: 14.5px;
+  }
+  .row small {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .row input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--indigo);
+  }
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .buttons [hidden] {
+    display: none;
+  }
+  @media (max-width: 520px) {
+    .consent {
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      max-width: none;
+    }
+  }
+</style>

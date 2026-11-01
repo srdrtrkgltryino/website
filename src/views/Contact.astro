@@ -1,0 +1,188 @@
+---
+// Contact: book a demo (preferred time + short form that opens a ready-made e-mail), or write to us.
+import Base from '../layouts/Base.astro';
+import DemoBooking from '../components/DemoBooking.astro';
+import {company as co} from '../data/company';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const copy = {
+  en: {
+    title: 'Contact Tryino and book an Ino Loyalty demo',
+    description: 'Pick a time for an Ino Loyalty demo or write to the team. We reply within one business day.',
+    pill: 'Contact',
+    h1: ['Let’s talk about', 'your loyalty program'],
+    lead: 'Pick a time for a 30-minute demo tailored to your channels. A person from the team behind Ino Loyalty will get back to you within one business day.',
+    expect: 'What to expect',
+    expectList: ['A walk through Ino Loyalty with your use case: stores, e-commerce, apps', 'How it connects to Shopify, ikas, your POS or ERP', 'A proposal with the next steps and the price'],
+    other: 'Other ways to reach us',
+    general: 'General',
+    support: 'Support',
+    privacy: 'Privacy',
+    office: 'Office',
+  },
+  tr: {
+    title: 'Tryino ile iletişime geçin, Ino Loyalty demosu planlayın',
+    description: 'Ino Loyalty demosu için zaman seçin ya da ekibe yazın. Bir iş günü içinde dönüş yapıyoruz.',
+    pill: 'İletişim',
+    h1: ['Sadakat programınızı', 'birlikte konuşalım'],
+    lead: 'Kanallarınıza göre hazırlanmış 30 dakikalık bir demo için zaman seçin. Ino Loyalty\'yi geliştiren ekipten biri bir iş günü içinde size dönecek.',
+    expect: 'Demoda neler var',
+    expectList: ['Kendi senaryonuzla Ino Loyalty turu: mağazalar, e-ticaret, uygulamalar', 'Shopify, ikas, kasa ya da ERP\'nize nasıl bağlandığı', 'Sonraki adımlar ve fiyatla bir teklif'],
+    other: 'Bize ulaşmanın diğer yolları',
+    general: 'Genel',
+    support: 'Destek',
+    privacy: 'Gizlilik',
+    office: 'Ofis',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="c-hero">
+    <div class="glow blue" style="width:560px;height:560px;left:-200px;top:-240px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:620px;height:620px;right:-240px;top:-160px" aria-hidden="true"></div>
+    <div class="container c-head">
+      <span class="pill" data-reveal><span class="dot"></span>{copy.pill}</span>
+      <h1 data-reveal>{copy.h1[0]} <span class="grad-text">{copy.h1[1]}</span></h1>
+      <p class="lead" data-reveal>{copy.lead}</p>
+    </div>
+  </section>
+
+  <section class="c-main" id="demo">
+    <div class="container c-grid">
+      <DemoBooking lang={lang} />
+      <aside class="c-side">
+        <div class="card expect">
+          <h3>{copy.expect}</h3>
+          <ul>{copy.expectList.map((e) => <li>{e}</li>)}</ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section c-other">
+    <div class="container">
+      <h2>{copy.other}</h2>
+      <div class="c-cards">
+        <a class="card" href={`mailto:${co.infoEmail}`}><small>{copy.general}</small><strong>{co.infoEmail}</strong></a>
+        <a class="card" href={href(lang, 'support')}><small>{copy.support}</small><strong>{co.supportEmail}</strong></a>
+        <a class="card" href={href(lang, 'privacy')}><small>{copy.privacy}</small><strong>{co.privacyEmail}</strong></a>
+        <div class="card"><small>{copy.office}</small><strong>{co.address}</strong></div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .c-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 150px 0 40px;
+    background: var(--grad-soft);
+  }
+  .c-head {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+    text-align: center;
+    max-width: 880px;
+  }
+  .c-head h1 {
+    font-size: clamp(40px, 5.6vw, 68px);
+  }
+  .c-head .lead {
+    max-width: 700px;
+  }
+  .c-main {
+    padding: 40px 0 0;
+    background: linear-gradient(var(--grad-soft-end, #eceafe) 0, var(--bg) 220px);
+    scroll-margin-top: 90px;
+  }
+  .c-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+  .c-side {
+    display: grid;
+    gap: 24px;
+  }
+  .expect {
+    padding: 24px 26px;
+    display: grid;
+    gap: 12px;
+  }
+  .expect ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .expect li {
+    position: relative;
+    padding-left: 28px;
+    color: var(--ink-2);
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+  .expect li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--grad);
+  }
+  .c-other h2 {
+    font-size: clamp(26px, 3vw, 36px);
+    margin-bottom: 24px;
+  }
+  .c-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .c-cards .card {
+    display: grid;
+    gap: 6px;
+    padding: 22px;
+    text-decoration: none;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s;
+  }
+  .c-cards a.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  .c-cards small {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .c-cards strong {
+    font-weight: 600;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 980px) {
+    .c-grid {
+      grid-template-columns: 1fr;
+    }
+    .c-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 520px) {
+    .c-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

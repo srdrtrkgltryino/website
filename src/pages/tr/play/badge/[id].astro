@@ -1,0 +1,8 @@
+---
+import BadgeShare from '../../../../views/BadgeShare.astro';
+import {BADGES, type BadgeId} from '../../../../lib/visitor';
+
+export const getStaticPaths = () => BADGES.map((id) => ({params: {id}}));
+---
+
+<BadgeShare lang="tr" id={Astro.params.id as BadgeId} />

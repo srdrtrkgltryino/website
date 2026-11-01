@@ -1,0 +1,131 @@
+---
+// API reference rendered with Scalar, self-hosted (public/developers/scalar, copied by scripts/copy_scalar.mjs).
+// Privacy: telemetry, default web fonts, the AI agent and the request client are switched off, so the page makes no
+// third-party requests and never sends API calls through a proxy.
+import Base from '../layouts/Base.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const copy = {
+  en: {
+    title: 'Ino Loyalty API reference',
+    description: 'OpenAPI 3.1 reference for the Ino Loyalty API: channel operations, webhooks, events and jobs, with request and response examples.',
+    back: 'Developer docs',
+    loading: 'Loading the API reference…',
+    noscript: 'The interactive reference needs JavaScript.',
+  },
+  tr: {
+    title: 'Ino Loyalty API referansı',
+    description: 'Ino Loyalty API\'si için OpenAPI 3.1 referansı: kanal işlemleri, webhook\'lar, olaylar ve işler; istek ve yanıt örnekleriyle.',
+    back: 'Geliştirici belgeleri',
+    loading: 'API referansı yükleniyor…',
+    noscript: 'Etkileşimli referans için JavaScript gerekir.',
+  },
+}[lang];
+const SPEC = '/developers/openapi/ino-loyalty-v1.yaml';
+
+const config = {
+  url: SPEC,
+  layout: 'modern',
+  telemetry: false,
+  withDefaultFonts: false,
+  hideTestRequestButton: true,
+  hideClientButton: true,
+  hideDarkModeToggle: true,
+  forceDarkModeState: 'light',
+  agent: {disabled: true},
+  defaultOpenFirstTag: true,
+  documentDownloadType: 'none',
+  customCss: `
+    .scalar-app, .light-mode {
+      --scalar-font: 'Inter Variable', system-ui, -apple-system, sans-serif;
+      --scalar-font-code: ui-monospace, 'SF Mono', Menlo, monospace;
+      --scalar-color-1: #0b1f3a;
+      --scalar-color-2: #3c4a63;
+      --scalar-color-3: #64718a;
+      --scalar-color-accent: #4f46e5;
+      --scalar-background-1: #ffffff;
+      --scalar-background-2: #f6f8fc;
+      --scalar-background-3: #eef2f9;
+      --scalar-border-color: #e3e8f1;
+      --scalar-radius: 10px;
+      --scalar-radius-lg: 14px;
+    }
+    .scalar-app h1, .scalar-app h2, .scalar-app h3 { font-family: 'Outfit Variable', 'Inter Variable', sans-serif; letter-spacing: -0.015em; }
+    .explore-scalar-pill { display: none !important; }
+  `,
+};
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} bodyClass="api-ref">
+  <div class="ref-bar">
+    <div class="container ref-bar-inner">
+      <a class="back" href={href(lang, 'developers')}>← {copy.back}</a>
+      <span class="ref-title"><img src="/brand/ino-loyalty-symbol-color.svg" alt="" width="20" height="20" />Ino Loyalty API · v1</span>
+      <span class="ref-spacer" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div id="api-reference" class="ref">
+    <p class="loading">{copy.loading}</p>
+    <noscript><p class="loading">{copy.noscript}</p></noscript>
+  </div>
+  <script is:inline src="/developers/scalar/standalone.js"></script>
+  <script is:inline define:vars={{config}}>
+    window.Scalar.createApiReference('#api-reference', config);
+  </script>
+</Base>
+
+<style>
+  :global(body.api-ref .site-header) {
+    position: absolute;
+  }
+  .ref-bar {
+    padding-top: 100px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+  .ref-bar-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 64px;
+  }
+  .back {
+    text-decoration: none;
+    font: 500 15px/1 var(--font-text);
+    color: var(--muted);
+  }
+  .back:hover {
+    color: var(--ink);
+  }
+  .ref-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+    font: 600 16px/1 var(--font-display);
+  }
+  .ref-spacer {
+    width: 140px;
+  }
+  .ref {
+    min-height: 80vh;
+    background: #fff;
+  }
+  .loading {
+    padding: 64px var(--gutter);
+    text-align: center;
+    color: var(--muted);
+  }
+  @media (max-width: 640px) {
+    .ref-title {
+      display: none;
+    }
+    .ref-bar-inner {
+      justify-content: space-between;
+    }
+  }
+</style>

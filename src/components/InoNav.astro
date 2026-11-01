@@ -1,0 +1,117 @@
+---
+// The Ino Loyalty "world": a product sub-navigation that sticks under the main header on every Ino page.
+import {href, t, type Lang, type RouteKey} from '../i18n';
+
+interface Props {
+  lang: Lang;
+  current: 'ino' | 'features' | 'integrations' | 'developers';
+}
+const {lang, current} = Astro.props;
+const n = t(lang).nav;
+const items: {key: RouteKey; label: string}[] = [
+  {key: 'ino', label: n.inoOverview},
+  {key: 'features', label: n.features},
+  {key: 'integrations', label: n.integrations},
+  {key: 'developers', label: n.developers},
+];
+---
+
+<div class="ino-nav" data-ino-nav>
+  <div class="inner">
+    <a class="logo" href={href(lang, 'ino')} aria-label="Ino Loyalty">
+      <img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="24" height="24" />
+      <span>Ino Loyalty</span>
+    </a>
+    <nav aria-label="Ino Loyalty">
+      {items.map((i) => (
+        <a href={href(lang, i.key)} aria-current={i.key === current ? 'page' : undefined}>{i.label}</a>
+      ))}
+    </nav>
+    <a class="cta" href={href(lang, 'demo')}>{n.demo}</a>
+  </div>
+</div>
+
+<style>
+  .ino-nav {
+    position: sticky;
+    top: 92px;
+    z-index: 40;
+    padding: 0 var(--gutter);
+    margin-top: -28px;
+  }
+  .inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 54px;
+    padding: 0 8px 0 16px;
+    border-radius: 16px;
+    background: rgba(11, 31, 58, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(7, 20, 39, 0.25);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #fff;
+    text-decoration: none;
+    font: 600 16px/1 var(--font-display);
+    white-space: nowrap;
+  }
+  .logo img {
+    width: 24px;
+    height: 24px;
+  }
+  nav {
+    display: flex;
+    gap: 2px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+  nav a {
+    padding: 9px 13px;
+    border-radius: 10px;
+    color: #b9c6d9;
+    text-decoration: none;
+    font: 500 14.5px/1 var(--font-text);
+    white-space: nowrap;
+  }
+  nav a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  nav a[aria-current='page'] {
+    color: #fff;
+    background: rgba(0, 164, 228, 0.22);
+  }
+  .cta {
+    padding: 10px 16px;
+    border-radius: 11px;
+    background: var(--grad);
+    color: #fff;
+    text-decoration: none;
+    font: 600 14px/1 var(--font-text);
+    white-space: nowrap;
+  }
+  @media (max-width: 760px) {
+    .ino-nav {
+      top: 86px;
+    }
+    .logo span,
+    .cta {
+      display: none;
+    }
+    nav {
+      margin: 0;
+    }
+  }
+</style>

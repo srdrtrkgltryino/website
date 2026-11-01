@@ -1,0 +1,338 @@
+---
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+type Item = {name: string; kind: string; text: string};
+type Group = {id: string; title: string; text: string; items: Item[]};
+
+const copy = {
+  en: {
+    title: 'Ino Loyalty integrations — Shopify, ikas, SAP Commerce Cloud, Akinon, POS, ERP and more',
+    description: 'Connect Ino Loyalty to your e-commerce platform, POS, ERP, engagement tools and data stack: apps, connectors, a real-time API, webhooks and event streaming.',
+    pill: 'Integrations',
+    h1: 'One engine behind every channel',
+    lead: 'Apps for your store, connectors for enterprise commerce, and an API for everything else. Every channel talks to the same engine, so balances are always the same everywhere.',
+    groups: [
+      {id: 'commerce', title: 'E-commerce platforms', text: 'Two-way: orders, cancellations and returns flow into Ino Loyalty; points, vouchers and rewards flow back to the store.',
+        items: [
+          {name: 'ikas', kind: 'App', text: 'Install from ikas. Rewards and a My Rewards page appear in your store without theme work; members can pay with points at checkout.'},
+          {name: 'Shopify', kind: 'App', text: 'An app with an admin panel in Shopify, store rewards and a My Rewards page, in English and Turkish.'},
+          {name: 'SAP Commerce Cloud', kind: 'Connector', text: 'Order loyalty write-back and campaign evaluation through the standard commerce APIs.'},
+          {name: 'Akinon', kind: 'Connector', text: 'Basket offers and order loyalty for stores on Akinon.'},
+        ]},
+      {id: 'pos', title: 'POS and ERP', text: 'For shops, tills and back-office systems.',
+        items: [
+          {name: 'Real-time channel API', kind: 'API', text: 'Earn, spend, campaigns, returns and vouchers at the till, with signed requests and idempotency.'},
+          {name: 'Offline POS', kind: 'Pattern', text: 'Keep selling when the network is down; transactions carry their real sale time and reconcile when the connection returns.'},
+          {name: 'Batch file import', kind: 'Files', text: 'Drop a CSV of transactions or point corrections; results and row errors come back as an async job.'},
+          {name: 'Catalog connector', kind: 'Database', text: 'Sync products, categories and stores every night from PostgreSQL, SQL Server, MySQL or Oracle. SAP HANA coming soon.'},
+          {name: 'ERP feed', kind: 'API', text: 'Push products, product families, stores and store groups for campaign rules by category, brand or store.'},
+        ]},
+      {id: 'engage', title: 'Engagement', text: 'Reach members where they are.',
+        items: [
+          {name: 'Apple Wallet', kind: 'Wallet', text: 'A loyalty card in your brand that updates itself when points, tier or vouchers change.'},
+          {name: 'SMS verification', kind: 'Messaging', text: 'Verify phone numbers at sign-up and send a welcome message, through Twilio.'},
+          {name: 'Braze', kind: 'Activation', text: 'Send segment membership and loyalty events to Braze to trigger your own journeys.'},
+        ]},
+      {id: 'data', title: 'Events and data', text: 'Keep your systems in sync and your analysts happy.',
+        items: [
+          {name: 'Webhooks', kind: 'Events', text: 'Signed deliveries with retries, filters by channel and store, and a full event catalog.'},
+          {name: 'Event stream', kind: 'API', text: 'Pull events with a cursor when you prefer polling to webhooks.'},
+          {name: 'Apache Kafka', kind: 'Streaming', text: 'Receive loyalty events on your own Kafka broker, or push transactions through it.'},
+          {name: 'Parquet exports', kind: 'Data', text: 'Incremental exports of transactions and customer facts for your data lake or BI.'},
+        ]},
+      {id: 'crm', title: 'CRM', text: 'Loyalty in the customer view your teams already use.',
+        items: [
+          {name: 'Microsoft Dynamics 365', kind: 'CRM', text: 'Use Dynamics 365? Customer 360, consents and loyalty data sit next to your CRM records. The console is built on Microsoft’s platform for low cost, quick setup, single sign-on with Microsoft Entra ID and role-based access.'},
+        ]},
+    ] as Group[],
+    missingTitle: 'Your platform is not listed?',
+    missingText: 'Most systems connect through the real-time API and webhooks. Tell us what you run and we will show you how.',
+    missingDocs: 'Developer docs',
+    missingTalk: 'Talk to us',
+    note: 'Product names are trademarks of their respective owners. Listing an integration does not imply a partnership or endorsement.',
+  },
+  tr: {
+    title: 'Ino Loyalty entegrasyonları — Shopify, ikas, SAP Commerce Cloud, Akinon, kasa, ERP ve dahası',
+    description: 'Ino Loyalty\'yi e-ticaret platformunuza, kasanıza, ERP\'nize, etkileşim araçlarınıza ve veri altyapınıza bağlayın: uygulamalar, bağlayıcılar, gerçek zamanlı API, webhook\'lar ve olay akışı.',
+    pill: 'Entegrasyonlar',
+    h1: 'Her kanalın arkasında tek motor',
+    lead: 'Mağazanız için uygulamalar, kurumsal e-ticaret için bağlayıcılar, geri kalan her şey için bir API. Bütün kanallar aynı motorla konuşur; bakiyeler her yerde aynıdır.',
+    groups: [
+      {id: 'commerce', title: 'E-ticaret platformları', text: 'İki yönlü: siparişler, iptaller ve iadeler Ino Loyalty\'ye akar; puanlar, kuponlar ve ödüller mağazaya geri döner.',
+        items: [
+          {name: 'ikas', kind: 'Uygulama', text: 'ikas\'tan kurun. Rewards paneli ve My Rewards sayfası tema çalışması olmadan mağazanızda belirir; üyeler ödemede puanla öder.'},
+          {name: 'Shopify', kind: 'Uygulama', text: 'Shopify içinde yönetim paneli, mağazada ödüller ve My Rewards sayfası; İngilizce ve Türkçe.'},
+          {name: 'SAP Commerce Cloud', kind: 'Bağlayıcı', text: 'Standart commerce API\'leri üzerinden sipariş sadakat bilgisinin geri yazılması ve kampanya değerlendirmesi.'},
+          {name: 'Akinon', kind: 'Bağlayıcı', text: 'Akinon üzerindeki mağazalar için sepet teklifleri ve sipariş sadakati.'},
+        ]},
+      {id: 'pos', title: 'Kasa ve ERP', text: 'Mağazalar, kasalar ve arka ofis sistemleri için.',
+        items: [
+          {name: 'Gerçek zamanlı kanal API\'si', kind: 'API', text: 'Kasada puan kazanma ve harcama, kampanya, iade ve kupon; imzalı ve idempotent istekleryle.'},
+          {name: 'Çevrimdışı kasa', kind: 'Desen', text: 'Bağlantı kopsa da satışa devam edin; işlemler gerçek satış zamanını taşır ve bağlantı gelince mutabakat yapılır.'},
+          {name: 'Dosyayla toplu aktarım', kind: 'Dosya', text: 'İşlem ya da puan düzeltmesi içeren bir CSV bırakın; sonuç ve satır hataları asenkron bir iş olarak döner.'},
+          {name: 'Katalog bağlayıcısı', kind: 'Veritabanı', text: 'Ürün, kategori ve mağazaları her gece PostgreSQL, SQL Server, MySQL ya da Oracle\'dan eşitleyin. SAP HANA yakında.'},
+          {name: 'ERP beslemesi', kind: 'API', text: 'Kategori, marka ya da mağaza bazlı kampanya kuralları için ürün, ürün ailesi, mağaza ve mağaza gruplarını gönderin.'},
+        ]},
+      {id: 'engage', title: 'Etkileşim', text: 'Üyelere bulundukları yerde ulaşın.',
+        items: [
+          {name: 'Apple Wallet', kind: 'Cüzdan', text: 'Puan, kademe ya da kupon değişince kendiliğinden güncellenen, markanızı taşıyan sadakat kartı.'},
+          {name: 'SMS doğrulama', kind: 'Mesajlaşma', text: 'Kayıtta telefon numarasını doğrulayın ve hoş geldin mesajı gönderin; Twilio üzerinden.'},
+          {name: 'Braze', kind: 'Aktivasyon', text: 'Kendi yolculuklarınızı tetiklemek için segment üyeliğini ve sadakat olaylarını Braze\'e gönderin.'},
+        ]},
+      {id: 'data', title: 'Olaylar ve veri', text: 'Sistemlerinizi eşit, analistlerinizi mutlu tutun.',
+        items: [
+          {name: 'Webhook\'lar', kind: 'Olaylar', text: 'Yeniden denemeli imzalı gönderimler, kanal ve mağaza filtreleri ve eksiksiz bir olay kataloğu.'},
+          {name: 'Olay akışı', kind: 'API', text: 'Webhook yerine sorgulamayı tercih ederseniz olayları bir imleçle çekin.'},
+          {name: 'Apache Kafka', kind: 'Akış', text: 'Sadakat olaylarını kendi Kafka sunucunuzda alın ya da işlemleri onun üzerinden gönderin.'},
+          {name: 'Parquet aktarımı', kind: 'Veri', text: 'Veri gölünüz ya da BI aracınız için alışveriş ve müşteri verisinin artımlı aktarımı.'},
+        ]},
+      {id: 'crm', title: 'CRM', text: 'Sadakat, ekiplerinizin zaten kullandığı müşteri görünümünde.',
+        items: [
+          {name: 'Microsoft Dynamics 365', kind: 'CRM', text: 'Dynamics 365 kullanıyor musunuz? Customer 360, izinler ve sadakat verisi CRM kayıtlarınızın yanında durur. Konsol düşük maliyet, hızlı kurulum, Microsoft Entra ID ile tek oturum açma ve rol tabanlı erişim için Microsoft platformu üzerinde kurulu.'},
+        ]},
+    ] as Group[],
+    missingTitle: 'Platformunuz listede yok mu?',
+    missingText: 'Çoğu sistem gerçek zamanlı API ve webhook\'larla bağlanır. Ne kullandığınızı anlatın, nasıl bağlanacağını gösterelim.',
+    missingDocs: 'Geliştirici belgeleri',
+    missingTalk: 'Bize yazın',
+    note: 'Ürün adları sahiplerinin ticari markalarıdır. Bir entegrasyonun listelenmesi ortaklık ya da onay anlamına gelmez.',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="i-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-200px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-200px" aria-hidden="true"></div>
+    <div class="container i-hero-inner">
+      <div class="i-text">
+        <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+        <h1 data-reveal>{copy.h1}</h1>
+        <p class="lead" data-reveal>{copy.lead}</p>
+      </div>
+      <div class="hub" data-reveal aria-hidden="true">
+        <div class="core"><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="56" height="56" /></div>
+        {Array.from({length: 8}).map((_, i) => (
+          <span class="node" style={`--a:${i * 45}deg`}></span>
+        ))}
+        <span class="ring r1"></span>
+        <span class="ring r2"></span>
+      </div>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="integrations" />
+
+  <div class="container groups">
+    {copy.groups.map((g) => (
+      <section class="group" id={g.id}>
+        <div class="g-head" data-reveal>
+          <h2>{g.title}</h2>
+          <p class="lead">{g.text}</p>
+        </div>
+        <div class="cards">
+          {g.items.map((it, i) => (
+            <article class="int" data-reveal style={`transition-delay:${(i % 3) * 60}ms`}>
+              <h3>{it.name}</h3>
+              <span class="kind">{it.kind}</span>
+              <p>{it.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section class="missing" data-reveal>
+      <div>
+        <h2>{copy.missingTitle}</h2>
+        <p class="lead">{copy.missingText}</p>
+      </div>
+      <div class="missing-ctas">
+        <a class="btn btn-dark" href={href(lang, 'developers')}>{copy.missingDocs}</a>
+        <a class="btn btn-ghost" href={href(lang, 'contact')}>{copy.missingTalk}</a>
+      </div>
+    </section>
+    <p class="note">{copy.note}</p>
+  </div>
+</Base>
+
+<style>
+  .i-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 150px 0 90px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #b9c6d9;
+  }
+  .i-hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .i-text {
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .i-text img {
+    width: 16px;
+    height: 16px;
+  }
+  .i-hero h1 {
+    color: #fff;
+    font-size: clamp(40px, 5.4vw, 66px);
+  }
+  .i-hero .lead {
+    color: #b9c6d9;
+  }
+  .hub {
+    position: relative;
+    width: 360px;
+    height: 360px;
+    margin: 0 auto;
+  }
+  .core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 112px;
+    height: 112px;
+    margin: -56px 0 0 -56px;
+    border-radius: 32px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 0 80px rgba(0, 164, 228, 0.35);
+  }
+  .ring {
+    position: absolute;
+    inset: 40px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+  }
+  .ring.r2 {
+    inset: 0;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.07);
+  }
+  .node {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #5fd0ff, #a79bff);
+    box-shadow: 0 0 24px rgba(95, 208, 255, 0.55);
+    transform: rotate(var(--a)) translate(150px) rotate(calc(-1 * var(--a)));
+    animation: orbit 40s linear infinite;
+  }
+  @keyframes orbit {
+    to {
+      transform: rotate(calc(var(--a) + 360deg)) translate(150px) rotate(calc(-1 * (var(--a) + 360deg)));
+    }
+  }
+  .groups {
+    padding-top: 80px;
+    padding-bottom: var(--section);
+    display: grid;
+    gap: 88px;
+  }
+  .group {
+    display: grid;
+    gap: 28px;
+    scroll-margin-top: 170px;
+  }
+  .g-head {
+    display: grid;
+    gap: 10px;
+    max-width: 760px;
+  }
+  .g-head h2 {
+    font-size: clamp(28px, 3.2vw, 40px);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .int {
+    padding: 24px;
+    border-radius: var(--r-lg);
+    background: #fff;
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .int:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .kind {
+    font: 600 12.5px/1 var(--font-text);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .int p {
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+  .missing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: var(--r-xl);
+    background: var(--grad-soft);
+  }
+  .missing > div:first-child {
+    display: grid;
+    gap: 10px;
+    max-width: 640px;
+  }
+  .missing-ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .note {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: -56px;
+  }
+  @media (max-width: 1000px) {
+    .i-hero-inner {
+      grid-template-columns: 1fr;
+    }
+    .cards {
+      grid-template-columns: 1fr 1fr;
+    }
+    .missing {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 640px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+    .hub {
+      transform: scale(0.8);
+    }
+  }
+</style>

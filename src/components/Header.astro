@@ -1,0 +1,493 @@
+---
+// Floating glass navigation. Desktop: dropdown menus (hover or click). Mobile: a full-height sheet.
+import {cleanPath, href, switchPath, t, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const n = t(lang).nav;
+const path = cleanPath(Astro.url.pathname);
+const other = switchPath(lang, path);
+
+const inoItems = [
+  {key: 'ino', label: n.inoOverview, desc: n.inoOverviewDesc},
+  {key: 'features', label: n.features, desc: n.featuresDesc},
+  {key: 'integrations', label: n.integrations, desc: n.integrationsDesc},
+  {key: 'developers', label: n.developers, desc: n.developersDesc},
+] as const;
+const serviceItems = [
+  {key: 'crm', label: n.crm, desc: n.crmDesc},
+  {key: 'browserping', label: n.browserping, desc: n.browserpingDesc},
+] as const;
+const companyItems = [
+  {key: 'about', label: n.about},
+  {key: 'contact', label: n.contact},
+  {key: 'support', label: n.support},
+] as const;
+---
+
+<header class="site-header" data-header>
+  <div class="bar">
+    <a class="brand" href={href(lang, 'home')} aria-label="Tryino">
+      <img src="/brand/tryino-logo-horizontal.svg" alt="Tryino" width="124" height="29" />
+    </a>
+
+    <nav class="menus" aria-label={n.menu}>
+      <div class="menu" data-menu>
+        <button class="trigger" aria-expanded="false" aria-haspopup="true">
+          <img class="ino-mark" src="/brand/ino-loyalty-symbol-color.svg" alt="" width="18" height="18" />
+          {n.ino}<span class="chev" aria-hidden="true"></span>
+        </button>
+        <div class="panel panel-wide">
+          <div class="panel-grid">
+            {inoItems.map((i) => (
+              <a class="item" href={href(lang, i.key)}>
+                <strong>{i.label}</strong>
+                <span>{i.desc}</span>
+              </a>
+            ))}
+          </div>
+          <a class="panel-cta" href={href(lang, 'demo')}>
+            <img src="/brand/ino-loyalty-logo-horizontal.svg" alt="Ino Loyalty" height="30" />
+            <span>{n.demo} →</span>
+          </a>
+        </div>
+      </div>
+      <div class="menu" data-menu>
+        <button class="trigger" aria-expanded="false" aria-haspopup="true">{n.services}<span class="chev" aria-hidden="true"></span></button>
+        <div class="panel">
+          {serviceItems.map((i) => (
+            <a class="item" href={href(lang, i.key)}>
+              <strong>{i.label}</strong>
+              <span>{i.desc}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <a class="link" href={href(lang, 'developers')}>{n.developers}</a>
+      <div class="menu" data-menu>
+        <button class="trigger" aria-expanded="false" aria-haspopup="true">{n.company}<span class="chev" aria-hidden="true"></span></button>
+        <div class="panel panel-narrow">
+          {companyItems.map((i) => (
+            <a class="item" href={href(lang, i.key)}><strong>{i.label}</strong></a>
+          ))}
+        </div>
+      </div>
+    </nav>
+
+    <div class="actions">
+      <div class="lang" role="group" aria-label={n.language}>
+        <a href={lang === 'en' ? path || '/' : other} aria-current={lang === 'en' ? 'true' : undefined} hreflang="en" lang="en">EN</a>
+        <a href={lang === 'tr' ? path : other} aria-current={lang === 'tr' ? 'true' : undefined} hreflang="tr" lang="tr">TR</a>
+      </div>
+      <slot name="actions" />
+      <button class="vchip" type="button" data-vchip hidden aria-label={n.profile}>
+        <span class="vchip-ring">
+          <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16" pathLength="100" /><circle cx="18" cy="18" r="16" pathLength="100" data-vchip-prog /></svg>
+          <span class="vchip-av" data-vchip-av></span>
+        </span>
+        <span class="vchip-pts"><strong data-vchip-pts>0</strong><small>{n.pts}</small></span>
+      </button>
+      <a class="btn btn-primary btn-sm demo" href={href(lang, 'demo')}>{n.demo}</a>
+      <button class="burger" aria-expanded="false" aria-controls="mobile-nav" aria-label={n.menu} data-burger>
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sheet" id="mobile-nav" hidden data-sheet>
+    <div class="lang sheet-lang" role="group" aria-label={n.language}>
+      <a href={lang === 'en' ? path || '/' : other} aria-current={lang === 'en' ? 'true' : undefined} hreflang="en" lang="en">English</a>
+      <a href={lang === 'tr' ? path : other} aria-current={lang === 'tr' ? 'true' : undefined} hreflang="tr" lang="tr">Türkçe</a>
+    </div>
+    <p class="sheet-title">{n.ino}</p>
+    {inoItems.map((i) => <a href={href(lang, i.key)}>{i.label}</a>)}
+    <p class="sheet-title">{n.services}</p>
+    {serviceItems.map((i) => <a href={href(lang, i.key)}>{i.label}</a>)}
+    <p class="sheet-title">{n.company}</p>
+    {companyItems.map((i) => <a href={href(lang, i.key)}>{i.label}</a>)}
+    <a class="btn btn-primary" href={href(lang, 'demo')}>{n.demo}</a>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const menus = document.querySelectorAll<HTMLElement>('[data-menu]');
+  const closeAll = (except?: HTMLElement) =>
+    menus.forEach((m) => {
+      if (m !== except) {
+        m.classList.remove('open');
+        m.querySelector('.trigger')?.setAttribute('aria-expanded', 'false');
+      }
+    });
+  menus.forEach((m) => {
+    const trigger = m.querySelector<HTMLButtonElement>('.trigger')!;
+    trigger.addEventListener('click', () => {
+      const open = !m.classList.contains('open');
+      closeAll(m);
+      m.classList.toggle('open', open);
+      trigger.setAttribute('aria-expanded', String(open));
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!(e.target as Element).closest('[data-menu]')) closeAll();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAll();
+  });
+
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]')!;
+  const sheet = document.querySelector<HTMLElement>('[data-sheet]')!;
+  burger.addEventListener('click', () => {
+    const open = sheet.hidden;
+    sheet.hidden = !open;
+    burger.setAttribute('aria-expanded', String(open));
+    header?.classList.toggle('sheet-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  const onScroll = () => header?.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive: true});
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 12px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0 var(--gutter);
+    pointer-events: none;
+  }
+  .bar {
+    pointer-events: auto;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 12px 0 22px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.48));
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 1px 0 rgba(11, 31, 58, 0.04), 0 8px 30px rgba(11, 31, 58, 0.08);
+    backdrop-filter: saturate(1.8) blur(22px);
+    -webkit-backdrop-filter: saturate(1.8) blur(22px);
+    transition: box-shadow 0.3s var(--ease), background 0.3s;
+  }
+  .scrolled .bar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.58));
+    box-shadow: 0 1px 0 rgba(11, 31, 58, 0.05), 0 12px 40px rgba(11, 31, 58, 0.1);
+  }
+  .brand {
+    flex: none;
+  }
+  .brand img {
+    height: 26px;
+    width: auto;
+  }
+  .menus {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 auto;
+  }
+  .trigger,
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+    color: var(--ink);
+    font: 500 15.5px/1 var(--font-text);
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .trigger:hover,
+  .link:hover,
+  .menu.open .trigger {
+    background: rgba(11, 31, 58, 0.05);
+  }
+  .ino-mark {
+    width: 18px;
+    height: 18px;
+  }
+  .chev {
+    width: 7px;
+    height: 7px;
+    border-right: 1.6px solid currentColor;
+    border-bottom: 1.6px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    opacity: 0.6;
+    transition: transform 0.2s var(--ease);
+  }
+  .menu {
+    position: relative;
+  }
+  .menu.open .chev {
+    transform: translateY(1px) rotate(225deg);
+  }
+  .panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    width: 340px;
+    padding: 10px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 6px);
+    transition: opacity 0.18s, transform 0.25s var(--ease), visibility 0.18s;
+  }
+  .panel-wide {
+    width: 560px;
+  }
+  .panel-narrow {
+    width: 220px;
+  }
+  .menu.open .panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+  @media (hover: hover) {
+    .menu:hover .panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, 0);
+    }
+  }
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .item {
+    display: grid;
+    gap: 3px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-decoration: none;
+  }
+  .item:hover {
+    background: var(--bg-2);
+  }
+  .item strong {
+    font: 600 15px/1.3 var(--font-text);
+  }
+  .item span {
+    font-size: 13.5px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .panel-cta {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: var(--grad-soft);
+    text-decoration: none;
+    font: 600 14.5px/1 var(--font-text);
+    color: var(--indigo);
+  }
+  .panel-cta img {
+    height: 28px;
+    width: auto;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lang {
+    display: flex;
+    padding: 3px;
+    border-radius: 12px;
+    background: rgba(11, 31, 58, 0.05);
+  }
+  .lang a {
+    padding: 6px 9px;
+    border-radius: 9px;
+    font: 600 12.5px/1 var(--font-text);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--muted);
+  }
+  .lang a[aria-current] {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+  .burger {
+    display: none;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--navy);
+    cursor: pointer;
+    position: relative;
+  }
+  .burger span {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+    transition: transform 0.25s var(--ease);
+  }
+  .burger span:first-child {
+    top: 16px;
+  }
+  .burger span:last-child {
+    top: 24px;
+  }
+  .sheet-open .burger span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+  .sheet-open .burger span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+  .sheet {
+    pointer-events: auto;
+    max-width: var(--maxw);
+    margin: 10px auto 0;
+    max-height: calc(100vh - 110px);
+    overflow: auto;
+    padding: 18px 22px 22px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    gap: 4px;
+  }
+  .sheet[hidden] {
+    display: none;
+  }
+  .sheet-title {
+    margin-top: 12px;
+    font: 600 12px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sheet a:not(.btn) {
+    padding: 10px 0;
+    font: 500 17px/1.2 var(--font-text);
+    text-decoration: none;
+  }
+  .sheet-lang {
+    align-self: flex-start;
+    margin-bottom: 4px;
+  }
+  .sheet .sheet-lang a {
+    padding: 8px 14px;
+    font-size: 15px;
+  }
+  .sheet .btn {
+    margin-top: 14px;
+  }
+
+  .vchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 12px 0 4px;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(11, 31, 58, 0.06);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .vchip[hidden] {
+    display: none;
+  }
+  .vchip:hover {
+    background: rgba(11, 31, 58, 0.1);
+  }
+  .vchip-ring {
+    position: relative;
+    width: 36px;
+    height: 36px;
+  }
+  .vchip-ring svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+  .vchip-ring circle {
+    fill: none;
+    stroke: rgba(11, 31, 58, 0.12);
+    stroke-width: 3;
+  }
+  .vchip-ring circle[data-vchip-prog] {
+    stroke: var(--indigo);
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 0.8s var(--ease);
+  }
+  .vchip-av {
+    position: absolute;
+    inset: 6px;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .vchip-pts {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .vchip-pts strong {
+    font: 650 16px/1 var(--font-display);
+  }
+  .vchip-pts small {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 520px) {
+    .vchip {
+      padding-right: 10px;
+    }
+    .vchip-pts small {
+      display: none;
+    }
+    .actions > .lang {
+      display: none;
+    }
+    .actions {
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 1180px) {
+    .menus,
+    .demo {
+      display: none;
+    }
+    .actions {
+      margin-left: auto;
+    }
+    .burger {
+      display: block;
+    }
+  }
+</style>

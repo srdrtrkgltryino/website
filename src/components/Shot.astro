@@ -1,0 +1,51 @@
+---
+// A product screenshot in a light app-window frame.
+import {Image} from 'astro:assets';
+import type {ImageMetadata} from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  label?: string;
+}
+const {src, alt, label} = Astro.props;
+---
+
+<figure class="shot">
+  <div class="bar" aria-hidden="true"><i></i><i></i><i></i>{label && <span>{label}</span>}</div>
+  <Image src={src} alt={alt} widths={[700, 1100, 1600]} sizes="(max-width: 900px) 100vw, 820px" />
+</figure>
+
+<style>
+  .shot {
+    margin: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--app-bg);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    font: 500 12.5px/1 var(--font-text);
+    color: var(--muted);
+  }
+  .bar i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e3e8f1;
+  }
+  .bar span {
+    margin-left: 10px;
+  }
+  .shot :global(img) {
+    width: 100%;
+    height: auto;
+  }
+</style>

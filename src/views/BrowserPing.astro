@@ -1,0 +1,122 @@
+---
+// BrowserPing: Tryino's custom channel for Dynamics 365 Customer Insights – Journeys (web push + in-page banners).
+import InfoPage, {type Block} from '../components/InfoPage.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const demo = href(lang, 'contact');
+const en = {
+  title: 'BrowserPing: web push and in-page banners for Customer Insights – Journeys · Tryino',
+  description: 'A native custom channel for Dynamics 365 Customer Insights – Journeys that reaches website visitors in the browser. No app, no extra database.',
+  hero: {
+    pill: 'BrowserPing',
+    h1: ['Reach website visitors', 'from your journeys'] as [string, string],
+    lead: 'BrowserPing is a native custom channel for Dynamics 365 Customer Insights – Journeys. It reaches people right in the browser, with no app to install and no extra database.',
+    cta: {label: 'Talk to us', href: demo},
+    secondary: {label: 'CRM implementation', href: href(lang, 'crm')},
+    dark: true,
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'Two modules, one channel',
+      title: 'Web push and in-page banners',
+      cols: 2,
+      items: [
+        {tag: 'Module 1', title: 'Web push notifications', text: 'Native browser push as its own step in the journey canvas, next to e-mail and SMS. Reach subscribers even after they have left your site; delivery status flows back into the journey.'},
+        {tag: 'Module 2', title: 'Web behaviour and in-page banners', text: 'Follow what anonymous visitors do, build segments from it and show a real-time banner the moment someone matches a journey. No push permission needed.'},
+      ],
+    },
+    {
+      type: 'cards',
+      title: 'Built for how Journeys already works',
+      cols: 3,
+      tone: 'dark',
+      items: [
+        {title: 'Native custom channel', text: 'Design the message in the journey canvas like any other step. No separate tool to log in to.'},
+        {title: 'Same segments and triggers', text: 'Send from the audiences you already use for e-mail and SMS, without duplicating them.'},
+        {title: 'Identity at sign-in', text: 'When a visitor signs in, their earlier anonymous browsing links to their contact record.'},
+        {title: 'Behaviour-based segments', text: 'For example: “spent time on pricing but never asked for a quote”.'},
+        {title: 'Real-time delivery', text: 'Banners appear while the visitor is on the page, with no delay after the journey triggers.'},
+        {title: 'Engagement tracking', text: 'Shown, clicked and dismissed events per banner, so you see what works.'},
+      ],
+    },
+    {
+      type: 'faq',
+      title: 'Questions',
+      items: [
+        {q: 'Do visitors need to install anything?', a: 'No. Push uses the browser’s standard push APIs; visitors subscribe with one click. Banners need no permission at all.'},
+        {q: 'Does it need its own database?', a: 'No. BrowserPing works inside Customer Insights – Journeys and your Dataverse environment.'},
+        {q: 'How does it handle consent?', a: 'Visitors opt in to push in the browser. Behaviour tracking runs under your site’s cookie consent; we set this up with you.'},
+        {q: 'Can you implement Customer Insights too?', a: 'Yes. We implement Dynamics 365 Customer Insights end to end and add BrowserPing as one of its channels.'},
+      ],
+    },
+    {
+      type: 'cta',
+      title: 'Add the browser to your journeys',
+      text: 'We will show BrowserPing on a Customer Insights – Journeys environment.',
+      cta: {label: 'Request a demo', href: demo},
+    },
+  ] as Block[],
+};
+const tr: typeof en = {
+  title: 'BrowserPing: Customer Insights – Journeys için web push ve sayfa içi banner · Tryino',
+  description: 'Dynamics 365 Customer Insights – Journeys için web sitesi ziyaretçilerine tarayıcıda ulaşan yerleşik özel kanal. Uygulama yok, ek veritabanı yok.',
+  hero: {
+    pill: 'BrowserPing',
+    h1: ['Web sitesi ziyaretçilerine', 'yolculuklarınızdan ulaşın'],
+    lead: 'BrowserPing, Dynamics 365 Customer Insights – Journeys için yerleşik bir özel kanaldır. İnsanlara doğrudan tarayıcıda ulaşır; kurulacak uygulama ya da ek veritabanı gerekmez.',
+    cta: {label: 'Bizimle konuşun', href: demo},
+    secondary: {label: 'CRM implementasyonu', href: href(lang, 'crm')},
+    dark: true,
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'İki modül, tek kanal',
+      title: 'Web push ve sayfa içi banner',
+      cols: 2,
+      items: [
+        {tag: 'Modül 1', title: 'Web push bildirimleri', text: 'Yolculuk tuvalinde e-posta ve SMS\'in yanında kendi adımı olan yerleşik tarayıcı bildirimi. Aboneler sitenizden ayrıldıktan sonra da ulaşın; teslim durumu yolculuğa geri akar.'},
+        {tag: 'Modül 2', title: 'Web davranışı ve sayfa içi banner', text: 'Anonim ziyaretçilerin ne yaptığını izleyin, bundan segment kurun ve biri yolculuğa uyduğu anda gerçek zamanlı banner gösterin. Push izni gerekmez.'},
+      ],
+    },
+    {
+      type: 'cards',
+      title: 'Journeys\'in çalışma biçimine göre tasarlandı',
+      cols: 3,
+      tone: 'dark',
+      items: [
+        {title: 'Yerleşik özel kanal', text: 'Mesajı yolculuk tuvalinde diğer adımlar gibi tasarlayın. Ayrı bir araca giriş yok.'},
+        {title: 'Aynı segment ve tetikleyiciler', text: 'E-posta ve SMS için kullandığınız kitlelerden, kopyalamadan gönderin.'},
+        {title: 'Oturum açınca kimlik eşleşmesi', text: 'Ziyaretçi oturum açtığında önceki anonim gezinmesi kişi kaydına bağlanır.'},
+        {title: 'Davranışa dayalı segmentler', text: 'Örneğin: “fiyat sayfasında vakit geçirdi ama teklif istemedi”.'},
+        {title: 'Gerçek zamanlı gösterim', text: 'Banner, yolculuk tetiklendiği anda ziyaretçi sayfadayken görünür.'},
+        {title: 'Etkileşim takibi', text: 'Her banner için gösterim, tıklama ve kapatma olayları; neyin işe yaradığını görürsünüz.'},
+      ],
+    },
+    {
+      type: 'faq',
+      title: 'Sorular',
+      items: [
+        {q: 'Ziyaretçilerin bir şey kurması gerekir mi?', a: 'Hayır. Push, tarayıcının standart bildirim altyapısını kullanır; ziyaretçi tek tıkla abone olur. Banner için hiç izin gerekmez.'},
+        {q: 'Kendi veritabanı gerekir mi?', a: 'Hayır. BrowserPing, Customer Insights – Journeys ve Dataverse ortamınızın içinde çalışır.'},
+        {q: 'İzinleri nasıl yönetir?', a: 'Ziyaretçiler push için tarayıcıda izin verir. Davranış takibi sitenizin çerez onayına bağlı çalışır; bunu sizinle birlikte kurarız.'},
+        {q: 'Customer Insights kurulumunu da yapıyor musunuz?', a: 'Evet. Dynamics 365 Customer Insights\'ı uçtan uca kuruyor ve BrowserPing\'i kanallarından biri olarak ekliyoruz.'},
+      ],
+    },
+    {
+      type: 'cta',
+      title: 'Tarayıcıyı yolculuklarınıza ekleyin',
+      text: 'BrowserPing\'i bir Customer Insights – Journeys ortamında gösterelim.',
+      cta: {label: 'Demo isteyin', href: demo},
+    },
+  ] as Block[],
+};
+const c = lang === 'tr' ? tr : en;
+---
+
+<InfoPage lang={lang} title={c.title} description={c.description} hero={c.hero} blocks={c.blocks} />

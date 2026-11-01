@@ -1,0 +1,161 @@
+---
+import {href, t, type Lang} from '../i18n';
+import {company} from '../data/company';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const {nav: n, footer: f} = t(lang);
+const year = new Date().getFullYear();
+const columns = [
+  {title: f.product, links: [['ino', n.inoOverview], ['features', n.features], ['integrations', n.integrations], ['developers', n.developers]]},
+  {title: f.services, links: [['crm', n.crm], ['browserping', n.browserping]]},
+  {title: f.company, links: [['about', n.about], ['contact', n.contact], ['support', n.support]]},
+  {title: f.legal, links: [['privacy', f.privacy], ['cookies', f.cookies], ['terms', f.terms]]},
+] as const;
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="about">
+        <img src="/brand/tryino-logo-horizontal-dark.svg" alt="Tryino" width="132" height="31" />
+        <p>{f.tagline}</p>
+        <a class="mail" href={`mailto:${company.infoEmail}`}>{company.infoEmail}</a>
+        <a class="social" href={company.linkedin} target="_blank" rel="noopener" data-ext="linkedin" aria-label="Tryino on LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zm7 0h3.8v1.6h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.5 4.77 5.76v5.59h-4v-4.96c0-1.18-.02-2.7-1.7-2.7-1.7 0-1.96 1.28-1.96 2.61v5.05H10z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      {columns.map((c) => (
+        <div class="col">
+          <p class="col-title">{c.title}</p>
+          <ul>
+            {c.links.map(([key, label]) => (
+              <li><a href={href(lang, key)}>{label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <div class="bottom">
+      <p>© {year} Tryino. {f.rights}</p>
+      <button class="cookie-link" type="button" data-open-consent>{f.cookieSettings}</button>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .social {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+    color: #dbe6f3;
+    font-size: 15px;
+    text-decoration: none;
+  }
+  .social svg {
+    width: 20px;
+    height: 20px;
+  }
+  .social:hover {
+    color: #fff;
+  }
+  .site-footer {
+    position: relative;
+    background: var(--grad-navy);
+    color: #b9c6d9;
+    padding: 80px 0 32px;
+    overflow: hidden;
+  }
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    right: -260px;
+    top: -380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(79, 70, 229, 0.35), transparent 65%);
+  }
+  .top {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.6fr repeat(4, 1fr);
+    gap: 40px;
+  }
+  .about {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    max-width: 320px;
+  }
+  .about img {
+    height: 28px;
+    width: auto;
+  }
+  .about p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .mail {
+    color: #fff;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .mail:hover {
+    text-decoration: underline;
+  }
+  .col-title {
+    font: 600 13px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  li a {
+    font-size: 15px;
+    text-decoration: none;
+    color: #b9c6d9;
+  }
+  li a:hover {
+    color: #fff;
+  }
+  .bottom {
+    position: relative;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 14px;
+    color: #8ea0b9;
+  }
+  .cookie-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: #b9c6d9;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  @media (max-width: 900px) {
+    .top {
+      grid-template-columns: 1fr 1fr;
+    }
+    .about {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

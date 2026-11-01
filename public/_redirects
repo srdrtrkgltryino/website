@@ -1,0 +1,13 @@
+# Old site URLs (Cloudflare Pages). .html → clean URLs is handled by Pages itself.
+/products/ino-loyalty.html /ino-loyalty 301
+/products/ino-loyalty /ino-loyalty 301
+/products/browserping-web-push.html /products/browserping 301
+/products/browserping-web-push /products/browserping 301
+/products/browserping-in-page-banner.html /products/browserping 301
+/products/browserping-in-page-banner /products/browserping 301
+/solutions/sales.html /services/crm-implementation 301
+/solutions/customer-insights.html /services/crm-implementation 301
+/solutions/customer-service.html /services/crm-implementation 301
+/solutions/contact-center.html /services/crm-implementation 301
+/solutions/teams-telephony.html /services/crm-implementation 301
+/solutions/* /services/crm-implementation 301

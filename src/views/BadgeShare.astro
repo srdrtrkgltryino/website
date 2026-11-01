@@ -1,0 +1,108 @@
+---
+// Public page for a visitor-program badge, made to be shared on LinkedIn: its preview image shows the badge
+// (public/og/badges, made by scripts/make_badge_og.mjs). It names no one: the visitor program is anonymous.
+import Base from '../layouts/Base.astro';
+import {company} from '../data/company';
+import {href, type Lang} from '../i18n';
+import {vt} from '../i18n/visitor';
+import {icon} from '../lib/visitor-ui';
+import type {BadgeId} from '../lib/visitor';
+
+interface Props {
+  lang: Lang;
+  id: BadgeId;
+}
+const {lang, id} = Astro.props;
+const v = vt(lang);
+const [name, desc] = v.badges[id];
+const copy = {
+  en: {
+    title: `${name} badge · Tryino visitor program`,
+    description: `${desc}. Explore tryino.com, play Points Rush and unlock a free Ino Loyalty POC.`,
+    eyebrow: 'Badge earned on tryino.com',
+    lead: 'tryino.com runs its own loyalty program: explore the site, play Points Rush, earn XP and badges, and unlock a free 30-day Ino Loyalty POC.',
+    play: 'Earn your own badges',
+    follow: 'Follow Tryino on LinkedIn',
+  },
+  tr: {
+    title: `${name} rozeti · Tryino ziyaretçi programı`,
+    description: `${desc}. tryino.com'u gezin, Puan Yağmuru oynayın, ücretsiz Ino Loyalty POC'si açın.`,
+    eyebrow: 'tryino.com\'da kazanılan rozet',
+    lead: 'tryino.com\'un kendi sadakat programı var: siteyi gezin, Puan Yağmuru oynayın, XP ve rozet kazanın, ücretsiz 30 günlük Ino Loyalty POC\'si açın.',
+    play: 'Kendi rozetlerinizi kazanın',
+    follow: 'Tryino\'yu LinkedIn\'de takip edin',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description} image={`/og/badges/${lang}-${id}.jpg`} noindex>
+  <section class="bs">
+    <div class="glow blue" style="width:600px;height:600px;left:-220px;top:-240px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-160px" aria-hidden="true"></div>
+    <div class="container bs-inner">
+      <span class="pill on-dark">{copy.eyebrow}</span>
+      <div class="medal" set:html={icon(id)} />
+      <h1>{name}</h1>
+      <p class="desc">{desc}</p>
+      <p class="lead">{copy.lead}</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href={href(lang, 'play')}>{copy.play} <span class="arrow">→</span></a>
+        <a class="btn btn-glass" href={company.linkedin} target="_blank" rel="noopener">{copy.follow}</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .bs {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    display: grid;
+    align-items: center;
+    padding: 140px 0 96px;
+    background: var(--grad-navy);
+    color: #c9d6e8;
+  }
+  .bs-inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    text-align: center;
+    max-width: 760px;
+  }
+  .medal {
+    width: 148px;
+    height: 148px;
+    display: grid;
+    place-items: center;
+    border-radius: 44px;
+    background: var(--grad);
+    color: #fff;
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.06), 0 30px 80px rgba(79, 70, 229, 0.45);
+  }
+  .medal :global(svg) {
+    width: 72px;
+    height: 72px;
+  }
+  h1 {
+    color: #fff;
+    font-size: clamp(44px, 7vw, 76px);
+  }
+  .desc {
+    font: 600 20px/1.4 var(--font-display);
+    color: var(--amber);
+  }
+  .lead {
+    color: #b6c6da;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>

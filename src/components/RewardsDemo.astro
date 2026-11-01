@@ -1,0 +1,423 @@
+---
+// An interactive mock of what a shopper sees: the Rewards panel in the store (balance, tier progress, rewards,
+// pay with points). Pure front-end; numbers are demo values.
+import type {Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const c = {
+  en: {
+    store: 'Modern Retail',
+    hello: 'Hi Emma',
+    points: 'points',
+    worth: 'worth',
+    tier: 'Gold',
+    next: 'to Platinum',
+    tabs: ['Rewards', 'Activity', 'Wallet'],
+    rewards: [
+      ['Free shipping', '300 pts'],
+      ['$10 off your next order', '1,000 pts'],
+      ['Tote bag', '1,800 pts'],
+    ],
+    redeem: 'Use',
+    pay: 'Pay with points at checkout',
+    payOn: 'Points applied: −$12.40',
+    activity: [
+      ['Order ORD-10482', '+124'],
+      ['Birthday bonus', '+200'],
+      ['Review written', '+50'],
+    ],
+    wallet: 'Add to Apple Wallet',
+    infra: 'Powered by Ino Loyalty',
+    used: 'Added to your cart',
+  },
+  tr: {
+    store: 'Modern Retail',
+    hello: 'Merhaba Emma',
+    points: 'puan',
+    worth: 'değeri',
+    tier: 'Gold',
+    next: 'Platinum\'a',
+    tabs: ['Ödüller', 'Hareketler', 'Cüzdan'],
+    rewards: [
+      ['Ücretsiz kargo', '300 puan'],
+      ['Sonraki siparişe $10 indirim', '1.000 puan'],
+      ['Bez çanta', '1.800 puan'],
+    ],
+    redeem: 'Kullan',
+    pay: 'Ödemede puanla öde',
+    payOn: 'Puan kullanıldı: −$12,40',
+    activity: [
+      ['ORD-10482 siparişi', '+124'],
+      ['Doğum günü hediyesi', '+200'],
+      ['Yorum yazıldı', '+50'],
+    ],
+    wallet: 'Apple Wallet\'a ekle',
+    infra: 'Altyapı: Ino Loyalty',
+    used: 'Sepetinize eklendi',
+  },
+}[lang];
+---
+
+<div class="rewards" data-rewards>
+  <div class="head">
+    <div class="brand"><span class="mark">M</span>{c.store}</div>
+    <span class="hello">{c.hello}</span>
+  </div>
+  <div class="balance">
+    <div>
+      <strong data-count="1240">1,240</strong> <span>{c.points}</span>
+      <p>{c.worth} $12.40</p>
+    </div>
+    <span class="tier">★ {c.tier}</span>
+  </div>
+  <div class="progress"><span data-progress style="--p:0.62"></span></div>
+  <p class="next">760 {c.next}</p>
+
+  <div class="tabs" role="tablist">
+    {c.tabs.map((tab, i) => (
+      <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} data-tab={i}>{tab}</button>
+    ))}
+  </div>
+
+  <div class="pane" data-pane="0">
+    {c.rewards.map(([name, cost], i) => (
+      <div class="reward">
+        <span class={`icon i${i}`} aria-hidden="true"></span>
+        <span class="name">{name}<small>{cost}</small></span>
+        <button type="button" class="use" disabled={i === 2} data-use>{c.redeem}</button>
+      </div>
+    ))}
+    <label class="pay">
+      <input type="checkbox" data-pay />
+      <span class="switch" aria-hidden="true"></span>
+      <span data-pay-label data-off={c.pay} data-on={c.payOn}>{c.pay}</span>
+    </label>
+  </div>
+  <div class="pane" data-pane="1" hidden>
+    {c.activity.map(([what, pts]) => (
+      <div class="row"><span>{what}</span><strong>{pts}</strong></div>
+    ))}
+  </div>
+  <div class="pane" data-pane="2" hidden>
+    <div class="pass">
+      <div class="pass-top"><span class="mark">M</span>{c.store}<em>★ {c.tier}</em></div>
+      <p>POINTS</p>
+      <strong>1,240</strong>
+    </div>
+    <button type="button" class="wallet-btn"> {c.wallet}</button>
+  </div>
+  <p class="infra">{c.infra}</p>
+  <div class="toast" data-toast role="status" aria-live="polite">{c.used}</div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rewards]').forEach((root) => {
+    const tabs = root.querySelectorAll<HTMLButtonElement>('[data-tab]');
+    const panes = root.querySelectorAll<HTMLElement>('[data-pane]');
+    tabs.forEach((tab) =>
+      tab.addEventListener('click', () => {
+        tabs.forEach((x) => x.setAttribute('aria-selected', String(x === tab)));
+        panes.forEach((p) => (p.hidden = p.dataset.pane !== tab.dataset.tab));
+      }),
+    );
+    const toast = root.querySelector<HTMLElement>('[data-toast]')!;
+    root.querySelectorAll<HTMLButtonElement>('[data-use]').forEach((b) =>
+      b.addEventListener('click', () => {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1600);
+      }),
+    );
+    const pay = root.querySelector<HTMLInputElement>('[data-pay]')!;
+    const label = root.querySelector<HTMLElement>('[data-pay-label]')!;
+    pay.addEventListener('change', () => (label.textContent = pay.checked ? label.dataset.on! : label.dataset.off!));
+    // Fill the tier bar when the card scrolls into view.
+    const bar = root.querySelector<HTMLElement>('[data-progress]')!;
+    new IntersectionObserver((entries, io) => {
+      if (entries[0].isIntersecting) {
+        bar.classList.add('go');
+        io.disconnect();
+      }
+    }).observe(root);
+  });
+</script>
+
+<style>
+  .rewards {
+    position: relative;
+    width: min(100%, 360px);
+    padding: 20px;
+    border-radius: 24px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 40px 100px rgba(7, 20, 39, 0.35), 0 0 0 1px rgba(11, 31, 58, 0.06);
+    font-family: var(--font-text);
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: 650 15px/1 var(--font-display);
+  }
+  .mark {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: #1f2937;
+    color: #fff;
+    font: 700 13px/1 var(--font-display);
+  }
+  .hello {
+    color: var(--muted);
+  }
+  .balance {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .balance strong {
+    font: 700 38px/1 var(--font-display);
+    letter-spacing: -0.03em;
+  }
+  .balance span {
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .balance p {
+    margin-top: 4px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .tier {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #a86b00;
+    font: 650 13px/1 var(--font-text);
+  }
+  .progress {
+    margin-top: 14px;
+    height: 10px;
+    border-radius: 5px;
+    background: #e8eef7;
+    overflow: hidden;
+  }
+  .progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 5px;
+    background: var(--grad);
+    transition: width 1.4s var(--ease) 0.2s;
+  }
+  .progress span:global(.go) {
+    width: calc(var(--p) * 100%);
+  }
+  .next {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .tabs {
+    margin-top: 16px;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--bg-2);
+  }
+  .tabs button {
+    flex: 1;
+    padding: 8px 0;
+    border: 0;
+    border-radius: 9px;
+    background: none;
+    font: 600 13px/1 var(--font-text);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .tabs button[aria-selected='true'] {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: var(--shadow-sm);
+  }
+  .pane {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+    min-height: 196px;
+    align-content: start;
+  }
+  .pane[hidden] {
+    display: none;
+  }
+  .reward {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+  }
+  .icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #e3f4fc;
+  }
+  .icon.i1 {
+    background: #efedfe;
+  }
+  .icon.i2 {
+    background: #fff1ec;
+  }
+  .name {
+    flex: 1;
+    display: grid;
+    font: 600 14px/1.25 var(--font-text);
+  }
+  .name small {
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .use {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--navy);
+    color: #fff;
+    font: 600 12.5px/1 var(--font-text);
+    cursor: pointer;
+  }
+  .use:disabled {
+    background: var(--line);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+  .pay {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 14px;
+    background: var(--bg);
+    font: 500 13.5px/1.3 var(--font-text);
+    cursor: pointer;
+  }
+  .pay input {
+    position: absolute;
+    opacity: 0;
+  }
+  .switch {
+    flex: none;
+    width: 38px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--line-2);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .switch::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.25s var(--ease);
+  }
+  .pay input:checked + .switch {
+    background: var(--mint);
+  }
+  .pay input:checked + .switch::after {
+    transform: translateX(16px);
+  }
+  .pay input:focus-visible + .switch {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--bg);
+    font-size: 14px;
+  }
+  .row strong {
+    color: var(--mint);
+  }
+  .pass {
+    padding: 16px;
+    border-radius: 16px;
+    background: linear-gradient(150deg, #9adcf7, #6fc3ea);
+    color: #0b2a44;
+  }
+  .pass-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: 650 14px/1 var(--font-display);
+  }
+  .pass-top em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 12px;
+  }
+  .pass p {
+    margin-top: 18px;
+    font: 600 11px/1 var(--font-text);
+    letter-spacing: 0.08em;
+  }
+  .pass strong {
+    font: 700 30px/1.1 var(--font-display);
+  }
+  .wallet-btn {
+    padding: 12px;
+    border: 0;
+    border-radius: 12px;
+    background: #000;
+    color: #fff;
+    font: 600 14px/1 var(--font-text);
+  }
+  .infra {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .toast {
+    position: absolute;
+    left: 50%;
+    bottom: 46px;
+    transform: translate(-50%, 10px);
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--navy);
+    color: #fff;
+    font: 600 13px/1 var(--font-text);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.3s var(--ease);
+    white-space: nowrap;
+  }
+  .toast:global(.show) {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+// Support: how to reach us, getting started with the Shopify and ikas apps, and common questions.
+// This is the support URL in the app store listings.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const support = `<a href="mailto:${co.supportEmail}">${co.supportEmail}</a>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Support · Tryino',
+  description: 'Get help with Ino Loyalty, the Shopify and ikas apps, the API and our Dynamics 365 services: contact support, setup guides and answers to common questions.',
+  eyebrow: 'Support',
+  h1: 'How can we help?',
+  intro: 'Write to us and a person from the team that builds Ino Loyalty will answer. Most questions are answered within one business day.',
+  sections: [
+    {
+      id: 'contact',
+      title: 'Contact support',
+      html: `<div class="callout"><p><strong>E-mail:</strong> ${support}<br/>Monday to Friday, 09:00–18:00 (Türkiye time, UTC+3).</p></div>
+      <p>To help us answer quickly, include your store or company name, which app or channel you use (Shopify, ikas, POS, API), what you expected and what happened, and a screenshot if you can. Please do not send passwords or full card numbers.</p>`,
+    },
+    {
+      id: 'shopify',
+      title: 'Getting started with the Shopify app',
+      html: `<ol>
+        <li>Install <strong>Ino Loyalty</strong> from the Shopify App Store. The app opens in your Shopify admin.</li>
+        <li>Enter the connection code you received from Tryino and click <strong>Connect</strong>.</li>
+        <li>Open <strong>Setup</strong> and follow the steps: switch on the Ino Loyalty app embed in the theme editor, add the “Earn points” block to product pages, and add the Rewards page to customer accounts. Each step has a button that opens the right place.</li>
+        <li>Place a test order: points appear in the customer's Rewards page and on the order in your admin within a minute.</li>
+      </ol>`,
+    },
+    {
+      id: 'ikas',
+      title: 'Getting started with the ikas app',
+      html: `<ol>
+        <li>Install <strong>Ino Loyalty</strong> from the ikas App Store and approve the permissions it asks for.</li>
+        <li>Your Tryino team links the store to your Ino Loyalty program.</li>
+        <li>The Rewards panel and the My Rewards page appear on your storefront with no theme changes. Member benefits are applied as ikas campaigns, so prices change in the cart without codes.</li>
+      </ol>`,
+    },
+    {
+      id: 'faq',
+      title: 'Common questions',
+      html: `<h3>Do I need an Ino Loyalty account?</h3>
+      <p>Yes. The apps are free to install and connect your store to Ino Loyalty, which you use under an agreement with Tryino. <a href="${href(lang, 'demo')}">Book a demo</a> to get started.</p>
+      <h3>Which languages are supported?</h3>
+      <p>The apps and the shopper experience are available in English and Turkish. You translate your own program content (reward names, descriptions) in Ino Loyalty.</p>
+      <h3>How do I uninstall?</h3>
+      <p>Remove the app from your Shopify or ikas admin. Your program stays in Ino Loyalty; tell us if you want its data deleted or returned. See the app privacy policies for <a href="${href(lang, 'privacyShopify')}">Shopify</a> and <a href="${href(lang, 'privacyIkas')}">ikas</a>.</p>
+      <h3>A shopper wants their data deleted. What do I do?</h3>
+      <p>Use the privacy tools in Ino Loyalty or write to us; we help you answer within the legal deadline.</p>
+      <h3>Where is the API documentation?</h3>
+      <p>In <a href="${href(lang, 'developers')}">For developers</a>, with the full <a href="${href(lang, 'apiReference')}">API reference</a>. API credentials come with your Ino Loyalty agreement.</p>`,
+    },
+    {
+      id: 'services',
+      title: 'CRM implementation customers',
+      html: `<p>If we implemented Microsoft Dynamics 365 for you, write to ${support} or to your project contact. Include the environment name and, for errors, the time it happened.</p>`,
+    },
+    {
+      id: 'privacy',
+      title: 'Privacy requests',
+      html: `<p>For questions about your personal data, write to <a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>. See our <a href="${href(lang, 'privacy')}">privacy policy</a>.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Destek · Tryino',
+  description: 'Ino Loyalty, Shopify ve ikas uygulamaları, API ve Dynamics 365 hizmetlerimiz için yardım: destek ekibine ulaşın, kurulum adımları ve sık sorulan sorular.',
+  eyebrow: 'Destek',
+  h1: 'Nasıl yardımcı olabiliriz?',
+  intro: 'Bize yazın; Ino Loyalty\'yi geliştiren ekipten biri yanıt versin. Soruların çoğunu bir iş günü içinde yanıtlıyoruz.',
+  sections: [
+    {
+      id: 'contact',
+      title: 'Destek ekibine ulaşın',
+      html: `<div class="callout"><p><strong>E-posta:</strong> ${support}<br/>Pazartesi–Cuma, 09:00–18:00 (Türkiye saati).</p></div>
+      <p>Hızlı yanıt verebilmemiz için mağaza ya da şirket adınızı, hangi uygulama ya da kanalı kullandığınızı (Shopify, ikas, kasa, API), ne beklediğinizi ve ne olduğunu, mümkünse bir ekran görüntüsüyle yazın. Lütfen parola ya da kart numarası göndermeyin.</p>`,
+    },
+    {
+      id: 'shopify',
+      title: 'Shopify uygulamasıyla başlangıç',
+      html: `<ol>
+        <li><strong>Ino Loyalty</strong>'yi Shopify App Store'dan kurun. Uygulama Shopify yönetim panelinizde açılır.</li>
+        <li>Tryino'dan aldığınız bağlantı kodunu girin ve <strong>Connect</strong>'e tıklayın.</li>
+        <li><strong>Setup</strong>'ı açıp adımları izleyin: tema düzenleyicide Ino Loyalty uygulama yerleşimini açın, ürün sayfalarına “Earn points” bloğunu ekleyin, müşteri hesaplarına Rewards sayfasını ekleyin. Her adımda doğru yeri açan bir düğme var.</li>
+        <li>Bir deneme siparişi verin: puan bir dakika içinde müşterinin Rewards sayfasında ve yönetim panelindeki siparişte görünür.</li>
+      </ol>`,
+    },
+    {
+      id: 'ikas',
+      title: 'ikas uygulamasıyla başlangıç',
+      html: `<ol>
+        <li><strong>Ino Loyalty</strong>'yi ikas App Store'dan kurun ve istediği izinleri onaylayın.</li>
+        <li>Tryino ekibiniz mağazayı Ino Loyalty programınıza bağlar.</li>
+        <li>Rewards paneli ve My Rewards sayfası tema değişikliği gerekmeden mağazanızda görünür. Üye avantajları ikas kampanyası olarak uygulanır; fiyat sepette kodsuz değişir.</li>
+      </ol>`,
+    },
+    {
+      id: 'faq',
+      title: 'Sık sorulanlar',
+      html: `<h3>Ino Loyalty hesabı gerekir mi?</h3>
+      <p>Evet. Uygulamaların kurulumu ücretsizdir ve mağazanızı Tryino ile yaptığınız sözleşme kapsamında kullandığınız Ino Loyalty'ye bağlar. Başlamak için <a href="${href(lang, 'demo')}">demo planlayın</a>.</p>
+      <h3>Hangi diller destekleniyor?</h3>
+      <p>Uygulamalar ve müşteri deneyimi İngilizce ve Türkçe. Program içeriğinizi (ödül adları, açıklamalar) Ino Loyalty'de kendiniz çevirirsiniz.</p>
+      <h3>Nasıl kaldırırım?</h3>
+      <p>Uygulamayı Shopify ya da ikas yönetim panelinizden kaldırın. Programınız Ino Loyalty'de kalır; verilerinin silinmesini ya da iadesini isterseniz bize yazın. Ayrıntılar <a href="${href(lang, 'privacyShopify')}">Shopify</a> ve <a href="${href(lang, 'privacyIkas')}">ikas</a> gizlilik politikalarında.</p>
+      <h3>Bir müşteri verilerinin silinmesini istiyor. Ne yapmalıyım?</h3>
+      <p>Ino Loyalty'deki gizlilik araçlarını kullanın ya da bize yazın; yasal süre içinde yanıt vermenize yardım ederiz.</p>
+      <h3>API belgeleri nerede?</h3>
+      <p><a href="${href(lang, 'developers')}">Geliştiriciler için</a> sayfasında, tam <a href="${href(lang, 'apiReference')}">API referansıyla</a> birlikte. API kimlik bilgileri Ino Loyalty sözleşmenizle verilir.</p>`,
+    },
+    {
+      id: 'services',
+      title: 'CRM implementasyonu müşterileri',
+      html: `<p>Microsoft Dynamics 365 implementasyonunuzu biz yaptıysak ${support} adresine ya da proje sorumlunuza yazın. Ortam adını ve hatalar için ne zaman olduğunu belirtin.</p>`,
+    },
+    {
+      id: 'privacy',
+      title: 'Kişisel veri talepleri',
+      html: `<p>Kişisel verilerinizle ilgili sorular için <a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a> adresine yazın. <a href="${href(lang, 'privacy')}">Gizlilik politikamıza</a> bakın.</p>`,
+    },
+  ],
+};
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Geliştiriciler için' : 'For developers', href: href(lang, 'developers')},
+  {label: lang === 'tr' ? 'Shopify uygulaması gizliliği' : 'Shopify app privacy', href: href(lang, 'privacyShopify')},
+  {label: lang === 'tr' ? 'ikas uygulaması gizliliği' : 'ikas app privacy', href: href(lang, 'privacyIkas')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} />

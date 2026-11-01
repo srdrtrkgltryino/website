@@ -1,0 +1,132 @@
+---
+// Services: CRM implementation on Microsoft Dynamics 365 (Tryino does not implement other CRMs).
+import InfoPage, {type Block} from '../components/InfoPage.astro';
+import {href, type Lang} from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const demo = href(lang, 'contact');
+const en = {
+  title: 'Microsoft Dynamics 365 CRM implementation · Tryino',
+  description: 'Tryino implements Dynamics 365 Sales, Customer Insights, Customer Service and Contact Center end to end, from requirements to go-live.',
+  hero: {
+    pill: 'CRM implementation',
+    h1: ['Dynamics 365,', 'implemented end to end'] as [string, string],
+    lead: 'Sales, Customer Insights, Customer Service and Contact Center on one platform. We take your CRM project from requirements to go-live, with a focused team that stays close to the work.',
+    cta: {label: 'Talk to us', href: demo},
+    secondary: {label: 'See our products', href: href(lang, 'ino')},
+    badge: 'Microsoft AI Cloud Partner',
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'What we implement',
+      title: 'The Dynamics 365 customer engagement suite',
+      cols: 3,
+      items: [
+        {title: 'Dynamics 365 Sales', text: 'B2B sales automation: opportunity management, AI-driven forecasting and Copilot-assisted selling.'},
+        {title: 'Customer Insights – Data', text: 'One unified customer profile with measures and ready-to-use AI models: churn, lifetime value, product recommendations.'},
+        {title: 'Customer Insights – Journeys', text: 'Trigger and segment-based journeys across e-mail, SMS, push and custom channels, with A/B testing and AI channel selection.'},
+        {title: 'Customer Service', text: 'Case management and omnichannel support with AI-assisted agents.'},
+        {title: 'Contact Center', text: 'Voice, digital and social channels in one AI-powered contact center.'},
+        {title: 'Teams telephony', text: 'Operator Connect or Direct Routing to bring phone calls into Microsoft Teams.'},
+      ],
+    },
+    {
+      type: 'steps',
+      eyebrow: 'How we work',
+      title: 'From first workshop to go-live',
+      items: [
+        {title: 'Discover', text: 'Workshops with your teams to map processes, data and the outcomes that matter.'},
+        {title: 'Design', text: 'A solution design on standard Dynamics 365 first, custom only where it pays off.'},
+        {title: 'Build and integrate', text: 'Configuration, data migration and integrations with your ERP, e-commerce and data platforms.'},
+        {title: 'Go live and grow', text: 'Training, a calm launch and support afterwards, with improvements as your teams adopt it.'},
+      ],
+    },
+    {
+      type: 'split',
+      eyebrow: 'Why Tryino',
+      title: 'Consultants who also build products',
+      text: 'We build our own software on Microsoft Azure and Dataverse, so we know the platform beyond configuration: limits, performance, security and what holds up in production.',
+      list: [
+        'A focused team that moves fast and stays close to your project',
+        'End-to-end coverage instead of a single module',
+        'Everything runs on Microsoft Azure security, scale and AI',
+        'Products that extend Dynamics 365: BrowserPing and Ino Loyalty',
+      ],
+      cta: {label: 'Discuss your project', href: demo},
+      aside: {title: 'Our products on the Microsoft platform', lines: ['Ino Loyalty: loyalty for retail and e-commerce, on Dataverse', 'BrowserPing: web push and in-page banners for Customer Insights – Journeys']},
+    },
+    {
+      type: 'cta',
+      title: 'Planning a Dynamics 365 project?',
+      text: 'Tell us where you are starting from. We reply within one business day.',
+      cta: {label: 'Contact us', href: demo},
+    },
+  ] as Block[],
+};
+const tr: typeof en = {
+  title: 'Microsoft Dynamics 365 CRM implementasyonu · Tryino',
+  description: 'Tryino; Dynamics 365 Sales, Customer Insights, Customer Service ve Contact Center\'ı ihtiyaç analizinden canlıya geçişe kadar uçtan uca kurar.',
+  hero: {
+    pill: 'CRM implementasyonu',
+    h1: ['Dynamics 365,', 'uçtan uca kurulum'],
+    lead: 'Sales, Customer Insights, Customer Service ve Contact Center tek platformda. CRM projenizi ihtiyaç analizinden canlıya geçişe kadar, işe yakın duran odaklı bir ekiple yürütürüz.',
+    cta: {label: 'Bizimle konuşun', href: demo},
+    secondary: {label: 'Ürünlerimizi görün', href: href(lang, 'ino')},
+    badge: 'Microsoft AI Cloud Partner',
+  },
+  blocks: [
+    {
+      type: 'cards',
+      eyebrow: 'Neleri kuruyoruz',
+      title: 'Dynamics 365 müşteri etkileşimi paketi',
+      cols: 3,
+      items: [
+        {title: 'Dynamics 365 Sales', text: 'B2B satış otomasyonu: fırsat yönetimi, yapay zekâ destekli tahminleme ve Copilot ile satış.'},
+        {title: 'Customer Insights – Data', text: 'Ölçümler ve hazır yapay zekâ modelleriyle tek müşteri profili: kayıp riski, yaşam boyu değer, ürün önerileri.'},
+        {title: 'Customer Insights – Journeys', text: 'E-posta, SMS, push ve özel kanallarda tetikleyici ve segment tabanlı yolculuklar; A/B testi ve yapay zekâ ile kanal seçimi.'},
+        {title: 'Customer Service', text: 'Vaka yönetimi ve yapay zekâ destekli temsilcilerle çok kanallı destek.'},
+        {title: 'Contact Center', text: 'Ses, dijital ve sosyal kanallar tek, yapay zekâ destekli iletişim merkezinde.'},
+        {title: 'Teams telefonu', text: 'Operator Connect ya da Direct Routing ile telefon görüşmelerini Microsoft Teams\'e taşıma.'},
+      ],
+    },
+    {
+      type: 'steps',
+      eyebrow: 'Nasıl çalışırız',
+      title: 'İlk atölyeden canlıya geçişe',
+      items: [
+        {title: 'Keşif', text: 'Ekiplerinizle süreçleri, verileri ve önemli sonuçları çıkardığımız atölyeler.'},
+        {title: 'Tasarım', text: 'Önce standart Dynamics 365, yalnızca değer kattığı yerde özel geliştirme.'},
+        {title: 'Kurulum ve entegrasyon', text: 'Yapılandırma, veri taşıma ve ERP, e-ticaret ve veri platformlarınızla entegrasyon.'},
+        {title: 'Canlıya geçiş ve büyüme', text: 'Eğitim, sakin bir geçiş ve sonrasında destek; ekipler benimsedikçe iyileştirmeler.'},
+      ],
+    },
+    {
+      type: 'split',
+      eyebrow: 'Neden Tryino',
+      title: 'Ürün de geliştiren danışmanlar',
+      text: 'Kendi yazılımlarımızı Microsoft Azure ve Dataverse üzerinde geliştiriyoruz; platformu yapılandırmanın ötesinde tanıyoruz: sınırlar, performans, güvenlik ve canlıda neyin dayandığı.',
+      list: [
+        'Hızlı hareket eden, projenize yakın duran odaklı bir ekip',
+        'Tek modül değil, uçtan uca kapsam',
+        'Her şey Microsoft Azure güvenliği, ölçeği ve yapay zekâsı üzerinde',
+        'Dynamics 365\'i genişleten ürünler: BrowserPing ve Ino Loyalty',
+      ],
+      cta: {label: 'Projenizi konuşalım', href: demo},
+      aside: {title: 'Microsoft platformundaki ürünlerimiz', lines: ['Ino Loyalty: perakende ve e-ticaret için sadakat, Dataverse üzerinde', 'BrowserPing: Customer Insights – Journeys için web push ve sayfa içi banner']},
+    },
+    {
+      type: 'cta',
+      title: 'Bir Dynamics 365 projesi mi planlıyorsunuz?',
+      text: 'Nereden başladığınızı anlatın. Bir iş günü içinde dönüş yapıyoruz.',
+      cta: {label: 'İletişime geçin', href: demo},
+    },
+  ] as Block[],
+};
+const c = lang === 'tr' ? tr : en;
+---
+
+<InfoPage lang={lang} title={c.title} description={c.description} hero={c.hero} blocks={c.blocks} />
