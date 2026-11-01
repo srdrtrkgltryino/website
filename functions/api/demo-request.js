@@ -42,24 +42,6 @@ async function sendMail(env, {subject, text, replyTo}) {
   if (!res.ok) throw new Error(`sendMail ${res.status}`);
 }
 
-// Temporary diagnostics (GET): which settings are present and whether Microsoft accepts the credentials.
-// Shows names, true/false and Microsoft error codes only, never values.
-export async function onRequestGet({env}) {
-  const names = ['GRAPH_TENANT_ID', 'GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET', 'MAIL_FROM', 'MAIL_TO'];
-  const present = Object.fromEntries(names.map((n) => [n, Boolean(env[n])]));
-  let token = 'not tried';
-  if (present.GRAPH_TENANT_ID && present.GRAPH_CLIENT_ID && present.GRAPH_CLIENT_SECRET) {
-    const res = await fetch(`https://login.microsoftonline.com/${env.GRAPH_TENANT_ID}/oauth2/v2.0/token`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({grant_type: 'client_credentials', client_id: env.GRAPH_CLIENT_ID, client_secret: env.GRAPH_CLIENT_SECRET, scope: 'https://graph.microsoft.com/.default'}),
-    });
-    const body = await res.json().catch(() => ({}));
-    token = res.ok ? 'ok' : `error ${res.status} ${(body.error_codes || []).join(',')} ${body.error || ''}`.trim();
-  }
-  return json(200, {present, token});
-}
-
 export async function onRequestPost({request, env}) {
   // Same-site only: the form lives on tryino.com and its Cloudflare previews.
   const origin = request.headers.get('Origin') || '';
