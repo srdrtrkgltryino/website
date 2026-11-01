@@ -1,7 +1,7 @@
 ---
-// Demo booking: pick a preferred day and time (Türkiye time), fill in a short form, and the request opens as a
-// ready-made e-mail to info@tryino.com in the visitor's mail app (no server involved). If no mail app opens, the
-// request can be copied. A coupon from the visitor program is prefilled.
+// Demo booking: pick a preferred day and time (Türkiye time), fill in a short form, and our server e-mails the request
+// to the team (chat.tryino.com/demo-request on the Mac mini, Microsoft Graph). If the server can't be reached, the
+// visitor gets a ready-made e-mail and a copy button instead, so no request is lost. A POC code is prefilled.
 import {href, type Lang} from '../i18n';
 import {company as co} from '../data/company';
 
@@ -29,19 +29,23 @@ const c = {
     coupon: 'Free POC code (optional)',
     linkedin: 'Your LinkedIn profile (needed for the free POC)',
     linkedinPh: 'linkedin.com/in/your-name',
-    notice: 'The button opens an e-mail to {mail} with your request; send it and we reply within one business day. We use these details only to reply and arrange the demo.',
+    notice: 'We use these details only to reply and arrange the demo.',
     privacy: 'Privacy policy',
     submit: 'Request this time',
     submitNoSlot: 'Request a demo',
+    sending: 'Sending…',
+    okTitle: 'Request received',
+    okText: 'Thanks, {name}. We have your request for {slot} and will confirm by e-mail within one business day.',
+    okNoSlot: 'Thanks, {name}. We have your request and will get back to you by e-mail within one business day.',
     copy: 'Copy request',
     copied: 'Copied',
-    openAgain: 'Open the e-mail again',
+    openAgain: 'Open the e-mail',
     required: 'Please fill in your name, work e-mail and company.',
     invalidEmail: 'That e-mail address doesn\'t look right.',
-    doneTitle: 'Almost done: send the e-mail',
-    doneText: 'Thanks, {name}. Your mail app should open with the request for {slot}. Send it and we will confirm within one business day.',
-    doneNoSlot: 'Thanks, {name}. Your mail app should open with your request. Send it and we will reply within one business day.',
-    manual: 'No mail app opened? Copy the request and send it to {mail}.',
+    doneTitle: 'We couldn’t send it from here',
+    doneText: 'Sorry, {name}: our server didn’t answer. Your request is ready as an e-mail; open it and press send, or copy it.',
+    doneNoSlot: 'Sorry, {name}: our server didn’t answer. Your request is ready as an e-mail; open it and press send, or copy it.',
+    manual: 'No mail app? Copy the request and send it to {mail}.',
     ics: 'Add to my calendar (tentative)',
     icsTitle: 'Ino Loyalty demo with Tryino (to be confirmed)',
     weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -65,19 +69,23 @@ const c = {
     coupon: 'Ücretsiz POC kodu (isteğe bağlı)',
     linkedin: 'LinkedIn profiliniz (ücretsiz POC için gerekli)',
     linkedinPh: 'linkedin.com/in/adiniz',
-    notice: 'Düğme, talebinizi içeren ve {mail} adresine giden bir e-posta açar; gönderdiğinizde bir iş günü içinde yanıtlarız. Bu bilgileri yalnızca size dönmek ve demoyu planlamak için kullanırız.',
+    notice: 'Bu bilgileri yalnızca size dönmek ve demoyu planlamak için kullanırız.',
     privacy: 'Gizlilik politikası',
     submit: 'Bu saati talep et',
     submitNoSlot: 'Demo talep et',
+    sending: 'Gönderiliyor…',
+    okTitle: 'Talebiniz alındı',
+    okText: 'Teşekkürler {name}. {slot} için talebiniz bize ulaştı; bir iş günü içinde e-postayla onaylayacağız.',
+    okNoSlot: 'Teşekkürler {name}. Talebiniz bize ulaştı; bir iş günü içinde e-postayla dönüş yapacağız.',
     copy: 'Talebi kopyala',
     copied: 'Kopyalandı',
-    openAgain: 'E-postayı yeniden aç',
+    openAgain: 'E-postayı aç',
     required: 'Lütfen ad, iş e-postası ve şirket alanlarını doldurun.',
     invalidEmail: 'E-posta adresi doğru görünmüyor.',
-    doneTitle: 'Son adım: e-postayı gönderin',
-    doneText: 'Teşekkürler {name}. E-posta uygulamanız {slot} talebinizle açılmış olmalı. Gönderin, bir iş günü içinde onaylayalım.',
-    doneNoSlot: 'Teşekkürler {name}. E-posta uygulamanız talebinizle açılmış olmalı. Gönderin, bir iş günü içinde dönelim.',
-    manual: 'E-posta uygulaması açılmadı mı? Talebi kopyalayıp {mail} adresine gönderin.',
+    doneTitle: 'Buradan gönderemedik',
+    doneText: 'Üzgünüz {name}, sunucumuz yanıt vermedi. Talebiniz e-posta olarak hazır; açıp gönderebilir ya da kopyalayabilirsiniz.',
+    doneNoSlot: 'Üzgünüz {name}, sunucumuz yanıt vermedi. Talebiniz e-posta olarak hazır; açıp gönderebilir ya da kopyalayabilirsiniz.',
+    manual: 'E-posta uygulamanız yok mu? Talebi kopyalayıp {mail} adresine gönderin.',
     ics: 'Takvimime ekle (kesinleşmedi)',
     icsTitle: 'Tryino ile Ino Loyalty demosu (onay bekliyor)',
     weekdays: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum'],
@@ -116,14 +124,21 @@ const copy = {...c, lang, mailto: co.infoEmail};
         <label data-coupon-row hidden><span>{c.coupon}</span><input name="coupon" autocomplete="off" spellcheck="false" data-coupon /></label>
         <label data-coupon-row hidden><span>{c.linkedin}</span><input name="linkedin" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder={c.linkedinPh} /></label>
       </div>
-      <p class="b-notice">{c.notice.replace('{mail}', co.infoEmail)} <a href={href(lang, 'privacy')}>{c.privacy}</a></p>
+        <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+      <p class="b-notice">{c.notice} <a href={href(lang, 'privacy')}>{c.privacy}</a></p>
       <p class="b-error" role="alert" data-error hidden></p>
       <button class="btn btn-primary b-submit" type="submit" data-submit>{c.submitNoSlot} <span class="arrow">→</span></button>
     </fieldset>
   </form>
 
+  <div class="b-result" data-ok hidden tabindex="-1">
+    <span class="b-check" aria-hidden="true">✓</span>
+    <h3>{c.okTitle}</h3>
+    <p data-ok-text></p>
+    <button type="button" class="btn btn-ghost" data-ok-ics hidden>{c.ics}</button>
+  </div>
   <div class="b-result" data-done hidden tabindex="-1">
-    <span class="b-check" aria-hidden="true">✉</span>
+    <span class="b-check fail" aria-hidden="true">✉</span>
     <h3>{c.doneTitle}</h3>
     <p data-done-text></p>
     <div class="b-actions">
@@ -269,7 +284,8 @@ const copy = {...c, lang, mailto: co.infoEmail};
       setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     }
 
-    form.addEventListener('submit', (e) => {
+    const API = 'https://chat.tryino.com/demo-request';
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       error.hidden = true;
       const data: Record<string, string> = {
@@ -284,6 +300,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
         linkedin: field('linkedin'),
         slot: day && slot ? slotDate(day, slot).toISOString() : '',
         slotLabel: slotLabel(),
+        website: field('website'),
       };
       if (!data.name || !data.email || !data.company) {
         error.textContent = c.required;
@@ -295,12 +312,39 @@ const copy = {...c, lang, mailto: co.infoEmail};
         error.hidden = false;
         return;
       }
+      const first = data.name.split(' ')[0];
+      const btn = q<HTMLButtonElement>('[data-submit]');
+      btn.disabled = true;
+      btn.firstChild!.textContent = `${c.sending} `;
+      let sent = false;
+      try {
+        const res = await fetch(API, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)});
+        sent = res.ok;
+      } catch {
+        sent = false;
+      }
+      btn.disabled = false;
+      btn.firstChild!.textContent = `${data.slot ? c.submit : c.submitNoSlot} `;
+      document.dispatchEvent(new CustomEvent('visitor:track', {detail: 'demo'}));
+      if (sent) {
+        form.hidden = true;
+        const ok = q('[data-ok]');
+        q('[data-ok-text]').textContent = (data.slotLabel ? c.okText : c.okNoSlot).replace('{name}', first).replace('{slot}', data.slotLabel);
+        const okIcs = q('[data-ok-ics]');
+        okIcs.hidden = !data.slot;
+        okIcs.onclick = () => ics(data);
+        ok.hidden = false;
+        ok.focus();
+        analytics('generate_lead', {method: 'demo_form', topic: data.topic, has_slot: data.slot ? 1 : 0, has_coupon: data.coupon ? 1 : 0});
+        return;
+      }
+      // Server unreachable: hand the visitor a ready-made e-mail instead (they choose to open it).
       const subject = `${c.lang === 'tr' ? 'Demo talebi' : 'Demo request'}: ${data.company}`;
       const body = mailBody(data);
       const mailto = `mailto:${c.mailto}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       form.hidden = true;
       const done = q('[data-done]');
-      q('[data-done-text]').textContent = (data.slotLabel ? c.doneText : c.doneNoSlot).replace('{name}', data.name.split(' ')[0]).replace('{slot}', data.slotLabel);
+      q('[data-done-text]').textContent = (data.slotLabel ? c.doneText : c.doneNoSlot).replace('{name}', first).replace('{slot}', data.slotLabel);
       q<HTMLAnchorElement>('[data-mailto]').href = mailto;
       const copyBtn = q<HTMLButtonElement>('[data-copy]');
       copyBtn.onclick = async () => {
@@ -315,9 +359,7 @@ const copy = {...c, lang, mailto: co.infoEmail};
       icsBtn.onclick = () => ics(data);
       done.hidden = false;
       done.focus();
-      location.href = mailto;
-      document.dispatchEvent(new CustomEvent('visitor:track', {detail: 'demo'}));
-      analytics('demo_email_opened', { topic: data.topic, has_slot: data.slot ? 1 : 0, has_coupon: data.coupon ? 1 : 0});
+      analytics('demo_form_fallback', {topic: data.topic});
     });
   }
 </script>
@@ -528,6 +570,10 @@ const copy = {...c, lang, mailto: co.infoEmail};
     font-size: 14px;
     color: var(--muted);
   }
+  .hp {
+    position: absolute;
+    left: -9999px;
+  }
   .b-check {
     width: 52px;
     height: 52px;
@@ -537,6 +583,10 @@ const copy = {...c, lang, mailto: co.infoEmail};
     background: rgba(47, 191, 143, 0.14);
     color: var(--mint);
     font: 700 26px/1 var(--font-display);
+  }
+  .b-check.fail {
+    background: rgba(255, 181, 71, 0.18);
+    color: #b7791f;
   }
   .b-result p {
     color: var(--ink-2);
