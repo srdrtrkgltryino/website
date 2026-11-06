@@ -1,6 +1,10 @@
 ---
 // Privacy notice for the Ino Loyalty apps on Shopify and ikas (URLs entered in the app store listings).
-// Source: Ino-Loyalty-NET docs/shopify-store/privacy-policy.md, docs/KVKK_VERI_ENVANTERI.md and the ikas connector scopes.
+// ikas: the app connects the store to the merchant's Ino Loyalty program (engine model). Source: Ino-Loyalty-NET
+// docs/shopify-store/privacy-policy.md, docs/KVKK_VERI_ENVANTERI.md and the ikas connector scopes.
+// Shopify: the standalone app on the Shop Engine, plus connected mode (further down, `shopify`). Source: Ino-Loyalty-NET
+// docs/shopify-store/protected-customer-data-standalone.md §3, docs/shopify-store/privacy-shopify-app.md,
+// docs/kvkk/veri-envanteri.json (ino-shop-engine, ino-connect rows) and docs/SHOPIFY_CONNECTED.md. Checked 2026-11-06.
 import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
 import {company as co} from '../../data/company';
 import {href, type Lang} from '../../i18n';
@@ -13,23 +17,8 @@ const {lang, platform} = Astro.props;
 const P = platform === 'shopify' ? 'Shopify' : 'ikas';
 const mail = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
 
+// ikas app (engine model).
 const access = {
-  shopify: {
-    en: `<ul>
-      <li><strong>Orders</strong>: to award points and settle them on returns and cancellations.</li>
-      <li><strong>Customers</strong> (name, e-mail, phone, marketing consent): to recognise members and keep both systems in step.</li>
-      <li><strong>Products and discounts</strong>: to calculate rewards and apply member benefits in the cart.</li>
-      <li><strong>Store credit</strong>: only if the merchant turns on points-to-store-credit.</li>
-    </ul>
-    <p>The app does not access payment card data or customer addresses.</p>`,
-    tr: `<ul>
-      <li><strong>Siparişler</strong>: puan vermek, iade ve iptallerde puanı düzeltmek için.</li>
-      <li><strong>Müşteriler</strong> (ad, e-posta, telefon, pazarlama izni): üyeleri tanımak ve iki sistemi eşit tutmak için.</li>
-      <li><strong>Ürünler ve indirimler</strong>: ödülleri hesaplamak ve üye avantajlarını sepette uygulamak için.</li>
-      <li><strong>Mağaza kredisi</strong>: yalnızca mağaza puanı mağaza kredisine çevirmeyi açarsa.</li>
-    </ul>
-    <p>Uygulama ödeme kartı verilerine ve müşteri adreslerine erişmez.</p>`,
-  },
   ikas: {
     en: `<ul>
       <li><strong>Orders</strong> (read): to award points and settle them on returns and cancellations.</li>
@@ -44,18 +33,14 @@ const access = {
     </ul>
     <p>Uygulama ödeme kartı verilerine erişmez.</p>`,
   },
-}[platform];
+}.ikas;
 
 const removal = {
-  shopify: {
-    en: `<p>When the merchant uninstalls the app, Shopify asks us to delete the store's data (shop/redact) and we do so within 48 hours, except records the merchant's Ino Loyalty agreement or the law requires us to keep. Shopper requests for access or deletion that reach Shopify are forwarded to us (customers/data_request, customers/redact) and we fulfil them.</p>`,
-    tr: `<p>Mağaza uygulamayı kaldırdığında Shopify bizden mağazanın verilerini silmemizi ister (shop/redact); Ino Loyalty sözleşmesinin ya da kanunun saklamamızı gerektirdiği kayıtlar dışında 48 saat içinde sileriz. Müşterilerin Shopify'a ilettiği erişim ve silme talepleri bize aktarılır (customers/data_request, customers/redact) ve yerine getirilir.</p>`,
-  },
   ikas: {
     en: `<p>When the merchant uninstalls the app, we stop accessing the store and delete its access credentials. Program data held in Ino Loyalty is then deleted or returned as the merchant's Ino Loyalty agreement sets out. Shopper requests for access or deletion go to the merchant, who handles them with the privacy tools in Ino Loyalty.</p>`,
     tr: `<p>Mağaza uygulamayı kaldırdığında mağazaya erişimi durdurur, erişim bilgilerini sileriz. Ino Loyalty'de tutulan program verileri, mağazanın Ino Loyalty sözleşmesinde belirtildiği şekilde silinir ya da iade edilir. Müşterilerin erişim ve silme talepleri mağazaya iletilir; mağaza bunları Ino Loyalty'deki gizlilik araçlarıyla karşılar.</p>`,
   },
-}[platform];
+}.ikas;
 
 const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
   title: `Ino Loyalty for ${P} privacy policy · Tryino`,
@@ -168,13 +153,255 @@ const tr: typeof en = {
     },
   ],
 };
-const c = lang === 'tr' ? tr : en;
-const other = platform === 'shopify' ? 'privacyIkas' : 'privacyShopify';
-const related = [
-  {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
-  {label: platform === 'shopify' ? (lang === 'tr' ? 'ikas için Ino Loyalty' : 'Ino Loyalty for ikas') : lang === 'tr' ? 'Shopify için Ino Loyalty' : 'Ino Loyalty for Shopify', href: href(lang, other)},
-  {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+
+// Shopify app: Ino Loyalty from the Shopify App Store. It runs on Tryino's Shop Engine and Ino Connect (standalone
+// mode) unless the merchant has its own Ino Loyalty Engine (connected mode). It replaces the engine-model text above,
+// which still applies to ikas. Numbers: protected-customer-data-standalone.md §3 and veri-envanteri.json.
+// TODO(owner): co.legalName/co.address are placeholders ("Tryino", "İstanbul, Türkiye"); set the full trade name and
+// registered address in src/data/company.ts.
+const support = `<a href="mailto:${co.supportEmail}">${co.supportEmail}</a>`;
+const shopifyUpdated = '2026-11-06';
+const keptEn: [string, string][] = [
+  ['Membership: Shopify customer ID, join date, tier, referral code', 'While the store uses the app, until the customer’s data is erased'],
+  ['Points history, basket reservations, tier history, badges, referrals', 'While the membership exists'],
+  ['Order summaries: amount, products, points', 'While the store uses the app. On erasure, unlinked from the person and cleared.'],
+  ['Game plays, product likes, daily check-ins', 'Deleted after the period the store sets: 30 to 1,095 days, 365 by default'],
+  ['Incoming order notifications (reduced)', 'Content emptied once processed, deleted after 30 days'],
+  ['Technical event log (Shopify IDs only)', '90 days'],
+  ['Data access reports', 'Emptied after 30 days, deleted after 60 days'],
+  ['Store staff IDs on point changes and settings', 'With the related record'],
+  ['Backups', '14 days, rolling'],
+  ['Server logs (no shopper data)', '90 days'],
 ];
+const keptTr: [string, string][] = [
+  ['Üyelik: Shopify müşteri kimliği, katılma tarihi, kademe, davet kodu', 'Mağaza uygulamayı kullandığı sürece, müşterinin verisi silinene kadar'],
+  ['Puan geçmişi, sepet ayırmaları, kademe geçmişi, rozetler, davetler', 'Üyelik sürdüğü sürece'],
+  ['Sipariş özetleri: tutar, ürünler, puan', 'Mağaza uygulamayı kullandığı sürece. Silme talebinde kişiden ayrılır ve temizlenir.'],
+  ['Oyunlar, ürün beğenileri, günlük girişler', 'Mağazanın belirlediği sürenin sonunda silinir: 30 ile 1.095 gün arası, varsayılan 365'],
+  ['Gelen sipariş bildirimleri (azaltılmış)', 'İşlenince içeriği boşaltılır, 30 gün sonra silinir'],
+  ['Teknik olay kaydı (yalnız Shopify kimlikleri)', '90 gün'],
+  ['Veri erişim raporları', '30 gün sonra boşaltılır, 60 gün sonra silinir'],
+  ['Puan değişikliği ve ayarlardaki mağaza personeli kimlikleri', 'İlgili kayıtla birlikte'],
+  ['Yedekler', '14 gün, dönerek'],
+  ['Sunucu kayıtları (müşteri verisi yok)', '90 gün'],
+];
+const table = (head: [string, string], rows: [string, string][]) =>
+  `<div class="table"><table><thead><tr><th>${head[0]}</th><th>${head[1]}</th></tr></thead><tbody>${rows.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</tbody></table></div>`;
+const link = (key: 'termsShopify' | 'dpaShopify' | 'incidentResponse' | 'support' | 'privacy', text: string) => `<a href="${href(lang, key)}">${text}</a>`;
+
+const shopifyEn: typeof en = {
+  title: 'Ino Loyalty for Shopify privacy policy · Tryino',
+  description: 'What data the Ino Loyalty app for Shopify accesses, what it stores and for how long, who processes it and how shoppers and merchants can exercise their rights.',
+  eyebrow: 'Ino Loyalty for Shopify',
+  h1: 'App privacy policy',
+  intro: 'This policy covers the Ino Loyalty app installed from the Shopify App Store. Our general privacy policy covers tryino.com itself.',
+  sections: [
+    {
+      id: 'roles',
+      title: 'Who is responsible',
+      html: `<p>Ino Loyalty is made by ${co.legalName}, ${co.address}. The merchant that installs the app runs its own loyalty program and is the <strong>controller</strong> of its customers’ data. Tryino processes that data on the merchant’s behalf and on its instructions, as the <strong>processor</strong>, under our ${link('dpaShopify', 'data processing agreement')}. We are the controller only for our own business contact with merchants, such as support e-mails. Shoppers should send privacy questions to the store first.</p>`,
+    },
+    {
+      id: 'how',
+      title: 'How the app runs',
+      html: `<p>By default the app runs the loyalty program on Tryino’s own services, Ino Connect and the Shop Engine, hosted on Microsoft Azure in France Central (Paris, EU). This policy describes that standard setup. A store that has a separate Ino Loyalty Engine agreement with Tryino can be moved to its own engine; the section “If the store moves to its own Ino Loyalty Engine” explains what changes then.</p>`,
+    },
+    {
+      id: 'access',
+      title: 'What the app accesses in Shopify',
+      html: `<ul>
+        <li><strong>Orders and refunds</strong>: order number, amount, products and the Shopify customer ID, to award points and adjust them on cancellations and refunds. Any names, e-mail, phone or address in order data are discarded before anything is stored.</li>
+        <li><strong>Customers</strong>: the Shopify customer ID, the order count (for referral rewards) and the customer’s name. The name is shown live to store staff in the app’s admin pages and is never stored. The app writes the member’s points balance and tier to the customer record as app fields and tags, so the store can use them in its theme, e-mails and Shopify Flow.</li>
+        <li><strong>Products, collections and discounts</strong>: to calculate rewards, run games and apply member benefits in the cart.</li>
+      </ul>
+      <p>The app does not access payment data and does not use phone numbers or addresses. Shoppers join with one click from their store account: there is no phone verification and the app sends no SMS.</p>`,
+    },
+    {
+      id: 'stored',
+      title: 'What we store and for how long',
+      html: `${table(['Data', 'Kept'], keptEn)}
+      <p>We do not store shopper names, e-mail addresses, phone numbers, addresses or payment details.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'How we use it',
+      html: `<p>Only to run the store’s loyalty program: earning and spending points, tiers, campaigns, referrals, missions and games, and showing the store its members and reports. The app sends no marketing messages itself; events such as “points expiring” or “tier changed” go to the store’s own Shopify Flow, where the store applies its customers’ marketing consent. We do not sell data, share it for advertising or use it across stores, and the app makes no automated decisions with legal or similar effects.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Sub-processors',
+      html: `<p>Each store’s data is kept separate from every other store’s.</p>
+      <ul>
+        <li><strong>Microsoft Azure</strong>: hosting, database, key storage and logs, in the France Central region (Paris, EU).</li>
+        <li><strong>Microsoft 365</strong>: our e-mail, only for messages you send us.</li>
+      </ul>
+      <p>Cloudflare provides DNS only and does not receive app data. No analytics, advertising, SMS or e-mail-sending service receives shopper data.</p>`,
+      // TODO(owner): If the Cloudflare proxy is switched on before launch, add Cloudflare as a sub-processor here and in the DPA.
+    },
+    {
+      id: 'requests',
+      title: 'Shopify privacy requests and deletion',
+      html: `<ul>
+        <li><strong>customers/data_request</strong>: we prepare a report of the loyalty data we hold about the customer. The store can download it in the app.</li>
+        <li><strong>customers/redact</strong>: we delete the member and their loyalty data, usually within minutes.</li>
+        <li><strong>shop/redact</strong>: Shopify sends this 48 hours after the store uninstalls the app. We then delete all of that store’s data.</li>
+      </ul>
+      <p>Deleted data disappears from backups within 14 days.</p>`,
+    },
+    {
+      id: 'rights',
+      title: 'Shoppers’ rights',
+      html: `<p>Shoppers can ask the store for access to, correction of or deletion of their data. Requests made through Shopify reach us automatically, as above. You can also write to ${mail}, and we will help the store answer within the legal deadline (30 days under KVKK).</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Security',
+      html: `<ul>
+        <li>All traffic uses HTTPS with HSTS. Data and backups are encrypted at rest, and Shopify access tokens are additionally encrypted (AES-GCM).</li>
+        <li>The database is on a private network with no internet access. Secrets are kept in Azure Key Vault and read by managed identities.</li>
+        <li>Access to secrets in Key Vault (audit events) and connections to the database are logged to Azure Log Analytics and kept for 90 days. Application logs contain no shopper data.</li>
+        <li>Row-level security keeps each store’s data apart. Access to the app’s admin pages is checked with Shopify session tokens and limited to authorised staff. Staff point changes have daily limits.</li>
+        <li>We have a ${link('incidentResponse', 'security incident response policy')}. If an incident affects a store’s data, we inform the store without undue delay.</li>
+      </ul>`,
+    },
+    {
+      id: 'location',
+      title: 'Where the data is',
+      html: `<p>Data is hosted by Microsoft Azure in France Central (Paris, EU). ${co.legalName} is based in Türkiye, and our staff may access the systems remotely for support and operations. The safeguards for that access are set out in the ${link('dpaShopify', 'data processing agreement')}.</p>`,
+    },
+    {
+      id: 'connected',
+      title: 'If the store moves to its own Ino Loyalty Engine',
+      html: `<p>A merchant that has a separate Ino Loyalty Engine agreement with Tryino can ask us to move its store to its own engine. This happens only under that agreement.</p>
+      <ul>
+        <li>The merchant’s own engine then runs the program. To create members in the merchant’s system, it reads the customer’s name, e-mail and phone from Shopify. That engine and its data are covered by the merchant’s Ino Loyalty agreement, not by this policy.</li>
+        <li>The data moved from the app contains no names, e-mail addresses or phone numbers; the engine reads them from Shopify itself.</li>
+        <li>The copy in the Shop Engine is kept for 30 days so that the merchant can receive its history file, and is then deleted. If Shopify sends shop/redact, it is deleted at once.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>Privacy: ${mail} · Support: ${support}</p>
+      <p>See also the ${link('termsShopify', 'terms of service')}, the ${link('dpaShopify', 'data processing agreement')} and our general ${link('privacy', 'privacy policy')} for tryino.com.</p>`,
+    },
+  ],
+};
+
+const shopifyTr: typeof en = {
+  title: 'Shopify için Ino Loyalty gizlilik politikası · Tryino',
+  description: 'Shopify için Ino Loyalty uygulamasının hangi verilere eriştiği, neyi ne kadar süre sakladığı, kimlerin işlediği ve müşterilerle mağazaların haklarını nasıl kullanacağı.',
+  eyebrow: 'Shopify için Ino Loyalty',
+  h1: 'Uygulama gizlilik politikası',
+  intro: "Bu politika, Shopify App Store'dan kurulan Ino Loyalty uygulamasını kapsar. tryino.com'un kendisi için genel gizlilik politikamız geçerlidir.",
+  sections: [
+    {
+      id: 'roles',
+      title: 'Kim sorumlu',
+      html: `<p>Ino Loyalty, ${co.legalName} (${co.address}) tarafından geliştirilir. Uygulamayı kuran mağaza kendi sadakat programını yürütür ve müşterilerinin verileri için <strong>veri sorumlusudur</strong>. Tryino bu verileri ${link('dpaShopify', 'veri işleme sözleşmemiz')} kapsamında, mağaza adına ve mağazanın talimatıyla işler, yani <strong>veri işleyendir</strong>. Yalnız mağazalarla kendi iş iletişimimiz için (örneğin destek e-postaları) veri sorumlusuyuz. Müşteriler gizlilik sorularını önce mağazaya iletmelidir.</p>`,
+    },
+    {
+      id: 'how',
+      title: 'Uygulama nasıl çalışır',
+      html: `<p>Uygulama sadakat programını varsayılan olarak Tryino'nun kendi servislerinde, Ino Connect ve Mağaza Motoru'nda (Shop Engine) yürütür; bunlar Microsoft Azure'da, France Central bölgesinde (Paris, AB) barındırılır. Bu politika bu standart kurulumu anlatır. Tryino ile ayrı bir Ino Loyalty Engine sözleşmesi olan mağaza kendi motoruna taşınabilir; o durumda neyin değiştiğini “Mağaza kendi Ino Loyalty Engine'ine geçerse” bölümü anlatır.</p>`,
+    },
+    {
+      id: 'access',
+      title: "Uygulamanın Shopify'da eriştiği veriler",
+      html: `<ul>
+        <li><strong>Siparişler ve iadeler</strong>: sipariş numarası, tutar, ürünler ve Shopify müşteri kimliği; puan vermek, iptal ve iadede puanı düzeltmek için. Sipariş verisindeki ad, e-posta, telefon ve adres, hiçbir şey kaydedilmeden önce atılır.</li>
+        <li><strong>Müşteriler</strong>: Shopify müşteri kimliği, sipariş sayısı (davet ödülü için) ve müşterinin adı. Ad, uygulamanın yönetim sayfalarında mağaza personeline o an gösterilir ve hiç saklanmaz. Uygulama, üyenin puan bakiyesini ve kademesini müşteri kaydına uygulama alanı ve etiket olarak yazar; mağaza bunları temasında, e-postalarında ve Shopify Flow'da kullanabilir.</li>
+        <li><strong>Ürünler, koleksiyonlar ve indirimler</strong>: ödülleri hesaplamak, oyunları çalıştırmak ve üye avantajlarını sepette uygulamak için.</li>
+      </ul>
+      <p>Uygulama ödeme verilerine erişmez, telefon numarası ve adres kullanmaz. Müşteriler mağaza hesaplarıyla tek tıkla katılır: telefon doğrulaması yoktur ve uygulama SMS göndermez.</p>`,
+    },
+    {
+      id: 'stored',
+      title: 'Ne saklıyoruz, ne kadar süre',
+      html: `${table(['Veri', 'Saklama'], keptTr)}
+      <p>Müşteri adı, e-posta, telefon, adres ve ödeme bilgisi saklamayız.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'Nasıl kullanıyoruz',
+      html: `<p>Yalnızca mağazanın sadakat programını yürütmek için: puan kazanma ve harcama, kademeler, kampanyalar, davetler, görevler ve oyunlar; mağazaya üyelerini ve raporlarını göstermek. Uygulama kendisi pazarlama mesajı göndermez; “puanın süresi doluyor” ya da “kademe değişti” gibi olaylar mağazanın kendi Shopify Flow'una gider ve mağaza orada müşterilerinin ticari ileti iznini uygular. Veri satmayız, reklam için paylaşmayız, mağazalar arasında kullanmayız; uygulama hukuki ya da benzeri sonuç doğuran otomatik karar vermez.</p>`,
+    },
+    {
+      id: 'sharing',
+      title: 'Alt işleyenler',
+      html: `<p>Her mağazanın verisi diğer mağazalardan ayrı tutulur.</p>
+      <ul>
+        <li><strong>Microsoft Azure</strong>: barındırma, veritabanı, anahtar saklama ve kayıtlar; France Central bölgesi (Paris, AB).</li>
+        <li><strong>Microsoft 365</strong>: e-postamız, yalnız bize yazdığınız mesajlar için.</li>
+      </ul>
+      <p>Cloudflare yalnız DNS hizmeti verir ve uygulama verisi almaz. Hiçbir analiz, reklam, SMS ya da e-posta gönderim servisi müşteri verisi almaz.</p>`,
+    },
+    {
+      id: 'requests',
+      title: 'Shopify gizlilik talepleri ve silme',
+      html: `<ul>
+        <li><strong>customers/data_request</strong>: müşteri hakkında tuttuğumuz sadakat verilerinin raporunu hazırlarız. Mağaza raporu uygulamadan indirebilir.</li>
+        <li><strong>customers/redact</strong>: üyeyi ve sadakat verilerini sileriz, genellikle dakikalar içinde.</li>
+        <li><strong>shop/redact</strong>: Shopify bu talebi, mağaza uygulamayı kaldırdıktan 48 saat sonra gönderir. O mağazanın tüm verisini sileriz.</li>
+      </ul>
+      <p>Silinen veri 14 gün içinde yedeklerden de çıkar.</p>`,
+    },
+    {
+      id: 'rights',
+      title: 'Müşterilerin hakları',
+      html: `<p>Müşteriler verilerine erişim, düzeltme ya da silme için mağazaya başvurabilir. Shopify üzerinden yapılan talepler yukarıdaki gibi bize otomatik ulaşır. ${mail} adresine de yazabilirsiniz; mağazanın yasal süre içinde (KVKK'da 30 gün) yanıt vermesine yardım ederiz.</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Güvenlik',
+      html: `<ul>
+        <li>Tüm trafik HTTPS ve HSTS ile korunur. Veriler ve yedekler şifreli saklanır, Shopify erişim anahtarları ayrıca şifrelenir (AES-GCM).</li>
+        <li>Veritabanı internete kapalı özel bir ağdadır. Sırlar Azure Key Vault'ta tutulur ve yönetilen kimliklerle okunur.</li>
+        <li>Key Vault'taki sırlara erişim (denetim olayları) ve veritabanı bağlantıları Azure Log Analytics'e kaydedilir ve 90 gün saklanır. Uygulama kayıtlarında müşteri verisi yoktur.</li>
+        <li>Satır düzeyinde güvenlik her mağazanın verisini ayrı tutar. Uygulamanın yönetim sayfalarına erişim Shopify oturum anahtarıyla doğrulanır ve yetkili personelle sınırlıdır. Personelin puan değişikliklerinde günlük sınır vardır.</li>
+        <li>Bir ${link('incidentResponse', 'güvenlik olayı müdahale politikamız')} vardır. Bir olay mağazanın verisini etkilerse mağazayı gecikmeden bilgilendiririz.</li>
+      </ul>`,
+    },
+    {
+      id: 'location',
+      title: 'Veriler nerede',
+      html: `<p>Veriler Microsoft Azure'da, France Central bölgesinde (Paris, AB) barındırılır. ${co.legalName} Türkiye'dedir; çalışanlarımız destek ve işletme için sistemlere uzaktan erişebilir. Bu erişime ilişkin güvenceler ${link('dpaShopify', 'veri işleme sözleşmesinde')} yer alır.</p>`,
+    },
+    {
+      id: 'connected',
+      title: "Mağaza kendi Ino Loyalty Engine'ine geçerse",
+      html: `<p>Tryino ile ayrı bir Ino Loyalty Engine sözleşmesi olan mağaza, mağazasının kendi motoruna taşınmasını isteyebilir. Bu yalnızca o sözleşme kapsamında yapılır.</p>
+      <ul>
+        <li>Program bundan sonra mağazanın kendi motorunda yürür. Motor, üyeleri mağazanın sisteminde oluşturmak için müşterinin adını, e-postasını ve telefonunu Shopify'dan okur. Bu motor ve verileri bu politikaya değil, mağazanın Ino Loyalty sözleşmesine tabidir.</li>
+        <li>Uygulamadan taşınan veri ad, e-posta ya da telefon içermez; motor bunları Shopify'dan kendisi okur.</li>
+        <li>Mağaza Motoru'ndaki kopya, mağazanın geçmiş dosyasını alabilmesi için 30 gün saklanır, sonra silinir. Shopify shop/redact gönderirse hemen silinir.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>Gizlilik: ${mail} · Destek: ${support}</p>
+      <p>Ayrıca ${link('termsShopify', 'hizmet şartlarına')}, ${link('dpaShopify', 'veri işleme sözleşmesine')} ve tryino.com için genel ${link('privacy', 'gizlilik politikamıza')} bakın.</p>`,
+    },
+  ],
+};
+
+const c = platform === 'shopify' ? (lang === 'tr' ? shopifyTr : shopifyEn) : lang === 'tr' ? tr : en;
+const related =
+  platform === 'shopify'
+    ? [
+        {label: lang === 'tr' ? 'Hizmet şartları' : 'Terms of service', href: href(lang, 'termsShopify')},
+        {label: lang === 'tr' ? 'Veri işleme sözleşmesi' : 'Data processing agreement', href: href(lang, 'dpaShopify')},
+        {label: lang === 'tr' ? 'Güvenlik olayı politikası' : 'Incident response policy', href: href(lang, 'incidentResponse')},
+        {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
+        {label: lang === 'tr' ? 'ikas için Ino Loyalty' : 'Ino Loyalty for ikas', href: href(lang, 'privacyIkas')},
+        {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+      ]
+    : [
+        {label: lang === 'tr' ? 'Gizlilik politikası' : 'Privacy policy', href: href(lang, 'privacy')},
+        {label: lang === 'tr' ? 'Shopify için Ino Loyalty' : 'Ino Loyalty for Shopify', href: href(lang, 'privacyShopify')},
+        {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+      ];
 ---
 
-<LegalDoc lang={lang} {...c} related={related} />
+<LegalDoc lang={lang} {...c} related={related} updated={platform === 'shopify' ? shopifyUpdated : undefined} />

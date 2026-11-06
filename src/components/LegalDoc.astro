@@ -16,9 +16,11 @@ interface Props {
   sections: Section[];
   related?: {label: string; href: string}[];
   noindex?: boolean;
+  /** ISO date of the last change to this document; defaults to the site-wide legal date (company.updated). */
+  updated?: string;
 }
-const {lang, title, description, eyebrow, h1, intro, sections, related = [], noindex} = Astro.props;
-const updated = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(company.updated));
+const {lang, title, description, eyebrow, h1, intro, sections, related = [], noindex, updated: updatedIso = company.updated} = Astro.props;
+const updated = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', {day: 'numeric', month: 'long', year: 'numeric'}).format(new Date(updatedIso));
 const t = {
   en: {updated: 'Last updated', toc: 'On this page', related: 'Related'},
   tr: {updated: 'Son güncelleme', toc: 'Bu sayfada', related: 'İlgili sayfalar'},
@@ -31,7 +33,7 @@ const t = {
       <span class="pill"><span class="dot"></span>{eyebrow}</span>
       <h1>{h1}</h1>
       {intro && <p class="lead">{intro}</p>}
-      <p class="updated">{t.updated}: <time datetime={company.updated}>{updated}</time></p>
+      <p class="updated">{t.updated}: <time datetime={updatedIso}>{updated}</time></p>
     </div>
   </header>
   <div class="container doc">
