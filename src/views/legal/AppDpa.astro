@@ -1,0 +1,390 @@
+---
+// Data processing agreement (DPA) for the Ino Loyalty app installed from the Shopify App Store (standalone app).
+// The merchant is the controller, Tryino the processor (KVKK and GDPR).
+// Sources: Ino-Loyalty-NET docs/shopify-store/protected-customer-data-standalone.md (§1, §3, §4–§6),
+// docs/shopify-store/incident-response-policy.md (§6), docs/kvkk/veri-envanteri.json (ino-shop-engine, ino-connect rows),
+// docs/SHOPIFY_CONNECTED.md (move to the merchant's own engine). Checked 2026-11-06.
+// Draft for the owner's lawyer. Search for "TODO(owner)" before publishing.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const updated = '2026-11-06';
+const privacy = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
+const terms = (text: string) => `<a href="${href(lang, 'termsShopify')}">${text}</a>`;
+const policy = (text: string) => `<a href="${href(lang, 'privacyShopify')}">${text}</a>`;
+const incident = (text: string) => `<a href="${href(lang, 'incidentResponse')}">${text}</a>`;
+const table = (head: string[], rows: string[][]) =>
+  `<div class="table"><table><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows
+    .map((r) => `<tr>${r.map((d) => `<td>${d}</td>`).join('')}</tr>`)
+    .join('')}</tbody></table></div>`;
+
+// Categories of personal data, with retention (protected-customer-data-standalone.md §3).
+const dataEn = [
+  ['Shopify customer ID; membership: join date, status, tier, referral code', 'While the app is installed, until the customer’s data is erased'],
+  ['Loyalty transactions: points ledger, basket point reservations, expiry, tier history', 'While the membership exists'],
+  ['Order summaries: order ID and number, amount, currency, date, channel, products, discount titles, points', 'While the app is installed. On customers/redact, unlinked from the person and cleared.'],
+  ['Activity: game plays and scores, product likes (“This or that”), daily check-ins, garden watering, badges, referrals between members', 'Game plays, likes and check-ins: deleted after the period the merchant sets (30 to 1,095 days, 365 by default). Others: while the membership exists.'],
+  ['Incoming order notifications, reduced to the fields above', 'Content emptied once processed; rows deleted after 30 days (failed rows after 14)'],
+  ['Technical event log: Shopify customer and resource IDs', '90 days'],
+  ['Data access reports for customers/data_request', 'Emptied after 30 days, deleted after 60 days'],
+  ['Merchant staff: Shopify staff user ID on point adjustments (with the reason typed) and on game-of-chance declarations', 'With the related record, or while the store has the app'],
+];
+const dataTr = [
+  ['Shopify müşteri kimliği; üyelik: katılma tarihi, durum, kademe, davet kodu', 'Uygulama kurulu kaldığı sürece, müşterinin verisi silinene kadar'],
+  ['Sadakat işlemleri: puan defteri, sepette puan ayırmaları, sona erme, kademe geçmişi', 'Üyelik sürdüğü sürece'],
+  ['Sipariş özetleri: sipariş kimliği ve numarası, tutar, para birimi, tarih, kanal, ürünler, indirim başlıkları, puan', 'Uygulama kurulu kaldığı sürece. customers/redact talebinde kişiden ayrılır ve temizlenir.'],
+  ['Hareketler: oyunlar ve skorlar, ürün beğenileri (“Bu mu Şu mu”), günlük girişler, bahçe sulama, rozetler, üyeler arası davetler', 'Oyunlar, beğeniler ve günlük girişler: mağazanın belirlediği sürenin sonunda silinir (30 ile 1.095 gün arası, varsayılan 365). Diğerleri: üyelik sürdüğü sürece.'],
+  ['Gelen sipariş bildirimleri, yukarıdaki alanlara indirgenmiş', 'İşlenince içeriği boşaltılır; satırlar 30 gün sonra silinir (hatalı satırlar 14 gün sonra)'],
+  ['Teknik olay kaydı: Shopify müşteri ve kaynak kimlikleri', '90 gün'],
+  ['customers/data_request için veri erişim raporları', '30 gün sonra boşaltılır, 60 gün sonra silinir'],
+  ['Mağaza personeli: puan düzeltmelerinde (yazılan gerekçeyle) ve şans oyunu beyanlarında Shopify personel kullanıcı kimliği', 'İlgili kayıtla birlikte ya da mağazada uygulama kurulu kaldığı sürece'],
+];
+
+// Security measures (protected-customer-data-standalone.md §4 item 9, §5).
+// TODO(owner): MFA on every admin account (Microsoft Entra/Azure, Shopify Partner, GitHub, Cloudflare) is still marked
+// [confirm] in the source doc, so it is not claimed below. Add it once confirmed.
+const securityEn = `<ul>
+  <li><strong>Encryption in transit:</strong> HTTPS only, with HSTS, on all app endpoints. The database is reached over a private network with TLS.</li>
+  <li><strong>Encryption at rest:</strong> database storage and backups are encrypted by Azure. Shopify access tokens are additionally sealed with AES-GCM, with the key held in Azure Key Vault.</li>
+  <li><strong>Network:</strong> the PostgreSQL database is on a private network and is not reachable from the internet. Administrative endpoints are switched off in production.</li>
+  <li><strong>Secrets:</strong> kept only in Azure Key Vault and read by managed identities; each service reads only its own secrets.</li>
+  <li><strong>Separation of stores:</strong> PostgreSQL row-level security keeps each store’s data apart. The service refuses to start under a database role that could bypass it, and automated tests check cross-store access.</li>
+  <li><strong>Data minimisation:</strong> order notifications are reduced before storage, so names, e-mail, phone and addresses are never written. Customer names are read live from Shopify for the merchant’s admin screens and never stored. Logs contain no shopper data.</li>
+  <li><strong>Merchant-side access:</strong> the app’s admin pages check Shopify session tokens and are limited to the store owner and staff with permission to manage discounts. Staff point adjustments have daily limits and are logged with the staff user ID.</li>
+  <li><strong>Webhooks:</strong> Shopify webhooks are verified by signature, and a request that names a different store is rejected.</li>
+  <li><strong>Tryino access:</strong> production access is limited by Azure role-based access control to the people who operate the app.</li>
+  <li><strong>Logging:</strong> access to secrets in Azure Key Vault (audit events) and connections to the database are logged to Azure Log Analytics and kept for 90 days. Application logs contain no shopper data.</li>
+  <li><strong>Test and production:</strong> production runs in its own environment, with its own network, database, key vault and Shopify app. Production data is not copied to test.</li>
+  <li><strong>Resilience:</strong> point-in-time backups for 14 days in the same region, with restore tests at least once a year.</li>
+  <li><strong>Incidents:</strong> a written ${incident('security incident response policy')}.</li>
+</ul>`;
+const securityTr = `<ul>
+  <li><strong>Aktarımda şifreleme:</strong> uygulamanın tüm uçlarında yalnız HTTPS ve HSTS. Veritabanına özel ağ üzerinden TLS ile bağlanılır.</li>
+  <li><strong>Depolamada şifreleme:</strong> veritabanı depolaması ve yedekler Azure tarafından şifrelenir. Shopify erişim anahtarları ayrıca AES-GCM ile şifrelenir; anahtar Azure Key Vault'ta tutulur.</li>
+  <li><strong>Ağ:</strong> PostgreSQL veritabanı özel bir ağdadır, internetten erişilemez. Yönetim uçları üretimde kapalıdır.</li>
+  <li><strong>Sırlar:</strong> yalnız Azure Key Vault'ta tutulur ve yönetilen kimliklerle okunur; her servis yalnız kendi sırlarını okur.</li>
+  <li><strong>Mağazaların ayrımı:</strong> PostgreSQL satır düzeyinde güvenlik her mağazanın verisini ayrı tutar. Servis, bunu atlayabilecek bir veritabanı rolüyle açılmayı reddeder; otomatik testler mağazalar arası erişimi denetler.</li>
+  <li><strong>Veri azaltma:</strong> sipariş bildirimleri saklanmadan önce indirgenir; ad, e-posta, telefon ve adres hiç yazılmaz. Müşteri adları mağazanın yönetim ekranları için Shopify'dan o an okunur, saklanmaz. Kayıtlarda müşteri verisi yoktur.</li>
+  <li><strong>Mağaza tarafında erişim:</strong> uygulamanın yönetim sayfaları Shopify oturum anahtarını doğrular ve mağaza sahibi ile indirim yönetme izni olan personelle sınırlıdır. Personelin puan düzeltmelerinde günlük sınır vardır ve personel kullanıcı kimliğiyle kaydedilir.</li>
+  <li><strong>Webhook'lar:</strong> Shopify webhook'ları imzayla doğrulanır; başka bir mağazayı adlandıran istek reddedilir.</li>
+  <li><strong>Tryino erişimi:</strong> üretim erişimi Azure rol tabanlı erişim denetimiyle uygulamayı işleten kişilerle sınırlıdır.</li>
+  <li><strong>Kayıt tutma:</strong> Azure Key Vault'taki sırlara erişim (denetim olayları) ve veritabanı bağlantıları Azure Log Analytics'e kaydedilir ve 90 gün saklanır. Uygulama kayıtlarında müşteri verisi yoktur.</li>
+  <li><strong>Test ve üretim:</strong> üretim kendi ağı, veritabanı, anahtar kasası ve Shopify uygulamasıyla ayrı bir ortamda çalışır. Üretim verisi teste kopyalanmaz.</li>
+  <li><strong>Süreklilik:</strong> aynı bölgede 14 günlük, zamana dönük geri yüklenebilir yedekler; geri yükleme en az yılda bir denenir.</li>
+  <li><strong>Olaylar:</strong> yazılı bir ${incident('güvenlik olayı müdahale politikası')}.</li>
+</ul>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Ino Loyalty for Shopify data processing agreement · Tryino',
+  description: 'The data processing agreement between merchants (controllers) and Tryino (processor) for the Ino Loyalty app for Shopify, under KVKK and GDPR.',
+  eyebrow: 'Ino Loyalty for Shopify',
+  h1: 'Data processing agreement',
+  intro: `This data processing agreement (DPA) forms part of the Ino Loyalty for Shopify terms of service between ${co.legalName} and the merchant. It applies whenever Tryino processes personal data for the merchant through the app, and is accepted with the terms when the app is installed.`,
+  sections: [
+    {
+      id: 'scope',
+      title: 'Scope and definitions',
+      html: `<ul>
+        <li><strong>Data protection law</strong> means the laws that apply to the processing, including Türkiye’s Law No. 6698 on the Protection of Personal Data (KVKK), the EU General Data Protection Regulation 2016/679 (GDPR) and, where they apply, the UK GDPR and the Swiss Federal Act on Data Protection.</li>
+        <li><strong>Personal data, processing, controller, processor, data subject</strong> and <strong>personal data breach</strong> have the meaning given in data protection law. Under KVKK, the controller is the <em>veri sorumlusu</em> and the processor the <em>veri işleyen</em>.</li>
+        <li><strong>Merchant personal data</strong> means personal data that Tryino processes on the merchant’s behalf through the app.</li>
+        <li>This DPA does not cover Tryino’s own business data about merchants, such as contact details and support correspondence, for which Tryino is the controller under its general <a href="${href(lang, 'privacy')}">privacy policy</a>. It does not cover the Ino Loyalty Engine, which has its own agreement.</li>
+      </ul>`,
+    },
+    {
+      id: 'roles',
+      title: 'Roles',
+      html: `<p>The merchant is the <strong>controller</strong> of merchant personal data and decides why and how it is processed. Tryino is the <strong>processor</strong> and processes it only on the merchant’s behalf. Each party complies with the data protection law that applies to it.</p>`,
+    },
+    {
+      id: 'details',
+      title: 'Details of the processing',
+      html: `<h3>Subject matter and duration</h3>
+      <p>Providing the Ino Loyalty app to the merchant under the ${terms('terms of service')}, for as long as the app is installed and afterwards until the data is deleted under the “Deletion and return” section.</p>
+      <h3>Nature and purpose</h3>
+      <p>Receiving, storing, calculating, displaying, reporting and deleting loyalty data in order to run the merchant’s loyalty program: earning and spending points, tiers, campaigns, referrals, missions and games; showing the merchant its members and reports; writing each member’s points balance and tier to the Shopify customer record as app fields and tags; answering Shopify privacy requests; and keeping the service secure and working.</p>
+      <h3>Data subjects</h3>
+      <ul>
+        <li>The merchant’s customers who join the loyalty program.</li>
+        <li>The merchant’s customers whose orders the app receives before or without joining. For them, only order identifiers and the Shopify customer ID are kept, briefly; orders of non-members are kept only as a count, without products.</li>
+        <li>The merchant’s staff who use the app, identified by their Shopify staff user ID.</li>
+      </ul>
+      <h3>Categories of personal data and retention</h3>
+      ${table(['Data', 'Retention'], dataEn)}
+      <p><strong>Read but not stored:</strong> the customer’s name is read live from Shopify to show it to the merchant’s staff in the app’s admin pages, and is never written to our database, logs or reports. Search text that staff type in the member search is passed to Shopify’s customer search and is not stored.</p>
+      <p><strong>Not processed:</strong> e-mail addresses, phone numbers, postal addresses and payment data are not stored. No special categories of personal data are processed.</p>`,
+      // TODO(owner): Shopify Level 2 "Email" is still undecided (protected-customer-data-standalone.md §1). If the member
+      // search is limited to names and IDs, remove the search-text sentence above; if Email access is requested, keep it.
+    },
+    {
+      id: 'instructions',
+      title: 'Processing on instructions',
+      html: `<p>Tryino processes merchant personal data only on the merchant’s documented instructions. These terms, this DPA and the settings the merchant chooses in the app are those instructions. Tryino will tell the merchant if it believes an instruction breaks data protection law, and may then decline to follow it. If the law requires Tryino to process data otherwise, Tryino will tell the merchant first, unless the law forbids it. Tryino does not sell merchant personal data, does not use it for its own purposes or for advertising, and does not combine it with other stores’ data.</p>`,
+    },
+    {
+      id: 'confidentiality',
+      title: 'Confidentiality of personnel',
+      html: `<p>Tryino gives access to merchant personal data only to personnel who need it to operate, support or secure the app, and makes sure they are bound by confidentiality obligations that continue after their work ends.</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Security measures',
+      html: `<p>Tryino takes appropriate technical and organisational measures to protect merchant personal data, taking into account the state of the art, the cost, and the nature and risks of the processing. The measures in place today are:</p>${securityEn}<p>Tryino may change the measures, but not in a way that lowers the overall level of protection.</p>`,
+    },
+    {
+      id: 'subprocessors',
+      title: 'Sub-processors',
+      html: `<p>The merchant gives Tryino general authorisation to use sub-processors. The current sub-processors are:</p>
+      ${table(['Sub-processor', 'Purpose', 'Location'], [
+        ['Microsoft (Azure): Container Apps, Database for PostgreSQL, Key Vault, Container Registry, Log Analytics / Monitor', 'Hosting, database, secrets and logs: all stored merchant personal data', 'France Central (Paris, EU)'],
+        ['Microsoft 365 (Exchange Online)', `Our support and privacy mailboxes; only what merchants or shoppers write to us`, 'Microsoft 365 data location of Tryino’s tenant'],
+      ])}
+      <ul>
+        <li>Shopify is the merchant’s own platform and is not Tryino’s sub-processor. Cloudflare provides DNS only and receives no personal data.</li>
+        <li>Tryino will tell the merchant about a new or replaced sub-processor at least 30 days in advance, in the app or by e-mail, and update this list. The merchant may object on reasonable data protection grounds. If we cannot resolve the objection, the merchant may end the terms by uninstalling the app.</li>
+        <li>Tryino imposes data protection obligations on each sub-processor that are no less protective than this DPA and remains responsible to the merchant for them.</li>
+      </ul>`,
+      // TODO(owner): Confirm the Microsoft 365 data location of the tryino.com tenant and replace the location cell above.
+      // TODO(owner): If the Cloudflare proxy is switched on before launch (URETIM_ERISIM.md §7), Cloudflare becomes a
+      // sub-processor (traffic, IP addresses) and must be added here and in the app privacy policy.
+    },
+    {
+      id: 'transfers',
+      title: 'International transfers',
+      html: `<p>Merchant personal data is stored by Microsoft Azure in France Central (Paris, EU). ${co.legalName} is based in Türkiye, and its personnel may access the systems remotely from Türkiye to operate and support the app.</p>
+      <ul>
+        <li>Where the GDPR applies to that access, the EU Standard Contractual Clauses (Commission Implementing Decision (EU) 2021/914, Module Two: controller to processor) are incorporated into this DPA by reference, with the merchant as data exporter and Tryino as data importer. The details of the processing are those in this DPA.</li>
+        <li>Where KVKK applies to a transfer abroad, Tryino will sign the standard contract published by the Personal Data Protection Board on the merchant’s request and help the merchant make any notification the Board requires.</li>
+        <li>Tryino will not transfer merchant personal data to any other country without a safeguard that data protection law accepts.</li>
+      </ul>`,
+      // TODO(owner): Lawyer to confirm the transfer mechanism: (1) SCC Module Two by reference, with its options (Clause 7
+      // docking, Clause 9(a) option 2 with the 30-day notice used above, Clause 11 optional language, Clause 13
+      // supervisory authority, Clause 17 governing law and Clause 18 courts, which must be an EU member state, e.g.
+      // France or Ireland); (2) for KVKK Art. 9, whether storing data in France needs the Board's standard contract
+      // (and who notifies the Board within 5 business days); (3) UK IDTA/Addendum for UK merchants.
+    },
+    {
+      id: 'requests',
+      title: 'Data subject requests',
+      html: `<p>Tryino helps the merchant answer requests from data subjects to exercise their rights, by appropriate technical and organisational measures:</p>
+      <ul>
+        <li><strong>Access (customers/data_request):</strong> when Shopify forwards a request, Tryino prepares a report of the loyalty data held about the customer, which the merchant downloads in the app.</li>
+        <li><strong>Erasure (customers/redact):</strong> Tryino deletes the member and the loyalty data linked to them, and unlinks and clears their order summaries, usually within minutes.</li>
+        <li>Correction and other requests: the merchant can make changes in the app, or write to ${privacy} and we will help.</li>
+      </ul>
+      <p>If a data subject contacts Tryino directly about merchant personal data, Tryino will pass the request to the merchant and will not answer it itself, except to tell the person to contact the store. We help the merchant answer within the legal deadline, for example 30 days under KVKK.</p>`,
+    },
+    {
+      id: 'breach',
+      title: 'Personal data breaches',
+      html: `<ul>
+        <li>Tryino notifies the merchant without undue delay after becoming aware of a personal data breach affecting merchant personal data. Our target is to send the first notice within 48 hours, and we send updates as facts become clear.</li>
+        <li>The notice describes, as far as known: what happened and when; the categories of data and the approximate number of data subjects and records concerned; the likely consequences; the measures taken or proposed; what the merchant should do; and a contact person.</li>
+        <li>Tryino gives the merchant the information it needs to meet its own obligations, such as notifying the supervisory authority within 72 hours under the GDPR, or the Personal Data Protection Board within 72 hours and the affected people as soon as possible under KVKK. Tryino provides draft wording on request.</li>
+        <li>Tryino takes reasonable steps to contain the breach and reduce its effects, as set out in our ${incident('security incident response policy')}. Notifying a breach is not an admission of fault.</li>
+      </ul>`,
+      // TODO(owner): The incident policy (§6) sets 48 hours as an internal target, not a commitment. Decide whether to make
+      // "within 48 hours" a contractual maximum here. Also record Shopify's own notification clause in the policy.
+    },
+    {
+      id: 'assistance',
+      title: 'Other assistance',
+      html: `<p>Taking into account the nature of the processing and the information available to it, Tryino gives the merchant reasonable help with data protection impact assessments and prior consultations with supervisory authorities that concern the app.</p>`,
+    },
+    {
+      id: 'deletion',
+      title: 'Deletion and return',
+      html: `<ul>
+        <li><strong>Uninstalling:</strong> Shopify sends a deletion request (shop/redact) 48 hours after the merchant uninstalls the app. Tryino then deletes all of the store’s data. Deleted data leaves the backups within 14 days. Server logs, which contain no shopper data, are deleted after 90 days.</li>
+        <li><strong>Return:</strong> before uninstalling, the merchant can ask ${privacy} for a copy of its program data, and Tryino will provide it in a common machine-readable format.</li>
+        <li><strong>Moving to the merchant’s own Ino Loyalty Engine:</strong> if the merchant signs an Ino Loyalty Engine agreement, Tryino moves the store’s program data to that engine on the merchant’s instruction. The transfer package contains no names, e-mail addresses or phone numbers and is deleted once the move finishes, at the latest after 30 days. The merchant’s engine then reads the customer’s name, e-mail and phone from Shopify itself; that processing is governed by the engine agreement. The copy in the app is kept for 30 days after the move, so that the merchant can receive its history file, and then deleted; it is deleted at once if Shopify sends shop/redact.</li>
+        <li>Tryino may keep data longer only where the law requires it, and then keeps it confidential and processes it only for that purpose.</li>
+      </ul>`,
+      // TODO(owner): There is no merchant-wide export in the app today (only per-customer data_request reports and the
+      // move history CSV in Ops). Confirm Tryino can produce the copy promised under "Return", or soften the wording.
+    },
+    {
+      id: 'audits',
+      title: 'Audits and information',
+      html: `<p>Tryino makes available the information needed to show compliance with this DPA, for example by answering the merchant’s written security questions. If that is not enough, or a supervisory authority requires it, the merchant may audit Tryino’s compliance once a year, with at least 30 days’ notice, at its own cost, during business hours and without disrupting operations. The audit may be done by an independent auditor bound by confidentiality, and is limited to the systems that process the merchant’s data. Tryino does not claim any third-party security certification.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Liability',
+      html: `<p>Each party’s liability under this DPA is subject to the limitations in the ${terms('terms of service')}, except where data protection law does not allow liability to be limited.</p>`,
+    },
+    {
+      id: 'term',
+      title: 'Term and precedence',
+      html: `<ul>
+        <li>This DPA applies for as long as Tryino processes merchant personal data.</li>
+        <li>If this DPA conflicts with the terms of service, this DPA prevails. If the Standard Contractual Clauses apply and conflict with this DPA, the Clauses prevail.</li>
+        <li>Apart from the Standard Contractual Clauses, this DPA is governed by the same law and courts as the terms of service.</li>
+        <li>We may update this DPA as the terms of service describe; the date at the top shows the latest version. See also the ${policy('app privacy policy')}.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>Privacy and data protection: ${privacy} · ${co.legalName}, ${co.address}</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Shopify için Ino Loyalty veri işleme sözleşmesi · Tryino',
+  description: 'Shopify için Ino Loyalty uygulamasında mağazalar (veri sorumlusu) ile Tryino (veri işleyen) arasındaki, KVKK ve GDPR kapsamındaki veri işleme sözleşmesi.',
+  eyebrow: 'Shopify için Ino Loyalty',
+  h1: 'Veri işleme sözleşmesi',
+  intro: `Bu veri işleme sözleşmesi, ${co.legalName} ile mağaza arasındaki Shopify için Ino Loyalty hizmet şartlarının parçasıdır. Tryino'nun uygulama aracılığıyla mağaza adına kişisel veri işlediği her durumda uygulanır ve uygulama kurulduğunda şartlarla birlikte kabul edilir.`,
+  sections: [
+    {
+      id: 'scope',
+      title: 'Kapsam ve tanımlar',
+      html: `<ul>
+        <li><strong>Veri koruma mevzuatı:</strong> işlemeye uygulanan kanunlar; 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK), AB Genel Veri Koruma Tüzüğü 2016/679 (GDPR) ve uygulandıkları ölçüde Birleşik Krallık GDPR'ı ile İsviçre Federal Veri Koruma Kanunu dahil.</li>
+        <li><strong>Kişisel veri, işleme, veri sorumlusu, veri işleyen, ilgili kişi</strong> ve <strong>kişisel veri ihlali</strong>, veri koruma mevzuatındaki anlamlarını taşır.</li>
+        <li><strong>Mağaza kişisel verisi:</strong> Tryino'nun uygulama aracılığıyla mağaza adına işlediği kişisel veriler.</li>
+        <li>Bu sözleşme, Tryino'nun mağazalara ilişkin kendi iş verilerini (iletişim bilgileri, destek yazışmaları gibi) kapsamaz; bunlar için Tryino veri sorumlusudur ve genel <a href="${href(lang, 'privacy')}">gizlilik politikası</a> geçerlidir. Kendi sözleşmesi olan Ino Loyalty Engine'i de kapsamaz.</li>
+      </ul>`,
+    },
+    {
+      id: 'roles',
+      title: 'Roller',
+      html: `<p>Mağaza, mağaza kişisel verilerinin <strong>veri sorumlusudur</strong>; verilerin neden ve nasıl işleneceğine karar verir. Tryino <strong>veri işleyendir</strong> ve verileri yalnızca mağaza adına işler. Her taraf kendisine uygulanan veri koruma mevzuatına uyar.</p>`,
+    },
+    {
+      id: 'details',
+      title: 'İşlemenin ayrıntıları',
+      html: `<h3>Konu ve süre</h3>
+      <p>Ino Loyalty uygulamasının ${terms('hizmet şartları')} kapsamında mağazaya sağlanması; uygulama kurulu kaldığı sürece ve sonrasında veriler “Silme ve iade” bölümüne göre silinene kadar.</p>
+      <h3>Nitelik ve amaç</h3>
+      <p>Mağazanın sadakat programını yürütmek için sadakat verilerini almak, saklamak, hesaplamak, göstermek, raporlamak ve silmek: puan kazanma ve harcama, kademeler, kampanyalar, davetler, görevler ve oyunlar; mağazaya üyelerini ve raporlarını göstermek; her üyenin puan bakiyesini ve kademesini Shopify müşteri kaydına uygulama alanı ve etiket olarak yazmak; Shopify gizlilik taleplerini yanıtlamak; hizmetin güvenli ve çalışır kalmasını sağlamak.</p>
+      <h3>İlgili kişiler</h3>
+      <ul>
+        <li>Mağazanın sadakat programına katılan müşterileri.</li>
+        <li>Katılmadan önce ya da katılmadan siparişi uygulamaya gelen müşteriler. Bunlar için yalnızca sipariş kimlikleri ve Shopify müşteri kimliği kısa süre tutulur; üye olmayanların siparişleri ürünsüz, yalnızca sayı olarak tutulur.</li>
+        <li>Uygulamayı kullanan mağaza personeli; Shopify personel kullanıcı kimliğiyle.</li>
+      </ul>
+      <h3>Kişisel veri kategorileri ve saklama</h3>
+      ${table(['Veri', 'Saklama'], dataTr)}
+      <p><strong>Okunan ama saklanmayan:</strong> müşterinin adı, uygulamanın yönetim sayfalarında mağaza personeline göstermek için Shopify'dan o an okunur; veritabanımıza, kayıtlara ya da raporlara hiç yazılmaz. Personelin üye aramasına yazdığı metin Shopify'ın müşteri aramasına iletilir ve saklanmaz.</p>
+      <p><strong>İşlenmeyen:</strong> e-posta adresi, telefon numarası, posta adresi ve ödeme verisi saklanmaz. Özel nitelikli kişisel veri işlenmez.</p>`,
+    },
+    {
+      id: 'instructions',
+      title: 'Talimatla işleme',
+      html: `<p>Tryino mağaza kişisel verilerini yalnızca mağazanın belgelenmiş talimatıyla işler. Bu şartlar, bu sözleşme ve mağazanın uygulamada seçtiği ayarlar bu talimatlardır. Tryino bir talimatın veri koruma mevzuatına aykırı olduğunu düşünürse mağazaya bildirir ve talimatı uygulamayı reddedebilir. Kanun Tryino'nun verileri başka şekilde işlemesini gerektirirse, kanun yasaklamadıkça önce mağazaya bildirir. Tryino mağaza kişisel verilerini satmaz, kendi amaçları ya da reklam için kullanmaz, başka mağazaların verileriyle birleştirmez.</p>`,
+    },
+    {
+      id: 'confidentiality',
+      title: 'Personelin gizlilik yükümlülüğü',
+      html: `<p>Tryino mağaza kişisel verilerine yalnızca uygulamayı işletmek, desteklemek ya da güvenliğini sağlamak için ihtiyacı olan personele erişim verir ve bu kişilerin, işleri bittikten sonra da devam eden gizlilik yükümlülükleriyle bağlı olmasını sağlar.</p>`,
+    },
+    {
+      id: 'security',
+      title: 'Güvenlik önlemleri',
+      html: `<p>Tryino, teknolojinin durumunu, maliyeti, işlemenin niteliğini ve risklerini dikkate alarak mağaza kişisel verilerini korumak için uygun teknik ve idari tedbirleri alır. Bugün uygulanan önlemler:</p>${securityTr}<p>Tryino önlemleri değiştirebilir, ancak genel koruma düzeyini düşürecek şekilde değiştirmez.</p>`,
+    },
+    {
+      id: 'subprocessors',
+      title: 'Alt işleyenler',
+      html: `<p>Mağaza, Tryino'ya alt işleyen kullanması için genel yetki verir. Güncel alt işleyenler:</p>
+      ${table(['Alt işleyen', 'Amaç', 'Konum'], [
+        ['Microsoft (Azure): Container Apps, Database for PostgreSQL, Key Vault, Container Registry, Log Analytics / Monitor', 'Barındırma, veritabanı, sırlar ve kayıtlar: saklanan tüm mağaza kişisel verileri', 'France Central (Paris, AB)'],
+        ['Microsoft 365 (Exchange Online)', 'Destek ve gizlilik posta kutularımız; yalnızca mağazaların ya da müşterilerin bize yazdıkları', "Tryino'nun Microsoft 365 kiracısının veri konumu"],
+      ])}
+      <ul>
+        <li>Shopify mağazanın kendi platformudur, Tryino'nun alt işleyeni değildir. Cloudflare yalnızca DNS hizmeti verir ve kişisel veri almaz.</li>
+        <li>Tryino yeni ya da değişen bir alt işleyeni en az 30 gün önceden uygulamada ya da e-postayla bildirir ve bu listeyi günceller. Mağaza makul veri koruma gerekçeleriyle itiraz edebilir. İtirazı çözemezsek mağaza uygulamayı kaldırarak şartları sona erdirebilir.</li>
+        <li>Tryino her alt işleyene bu sözleşmeden daha az koruyucu olmayan veri koruma yükümlülükleri yükler ve onlardan mağazaya karşı sorumlu kalır.</li>
+      </ul>`,
+    },
+    {
+      id: 'transfers',
+      title: 'Yurt dışına aktarım',
+      html: `<p>Mağaza kişisel verileri Microsoft Azure'da, France Central bölgesinde (Paris, AB) saklanır. ${co.legalName} Türkiye'dedir; personeli uygulamayı işletmek ve desteklemek için sistemlere Türkiye'den uzaktan erişebilir.</p>
+      <ul>
+        <li>Bu erişime GDPR uygulandığında, AB Standart Sözleşme Hükümleri (Komisyon Uygulama Kararı (AB) 2021/914, İkinci Modül: veri sorumlusundan veri işleyene) bu sözleşmeye atıfla dahil edilir; veri aktaran mağaza, veri alan Tryino'dur. İşlemenin ayrıntıları bu sözleşmedekilerdir.</li>
+        <li>Yurt dışına aktarıma KVKK uygulandığında, Tryino mağazanın talebi üzerine Kişisel Verileri Koruma Kurulu'nun yayımladığı standart sözleşmeyi imzalar ve mağazanın Kurul'a yapması gereken bildirimlere yardım eder.</li>
+        <li>Tryino mağaza kişisel verilerini, veri koruma mevzuatının kabul ettiği bir güvence olmadan başka bir ülkeye aktarmaz.</li>
+      </ul>`,
+    },
+    {
+      id: 'requests',
+      title: 'İlgili kişi talepleri',
+      html: `<p>Tryino, ilgili kişilerin haklarını kullanma taleplerini yanıtlamasında mağazaya uygun teknik ve idari tedbirlerle yardım eder:</p>
+      <ul>
+        <li><strong>Erişim (customers/data_request):</strong> Shopify bir talebi ilettiğinde Tryino müşteri hakkında tutulan sadakat verilerinin raporunu hazırlar; mağaza raporu uygulamadan indirir.</li>
+        <li><strong>Silme (customers/redact):</strong> Tryino üyeyi ve ona bağlı sadakat verilerini siler, sipariş özetlerini kişiden ayırır ve temizler; genellikle dakikalar içinde.</li>
+        <li>Düzeltme ve diğer talepler: mağaza değişiklikleri uygulamada yapabilir ya da ${privacy} adresine yazabilir; yardım ederiz.</li>
+      </ul>
+      <p>Bir ilgili kişi mağaza kişisel verileri hakkında doğrudan Tryino'ya başvurursa Tryino talebi mağazaya iletir ve kişiye mağazaya başvurmasını söylemek dışında kendisi yanıt vermez. Mağazanın yasal süre içinde (örneğin KVKK'da 30 gün) yanıt vermesine yardım ederiz.</p>`,
+    },
+    {
+      id: 'breach',
+      title: 'Kişisel veri ihlalleri',
+      html: `<ul>
+        <li>Tryino, mağaza kişisel verilerini etkileyen bir kişisel veri ihlalini öğrendikten sonra mağazaya gecikmeksizin bildirir. Hedefimiz ilk bildirimi 48 saat içinde göndermektir; olgular netleştikçe güncelleme göndeririz.</li>
+        <li>Bildirim, bilindiği ölçüde şunları içerir: ne olduğu ve ne zaman; ilgili veri kategorileri ve yaklaşık ilgili kişi ve kayıt sayısı; olası sonuçlar; alınan ya da önerilen önlemler; mağazanın ne yapması gerektiği; bir irtibat kişisi.</li>
+        <li>Tryino, mağazanın kendi yükümlülüklerini yerine getirmesi için gereken bilgiyi verir; örneğin GDPR kapsamında denetim makamına 72 saat içinde, KVKK kapsamında Kişisel Verileri Koruma Kurulu'na 72 saat içinde ve ilgili kişilere en kısa sürede bildirim. Talep üzerine taslak metin sağlar.</li>
+        <li>Tryino ihlali sınırlamak ve etkilerini azaltmak için ${incident('güvenlik olayı müdahale politikamızda')} belirtilen makul adımları atar. İhlalin bildirilmesi kusur kabulü değildir.</li>
+      </ul>`,
+    },
+    {
+      id: 'assistance',
+      title: 'Diğer yardım',
+      html: `<p>Tryino, işlemenin niteliğini ve elindeki bilgileri dikkate alarak, uygulamaya ilişkin veri koruma etki değerlendirmelerinde ve denetim makamlarıyla ön istişarelerde mağazaya makul yardım sağlar.</p>`,
+    },
+    {
+      id: 'deletion',
+      title: 'Silme ve iade',
+      html: `<ul>
+        <li><strong>Kaldırma:</strong> Shopify, mağaza uygulamayı kaldırdıktan 48 saat sonra silme talebi (shop/redact) gönderir. Tryino bunun üzerine mağazanın tüm verisini siler. Silinen veri 14 gün içinde yedeklerden de çıkar. Müşteri verisi içermeyen sunucu kayıtları 90 gün sonra silinir.</li>
+        <li><strong>İade:</strong> mağaza, uygulamayı kaldırmadan önce ${privacy} adresinden program verilerinin bir kopyasını isteyebilir; Tryino kopyayı yaygın, makine tarafından okunabilir bir biçimde verir.</li>
+        <li><strong>Mağazanın kendi Ino Loyalty Engine'ine geçiş:</strong> mağaza bir Ino Loyalty Engine sözleşmesi yaparsa Tryino, mağazanın talimatıyla program verilerini o motora taşır. Aktarım paketi ad, e-posta ya da telefon içermez ve taşıma bitince, en geç 30 gün sonra silinir. Ardından mağazanın motoru müşterinin adını, e-postasını ve telefonunu Shopify'dan kendisi okur; bu işleme motor sözleşmesine tabidir. Uygulamadaki kopya, mağazanın geçmiş dosyasını alabilmesi için taşımadan sonra 30 gün saklanır, sonra silinir; Shopify shop/redact gönderirse hemen silinir.</li>
+        <li>Tryino verileri yalnızca kanunun gerektirdiği durumlarda daha uzun saklayabilir; bu durumda verileri gizli tutar ve yalnızca o amaçla işler.</li>
+      </ul>`,
+    },
+    {
+      id: 'audits',
+      title: 'Denetim ve bilgi',
+      html: `<p>Tryino bu sözleşmeye uyumu göstermek için gereken bilgileri sağlar; örneğin mağazanın yazılı güvenlik sorularını yanıtlar. Bu yeterli olmazsa ya da bir denetim makamı gerektirirse mağaza, yılda bir kez, en az 30 gün önceden bildirerek, masrafı kendisine ait olmak üzere, mesai saatlerinde ve işleyişi aksatmadan Tryino'nun uyumunu denetleyebilir. Denetimi gizlilikle bağlı bağımsız bir denetçi yapabilir; denetim mağazanın verisini işleyen sistemlerle sınırlıdır. Tryino herhangi bir üçüncü taraf güvenlik sertifikası iddia etmez.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Sorumluluk',
+      html: `<p>Tarafların bu sözleşme kapsamındaki sorumluluğu, veri koruma mevzuatının sınırlamaya izin vermediği haller dışında, ${terms('hizmet şartlarındaki')} sınırlamalara tabidir.</p>`,
+    },
+    {
+      id: 'term',
+      title: 'Süre ve öncelik',
+      html: `<ul>
+        <li>Bu sözleşme, Tryino mağaza kişisel verilerini işlediği sürece uygulanır.</li>
+        <li>Bu sözleşme hizmet şartlarıyla çelişirse bu sözleşme geçerlidir. Standart Sözleşme Hükümleri uygulanıyor ve bu sözleşmeyle çelişiyorsa o Hükümler geçerlidir.</li>
+        <li>Standart Sözleşme Hükümleri dışında bu sözleşme, hizmet şartlarıyla aynı hukuka ve mahkemelere tabidir.</li>
+        <li>Bu sözleşmeyi hizmet şartlarında anlatıldığı şekilde güncelleyebiliriz; sayfanın başındaki tarih son sürümü gösterir. Ayrıca ${policy('uygulama gizlilik politikasına')} bakın.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>Gizlilik ve veri koruma: ${privacy} · ${co.legalName}, ${co.address}</p>`,
+    },
+  ],
+};
+
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Hizmet şartları' : 'Terms of service', href: href(lang, 'termsShopify')},
+  {label: lang === 'tr' ? 'Shopify uygulaması gizliliği' : 'Shopify app privacy', href: href(lang, 'privacyShopify')},
+  {label: lang === 'tr' ? 'Güvenlik olayı politikası' : 'Incident response policy', href: href(lang, 'incidentResponse')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} updated={updated} />

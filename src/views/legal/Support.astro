@@ -25,16 +25,6 @@ const en: {title: string; description: string; eyebrow: string; h1: string; intr
       <p>To help us answer quickly, include your store or company name, which app or channel you use (Shopify, ikas, POS, API), what you expected and what happened, and a screenshot if you can. Please do not send passwords or full card numbers.</p>`,
     },
     {
-      id: 'shopify',
-      title: 'Getting started with the Shopify app',
-      html: `<ol>
-        <li>Install <strong>Ino Loyalty</strong> from the Shopify App Store. The app opens in your Shopify admin.</li>
-        <li>Enter the connection code you received from Tryino and click <strong>Connect</strong>.</li>
-        <li>Open <strong>Setup</strong> and follow the steps: switch on the Ino Loyalty app embed in the theme editor, add the “Earn points” block to product pages, and add the Rewards page to customer accounts. Each step has a button that opens the right place.</li>
-        <li>Place a test order: points appear in the customer's Rewards page and on the order in your admin within a minute.</li>
-      </ol>`,
-    },
-    {
       id: 'ikas',
       title: 'Getting started with the ikas app',
       html: `<ol>
@@ -47,13 +37,13 @@ const en: {title: string; description: string; eyebrow: string; h1: string; intr
       id: 'faq',
       title: 'Common questions',
       html: `<h3>Do I need an Ino Loyalty account?</h3>
-      <p>Yes. The apps are free to install and connect your store to Ino Loyalty, which you use under an agreement with Tryino. <a href="${href(lang, 'demo')}">Book a demo</a> to get started.</p>
+      <p><strong>Shopify:</strong> no. The Shopify app works on its own: you install it from the Shopify App Store and Shopify bills your plan. <strong>ikas:</strong> yes. The ikas app is free to install and connects your store to Ino Loyalty, which you use under an agreement with Tryino. <a href="${href(lang, 'demo')}">Book a demo</a> to get started.</p>
       <h3>Which languages are supported?</h3>
-      <p>The apps and the shopper experience are available in English and Turkish. You translate your own program content (reward names, descriptions) in Ino Loyalty.</p>
+      <p><strong>Shopify:</strong> see the languages under <a href="#shopify">Ino Loyalty for Shopify</a>. <strong>ikas:</strong> the app and the shopper experience are available in English and Turkish. You translate your own program content (reward names, descriptions) in Ino Loyalty.</p>
       <h3>How do I uninstall?</h3>
-      <p>Remove the app from your Shopify or ikas admin. Your program stays in Ino Loyalty; tell us if you want its data deleted or returned. See the app privacy policies for <a href="${href(lang, 'privacyShopify')}">Shopify</a> and <a href="${href(lang, 'privacyIkas')}">ikas</a>.</p>
+      <p><strong>Shopify:</strong> remove the app from your Shopify admin. Shopify asks us to delete your store’s data 48 hours later, and we do. <strong>ikas:</strong> remove the app from your ikas admin. Your program stays in Ino Loyalty; tell us if you want its data deleted or returned. See the app privacy policies for <a href="${href(lang, 'privacyShopify')}">Shopify</a> and <a href="${href(lang, 'privacyIkas')}">ikas</a>.</p>
       <h3>A shopper wants their data deleted. What do I do?</h3>
-      <p>Use the privacy tools in Ino Loyalty or write to us; we help you answer within the legal deadline.</p>
+      <p><strong>Shopify:</strong> nothing. Shopify passes the request to the app and the deletion happens automatically. <strong>ikas:</strong> use the privacy tools in Ino Loyalty or write to us; we help you answer within the legal deadline.</p>
       <h3>Where is the API documentation?</h3>
       <p>In <a href="${href(lang, 'developers')}">For developers</a>, with the full <a href="${href(lang, 'apiReference')}">API reference</a>. API credentials come with your Ino Loyalty agreement.</p>`,
     },
@@ -84,16 +74,6 @@ const tr: typeof en = {
       <p>Hızlı yanıt verebilmemiz için mağaza ya da şirket adınızı, hangi uygulama ya da kanalı kullandığınızı (Shopify, ikas, kasa, API), ne beklediğinizi ve ne olduğunu, mümkünse bir ekran görüntüsüyle yazın. Lütfen parola ya da kart numarası göndermeyin.</p>`,
     },
     {
-      id: 'shopify',
-      title: 'Shopify uygulamasıyla başlangıç',
-      html: `<ol>
-        <li><strong>Ino Loyalty</strong>'yi Shopify App Store'dan kurun. Uygulama Shopify yönetim panelinizde açılır.</li>
-        <li>Tryino'dan aldığınız bağlantı kodunu girin ve <strong>Connect</strong>'e tıklayın.</li>
-        <li><strong>Setup</strong>'ı açıp adımları izleyin: tema düzenleyicide Ino Loyalty uygulama yerleşimini açın, ürün sayfalarına “Earn points” bloğunu ekleyin, müşteri hesaplarına Rewards sayfasını ekleyin. Her adımda doğru yeri açan bir düğme var.</li>
-        <li>Bir deneme siparişi verin: puan bir dakika içinde müşterinin Rewards sayfasında ve yönetim panelindeki siparişte görünür.</li>
-      </ol>`,
-    },
-    {
       id: 'ikas',
       title: 'ikas uygulamasıyla başlangıç',
       html: `<ol>
@@ -106,13 +86,13 @@ const tr: typeof en = {
       id: 'faq',
       title: 'Sık sorulanlar',
       html: `<h3>Ino Loyalty hesabı gerekir mi?</h3>
-      <p>Evet. Uygulamaların kurulumu ücretsizdir ve mağazanızı Tryino ile yaptığınız sözleşme kapsamında kullandığınız Ino Loyalty'ye bağlar. Başlamak için <a href="${href(lang, 'demo')}">demo planlayın</a>.</p>
+      <p><strong>Shopify:</strong> hayır. Shopify uygulaması kendi başına çalışır: Shopify App Store'dan kurarsınız, planınızı Shopify faturalar. <strong>ikas:</strong> evet. ikas uygulamasının kurulumu ücretsizdir ve mağazanızı Tryino ile yaptığınız sözleşme kapsamında kullandığınız Ino Loyalty'ye bağlar. Başlamak için <a href="${href(lang, 'demo')}">demo planlayın</a>.</p>
       <h3>Hangi diller destekleniyor?</h3>
-      <p>Uygulamalar ve müşteri deneyimi İngilizce ve Türkçe. Program içeriğinizi (ödül adları, açıklamalar) Ino Loyalty'de kendiniz çevirirsiniz.</p>
+      <p><strong>Shopify:</strong> dilleri <a href="#shopify">Shopify için Ino Loyalty</a> bölümünde bulabilirsiniz. <strong>ikas:</strong> uygulama ve müşteri deneyimi İngilizce ve Türkçe. Program içeriğinizi (ödül adları, açıklamalar) Ino Loyalty'de kendiniz çevirirsiniz.</p>
       <h3>Nasıl kaldırırım?</h3>
-      <p>Uygulamayı Shopify ya da ikas yönetim panelinizden kaldırın. Programınız Ino Loyalty'de kalır; verilerinin silinmesini ya da iadesini isterseniz bize yazın. Ayrıntılar <a href="${href(lang, 'privacyShopify')}">Shopify</a> ve <a href="${href(lang, 'privacyIkas')}">ikas</a> gizlilik politikalarında.</p>
+      <p><strong>Shopify:</strong> uygulamayı Shopify yönetim panelinizden kaldırın. Shopify 48 saat sonra mağazanızın verisini silmemizi ister, biz de sileriz. <strong>ikas:</strong> uygulamayı ikas yönetim panelinizden kaldırın. Programınız Ino Loyalty'de kalır; verilerinin silinmesini ya da iadesini isterseniz bize yazın. Ayrıntılar <a href="${href(lang, 'privacyShopify')}">Shopify</a> ve <a href="${href(lang, 'privacyIkas')}">ikas</a> gizlilik politikalarında.</p>
       <h3>Bir müşteri verilerinin silinmesini istiyor. Ne yapmalıyım?</h3>
-      <p>Ino Loyalty'deki gizlilik araçlarını kullanın ya da bize yazın; yasal süre içinde yanıt vermenize yardım ederiz.</p>
+      <p><strong>Shopify:</strong> bir şey yapmanız gerekmez. Shopify talebi uygulamaya iletir, silme kendiliğinden yapılır. <strong>ikas:</strong> Ino Loyalty'deki gizlilik araçlarını kullanın ya da bize yazın; yasal süre içinde yanıt vermenize yardım ederiz.</p>
       <h3>API belgeleri nerede?</h3>
       <p><a href="${href(lang, 'developers')}">Geliştiriciler için</a> sayfasında, tam <a href="${href(lang, 'apiReference')}">API referansıyla</a> birlikte. API kimlik bilgileri Ino Loyalty sözleşmenizle verilir.</p>`,
     },
@@ -128,11 +108,71 @@ const tr: typeof en = {
     },
   ],
 };
+// The Ino Loyalty app listed on the Shopify App Store works on its own, without a connection code or an Ino Loyalty
+// agreement, and is billed through Shopify. Merchants who also have an Ino Loyalty Engine are moved to it by Tryino
+// (docs/SHOPIFY_CONNECTED.md); there is nothing for them to enter. It is inserted before the ikas section.
+const appStore: Record<Lang, Section> = {
+  en: {
+    id: 'shopify',
+    title: 'Ino Loyalty for Shopify',
+    html: `<p>The Ino Loyalty app on the Shopify App Store runs your loyalty program inside Shopify. You install it from the Shopify App Store and Shopify bills your plan. You do not need an Ino Loyalty account, a connection code or a separate agreement.</p>
+    <h3>Getting started</h3>
+    <ol>
+      <li>Install <strong>Ino Loyalty</strong> from the Shopify App Store. The app opens in your Shopify admin.</li>
+      <li>Choose the language for the app’s admin pages: English, Turkish, French, German, Dutch or Italian. You can change it later in Settings.</li>
+      <li>Turn on the recommended set or build your program: points, tiers, campaigns, missions and games. Texts your customers see are written by you, in your store’s language.</li>
+      <li>Switch on the Ino Loyalty app embed in the theme editor. The setup page has a button that opens the right place.</li>
+      <li>Place a test order. Points appear in the Rewards panel and on the member’s page in the app within a minute.</li>
+    </ol>
+    <h3>Who can open the app?</h3>
+    <p>The store owner, and staff who have permission to manage discounts in Shopify. If a staff member sees a permission message, ask the store owner to give that permission.</p>
+    <h3>A shopper wants their data or wants it deleted. What do I do?</h3>
+    <p>Shopify passes these requests to the app automatically. For an access request, the report appears in the app for you to download. Deletion happens automatically. See the <a href="${href(lang, 'privacyShopify')}#requests">app privacy policy</a>.</p>
+    <h3>How do I uninstall?</h3>
+    <p>Remove the app from your Shopify admin. The Rewards panel leaves your storefront at once. Shopify asks us to delete your store’s data 48 hours later, and we do.</p>
+    <h3>I also have an Ino Loyalty Engine agreement. What do I do?</h3>
+    <p>Nothing in the app. Tryino moves your store to your own engine for you; there is no code to enter. Your customers keep the same Rewards panel, balance and tier. Afterwards the app shows your program from your engine, and you change it there.</p>
+    <h3>Contact</h3>
+    <p>Write to ${support} with your <em>myshopify.com</em> store address.</p>
+    <p>Legal: <a href="${href(lang, 'termsShopify')}">terms of service</a> · <a href="${href(lang, 'dpaShopify')}">data processing agreement</a> · <a href="${href(lang, 'privacyShopify')}">app privacy policy</a> · <a href="${href(lang, 'incidentResponse')}">security incident response policy</a></p>`,
+  },
+  tr: {
+    id: 'shopify',
+    title: 'Shopify için Ino Loyalty',
+    html: `<p>Shopify App Store'daki Ino Loyalty uygulaması sadakat programınızı Shopify'ın içinde yürütür. Uygulamayı Shopify App Store'dan kurarsınız, planınızı Shopify faturalar. Ino Loyalty hesabına, bağlantı koduna ya da ayrı bir sözleşmeye gerek yoktur.</p>
+    <h3>Başlangıç</h3>
+    <ol>
+      <li><strong>Ino Loyalty</strong>'yi Shopify App Store'dan kurun. Uygulama Shopify yönetim panelinizde açılır.</li>
+      <li>Uygulamanın yönetim sayfaları için dili seçin: İngilizce, Türkçe, Fransızca, Almanca, Felemenkçe ya da İtalyanca. Sonra Ayarlar'dan değiştirebilirsiniz.</li>
+      <li>Önerilen kurulumu açın ya da programınızı kendiniz kurun: puan, kademe, kampanya, görev ve oyunlar. Müşterilerinizin gördüğü metinleri mağazanızın dilinde siz yazarsınız.</li>
+      <li>Tema düzenleyicide Ino Loyalty uygulama yerleştirmesini açın. Kurulum sayfasındaki düğme doğru yeri açar.</li>
+      <li>Bir deneme siparişi verin. Puan bir dakika içinde Rewards panelinde ve uygulamadaki üye sayfasında görünür.</li>
+    </ol>
+    <h3>Uygulamayı kimler açabilir?</h3>
+    <p>Mağaza sahibi ve Shopify'da indirim yönetme izni olan personel. Bir personel izin uyarısı görürse mağaza sahibinden bu izni istemelidir.</p>
+    <h3>Bir müşteri verisini ya da silinmesini istiyor. Ne yapmalıyım?</h3>
+    <p>Shopify bu talepleri uygulamaya otomatik iletir. Erişim talebinde rapor uygulamada indirilmeye hazır olur. Silme kendiliğinden yapılır. <a href="${href(lang, 'privacyShopify')}#requests">Uygulama gizlilik politikasına</a> bakın.</p>
+    <h3>Uygulamayı nasıl kaldırırım?</h3>
+    <p>Uygulamayı Shopify yönetim panelinizden kaldırın. Rewards paneli vitrinden hemen çıkar. Shopify 48 saat sonra mağazanızın verisini silmemizi ister, biz de sileriz.</p>
+    <h3>Ino Loyalty Engine sözleşmem de var. Ne yapmalıyım?</h3>
+    <p>Uygulamada bir şey yapmanız gerekmez. Tryino mağazanızı sizin için kendi motorunuza taşır; girilecek bir kod yoktur. Müşterileriniz aynı Rewards panelini, bakiyeyi ve kademeyi görmeye devam eder. Sonrasında uygulama programınızı motorunuzdan gösterir; değişiklikleri orada yaparsınız.</p>
+    <h3>İletişim</h3>
+    <p>${support} adresine <em>myshopify.com</em> mağaza adresinizle yazın.</p>
+    <p>Yasal: <a href="${href(lang, 'termsShopify')}">hizmet şartları</a> · <a href="${href(lang, 'dpaShopify')}">veri işleme sözleşmesi</a> · <a href="${href(lang, 'privacyShopify')}">uygulama gizlilik politikası</a> · <a href="${href(lang, 'incidentResponse')}">güvenlik olayı müdahale politikası</a></p>`,
+  },
+};
+for (const [doc, l] of [[en, 'en'], [tr, 'tr']] as const) {
+  const at = doc.sections.findIndex((s) => s.id === 'ikas');
+  doc.sections.splice(at, 0, appStore[l]);
+}
 const c = lang === 'tr' ? tr : en;
 const related = [
   {label: lang === 'tr' ? 'Geliştiriciler için' : 'For developers', href: href(lang, 'developers')},
   {label: lang === 'tr' ? 'Shopify uygulaması gizliliği' : 'Shopify app privacy', href: href(lang, 'privacyShopify')},
   {label: lang === 'tr' ? 'ikas uygulaması gizliliği' : 'ikas app privacy', href: href(lang, 'privacyIkas')},
+  {label: lang === 'tr' ? 'Shopify uygulaması şartları' : 'Shopify app terms', href: href(lang, 'termsShopify')},
+  {label: lang === 'tr' ? 'Veri işleme sözleşmesi' : 'Data processing agreement', href: href(lang, 'dpaShopify')},
+  {label: lang === 'tr' ? 'Güvenlik olayı politikası' : 'Incident response policy', href: href(lang, 'incidentResponse')},
 ];
 ---
 

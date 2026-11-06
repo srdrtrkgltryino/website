@@ -1,0 +1,342 @@
+---
+// Terms of service for the Ino Loyalty app installed from the Shopify App Store (standalone app on the Shop Engine).
+// Sources: Ino-Loyalty-NET docs/SHOPIFY_STANDALONE.md, docs/SHOPIFY_CONNECTED.md, docs/shopify-store/listing.md and
+// src/InoLoyalty.ShopEngine (games, wheel declaration). No prices here: plans and fees are shown by Shopify.
+// Draft for the owner's lawyer. Search for "TODO(owner)" before publishing.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const updated = '2026-11-06';
+// TODO(owner): co.legalName is only "Tryino" and co.address only "İstanbul, Türkiye". A contract needs the full trade
+// name (e.g. "... Yazılım Ltd. Şti."), the registered address and the trade registry / MERSİS number. Set them in
+// src/data/company.ts (used on every legal page).
+const support = `<a href="mailto:${co.supportEmail}">${co.supportEmail}</a>`;
+const privacy = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
+const dpa = (text: string) => `<a href="${href(lang, 'dpaShopify')}">${text}</a>`;
+const policy = (text: string) => `<a href="${href(lang, 'privacyShopify')}">${text}</a>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Ino Loyalty for Shopify terms of service · Tryino',
+  description: 'The terms between Tryino and merchants that install the Ino Loyalty app from the Shopify App Store.',
+  eyebrow: 'Ino Loyalty for Shopify',
+  h1: 'Terms of service',
+  intro: `These terms are an agreement between ${co.legalName} and the merchant that installs the Ino Loyalty app from the Shopify App Store. By installing or using the app, you accept them on behalf of your business.`,
+  sections: [
+    {
+      id: 'parties',
+      title: 'Who these terms are between',
+      html: `<ul>
+        <li><strong>${co.legalName}</strong>, ${co.address} (“Tryino”, “we”), which makes and runs the app.</li>
+        <li><strong>The merchant</strong> that installs the app on its Shopify store (“you”). The person who installs the app confirms that they may accept these terms for the business.</li>
+      </ul>
+      <p>The app is for business use. Shopify is not a party to these terms; your use of Shopify itself is governed by Shopify’s terms. Our ${dpa('data processing agreement')} (DPA) and the ${policy('app privacy policy')} form part of these terms.</p>`,
+    },
+    {
+      id: 'service',
+      title: 'The service',
+      html: `<p>Ino Loyalty runs a loyalty program inside your Shopify store. Depending on your plan, it includes:</p>
+      <ul>
+        <li>points that customers earn on orders and spend in the cart;</li>
+        <li>tiers, and campaigns such as extra points, member discounts and free shipping;</li>
+        <li>referrals, missions and badges;</li>
+        <li>the games module, for example the daily wheel, “This or that”, “Guess the price” and “My garden”;</li>
+        <li>the storefront Rewards panel, the Rewards page, customer account and checkout blocks, Shopify Flow triggers and the admin pages in your Shopify admin.</li>
+      </ul>
+      <p>We may improve, change or remove features. If a change materially reduces what your current plan includes, we will tell you in advance.</p>
+      <h3>Moving to your own Ino Loyalty Engine</h3>
+      <p>Some merchants later run their program on their own Ino Loyalty Engine. That is a separate product under a separate written agreement with Tryino and is not sold through the app. If you sign such an agreement, Tryino moves your program data from the app to your engine on your instruction under that agreement. The move is one way. Afterwards the app shows your program from the engine, and the processing in your engine is governed by that agreement. The copy of your data in the app is kept for 30 days after the move and then deleted, as the DPA describes.</p>`,
+      // TODO(owner): Shopify's review rules do not allow the app or the listing to promote an external subscription.
+      // This paragraph is neutral, but confirm with the app review notes that mentioning the engine here is acceptable.
+    },
+    {
+      id: 'access',
+      title: 'Your account and access',
+      html: `<p>You open the app from your Shopify admin; Shopify verifies who you are. The store owner and staff with permission to manage discounts in Shopify can use the app. You are responsible for the staff you give access to and for what they do in the app. Tell us at once at ${support} if you think someone has used the app without your permission.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'Acceptable use',
+      html: `<p>You agree not to:</p>
+      <ul>
+        <li>use the app for anything unlawful, deceptive or harmful to your customers;</li>
+        <li>try to access another store’s data, test the app’s security without our written permission, or get around plan limits or technical controls;</li>
+        <li>copy, resell, reverse engineer or build a competing product from the app, except where the law allows it;</li>
+        <li>overload the app or interfere with its operation;</li>
+        <li>put special categories of personal data (for example health data) or payment card data into the app, for example in point adjustment reasons or program texts.</li>
+      </ul>`,
+    },
+    {
+      id: 'fees',
+      title: 'Plans and fees',
+      html: `<ul>
+        <li>The app has paid plans. Shopify bills them through its app billing (Shopify App Pricing) on your Shopify invoice. We do not charge you for the app outside Shopify.</li>
+        <li>Each plan’s features, limits and fees are shown in the app’s Shopify App Store listing and on the plan page in the app. The plan you choose there applies.</li>
+        <li>You can change plan in the app; the change takes effect as Shopify’s billing applies it.</li>
+        <li>If we change the fee for your plan, we will tell you in advance, and the change applies only as Shopify’s billing rules allow.</li>
+        <li>Taxes are charged as Shopify’s billing terms set out. Fees are not refunded, except where Shopify’s terms or the law require it, or where we decide to give a credit through Shopify.</li>
+      </ul>`,
+    },
+    {
+      id: 'trial',
+      title: 'Free trial and cancellation',
+      html: `<ul>
+        <li>Where a plan includes a free trial, its length is shown in the listing. Charges start when the trial ends unless you uninstall the app before then.</li>
+        <li>You can cancel at any time by uninstalling the app from your Shopify admin. Uninstalling ends your subscription; Shopify handles any final charge under its billing rules.</li>
+        <li>When you uninstall, the Rewards panel and the app’s blocks stop working in your store.</li>
+        <li>Shopify sends us a deletion request (shop/redact) 48 hours after you uninstall, and we then delete your store’s data as the DPA describes. If you reinstall before that, your program data may still be there; after it, it cannot be recovered.</li>
+        <li>Ending the program does not end what you owe your customers under your program rules, for example points they have already earned.</li>
+      </ul>`,
+    },
+    {
+      id: 'merchant',
+      title: 'Your responsibilities',
+      html: `<h3>Your program rules</h3>
+      <p>You decide your program’s rules: how points are earned and spent, when they expire, tiers, campaigns, referrals, games and what happens on refunds. You also write the texts your customers see. You are responsible for publishing clear program terms to your customers, for honouring the rewards your program offers, and for the tax and accounting treatment of points and discounts. Check your settings before you publish them; the app applies the rules you set.</p>
+      <h3>Your customers’ data and consent</h3>
+      <p>You are the controller of your customers’ personal data and we process it for you under the DPA. You are responsible for telling your customers about the program and how their data is used, for having a legal basis for it, and for getting any consent the law requires. The app sends no marketing messages itself. If you send messages based on the app’s data, for example through Shopify Flow or your e-mail tool, you are responsible for your customers’ marketing consent.</p>
+      <h3>Games of chance</h3>
+      <p>The daily wheel awards points by chance. Before you turn it on, you must confirm in the app that you are responsible for running it; the app records which staff member confirmed it and when, and turns the wheel off if the confirmation is withdrawn. The wheel can only be played with a free daily spin, never with points or money. You are responsible for checking whether a game, prize draw or chance-based promotion needs a permit, registration or specific terms where your customers are, for example under lottery or sweepstakes laws, and for meeting those requirements.</p>`,
+    },
+    {
+      id: 'support',
+      title: 'Availability and support',
+      html: `<ul>
+        <li>We work to keep the app available and to fix problems quickly, but we do not guarantee uninterrupted or error-free operation. We may need short maintenance windows.</li>
+        <li>The app depends on Shopify and on our hosting provider, Microsoft Azure. Outages or changes on their side can affect the app.</li>
+        <li>Support is by e-mail at ${support}, Monday to Friday, 09:00–18:00 Türkiye time (UTC+3). We answer most questions within one business day.</li>
+      </ul>`,
+    },
+    {
+      id: 'data',
+      title: 'Data and privacy',
+      html: `<p>Your program data belongs to you. We process it only to provide the app, as set out in the ${dpa('DPA')}. The ${policy('app privacy policy')} explains what the app accesses in Shopify, what we store and for how long. To make your program visible in Shopify, the app writes each member’s points balance and tier to the customer record as app fields and tags.</p>`,
+    },
+    {
+      id: 'ip',
+      title: 'Intellectual property',
+      html: `<p>The app, its software and design, and the Tryino and Ino Loyalty names and logos belong to Tryino or its licensors. While your subscription is active, we give you a non-exclusive, non-transferable right to use the app for your Shopify store. You keep all rights in your own content, such as your logo, program texts and product images, and allow us to use it only to run the app for you. If you send us suggestions, we may use them without obligation to you.</p>`,
+    },
+    {
+      id: 'warranty',
+      title: 'Disclaimer',
+      html: `<p>To the extent the law allows, the app is provided “as is” and “as available”, without warranties of any kind, express or implied, including fitness for a particular purpose. You are responsible for checking that your program settings give the results you intend. Nothing in these terms excludes a warranty that cannot be excluded by law.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Limitation of liability',
+      html: `<ul>
+        <li>Neither party is liable for indirect or consequential loss, or for loss of profit, revenue, goodwill or business opportunity.</li>
+        <li>Each party’s total liability under these terms and the DPA is limited to the fees you paid for the app in the 12 months before the event that gave rise to the claim.</li>
+        <li>These limits do not apply to liability for intent or gross negligence, or to any other liability that cannot be limited by law.</li>
+        <li>You are responsible for claims by your customers or authorities that arise from your program rules, your games or your use of customer data in breach of the law, and you will compensate us for reasonable losses those claims cause us.</li>
+      </ul>`,
+    },
+    {
+      id: 'termination',
+      title: 'Suspension and termination',
+      html: `<ul>
+        <li>We may suspend all or part of your access if it is needed to protect the app, other merchants or shoppers, if you seriously breach these terms, or if the law or Shopify requires it. We will tell you why, limit the suspension to what is needed and restore access once the reason is gone.</li>
+        <li>Either party may end these terms if the other materially breaches them and does not fix the breach within 15 days of written notice, or at once for a breach that cannot be fixed.</li>
+        <li>You may end these terms at any time by uninstalling the app. We may stop offering the app with at least 30 days’ notice.</li>
+        <li>When these terms end, your subscription ends through Shopify and your data is deleted as the DPA describes. Sections that by their nature should continue, such as liability and governing law, continue.</li>
+      </ul>`,
+    },
+    {
+      id: 'changes',
+      title: 'Changes to these terms',
+      html: `<p>We may update these terms. The date at the top shows the latest version. We will tell you about material changes at least 30 days before they take effect, in the app or by e-mail. If you continue to use the app after that, the new terms apply; if you do not agree, you can uninstall the app.</p>`,
+    },
+    {
+      id: 'law',
+      title: 'Governing law and disputes',
+      // TODO(owner): Lawyer to confirm Turkish law and İstanbul courts for merchants outside Türkiye (and whether to
+      // name a specific court, e.g. İstanbul Merkez/Çağlayan, or offer arbitration).
+      html: `<p>These terms are governed by the laws of the Republic of Türkiye. The courts and enforcement offices of İstanbul have exclusive jurisdiction. This does not take away any protection that mandatory law gives you.</p>`,
+    },
+    {
+      id: 'general',
+      title: 'General',
+      // TODO(owner): Lawyer to confirm the language clause (Turkish merchants and Law No. 805 on the use of Turkish).
+      html: `<ul>
+        <li>These terms, the DPA and the app privacy policy are the whole agreement between us about the app. For personal data, the DPA prevails over these terms.</li>
+        <li>You may not transfer these terms without our consent. We may transfer them to a company that takes over the app, and will tell you.</li>
+        <li>Neither party is liable for delays caused by events outside its reasonable control.</li>
+        <li>If a provision is invalid, the rest of the terms still apply. Not enforcing a right is not a waiver of it.</li>
+        <li>These terms are available in English and Turkish. If the versions differ, the English version applies.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>${co.legalName}, ${co.address} · Support: ${support} · Privacy: ${privacy}</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Shopify için Ino Loyalty hizmet şartları · Tryino',
+  description: "Tryino ile Ino Loyalty uygulamasını Shopify App Store'dan kuran mağazalar arasındaki şartlar.",
+  eyebrow: 'Shopify için Ino Loyalty',
+  h1: 'Hizmet şartları',
+  intro: `Bu şartlar, ${co.legalName} ile Ino Loyalty uygulamasını Shopify App Store'dan kuran mağaza arasındaki sözleşmedir. Uygulamayı kurarak ya da kullanarak şartları işletmeniz adına kabul etmiş olursunuz.`,
+  sections: [
+    {
+      id: 'parties',
+      title: 'Taraflar',
+      html: `<ul>
+        <li><strong>${co.legalName}</strong>, ${co.address} (“Tryino”, “biz”); uygulamayı geliştirir ve işletir.</li>
+        <li>Uygulamayı Shopify mağazasına kuran <strong>mağaza</strong> (“siz”). Uygulamayı kuran kişi, şartları işletme adına kabul etmeye yetkili olduğunu beyan eder.</li>
+      </ul>
+      <p>Uygulama ticari kullanım içindir. Shopify bu şartların tarafı değildir; Shopify'ın kendisini kullanımınız Shopify'ın şartlarına tabidir. ${dpa('Veri işleme sözleşmemiz')} ve ${policy('uygulama gizlilik politikası')} bu şartların parçasıdır.</p>`,
+    },
+    {
+      id: 'service',
+      title: 'Hizmet',
+      html: `<p>Ino Loyalty, Shopify mağazanızın içinde bir sadakat programı yürütür. Planınıza göre şunları içerir:</p>
+      <ul>
+        <li>müşterilerin siparişlerden kazandığı ve sepette harcadığı puanlar;</li>
+        <li>kademeler ve ek puan, üye indirimi, ücretsiz kargo gibi kampanyalar;</li>
+        <li>davetler, görevler ve rozetler;</li>
+        <li>oyun modülü; örneğin Günlük Çark, “Bu mu Şu mu”, “Fiyatını Bil” ve “Bahçem”;</li>
+        <li>vitrindeki Rewards paneli, Rewards sayfası, müşteri hesabı ve ödeme blokları, Shopify Flow tetikleri ve Shopify yönetim panelindeki yönetim sayfaları.</li>
+      </ul>
+      <p>Özellikleri geliştirebilir, değiştirebilir ya da kaldırabiliriz. Bir değişiklik mevcut planınızın kapsamını önemli ölçüde azaltırsa sizi önceden bilgilendiririz.</p>
+      <h3>Kendi Ino Loyalty Engine'inize geçiş</h3>
+      <p>Bazı mağazalar programlarını daha sonra kendi Ino Loyalty Engine'lerinde yürütür. Bu, Tryino ile yapılan ayrı bir yazılı sözleşmeye tabi ayrı bir üründür ve uygulama üzerinden satılmaz. Böyle bir sözleşme yaparsanız Tryino, o sözleşme kapsamındaki talimatınızla program verilerinizi uygulamadan motorunuza taşır. Taşıma tek yönlüdür. Sonrasında uygulama programınızı motordan gösterir; motorunuzdaki işleme o sözleşmeye tabidir. Uygulamadaki veri kopyanız taşımadan sonra 30 gün saklanır, ardından veri işleme sözleşmesinde anlatıldığı gibi silinir.</p>`,
+    },
+    {
+      id: 'access',
+      title: 'Hesabınız ve erişim',
+      html: `<p>Uygulamayı Shopify yönetim panelinizden açarsınız; kimliğinizi Shopify doğrular. Uygulamayı mağaza sahibi ve Shopify'da indirim yönetme izni olan personel kullanabilir. Erişim verdiğiniz personelden ve uygulamada yaptıklarından siz sorumlusunuz. Uygulamanın izniniz olmadan kullanıldığını düşünürseniz hemen ${support} adresine bildirin.</p>`,
+    },
+    {
+      id: 'use',
+      title: 'Kabul edilebilir kullanım',
+      html: `<p>Aşağıdakileri yapmamayı kabul edersiniz:</p>
+      <ul>
+        <li>uygulamayı hukuka aykırı, yanıltıcı ya da müşterilerinize zarar veren amaçlarla kullanmak;</li>
+        <li>başka bir mağazanın verisine erişmeye çalışmak, yazılı iznimiz olmadan uygulamanın güvenliğini test etmek, plan sınırlarını ya da teknik denetimleri aşmak;</li>
+        <li>kanunun izin verdiği haller dışında uygulamayı kopyalamak, yeniden satmak, tersine mühendislik yapmak ya da ondan rakip ürün geliştirmek;</li>
+        <li>uygulamaya aşırı yük bindirmek ya da işleyişine müdahale etmek;</li>
+        <li>uygulamaya özel nitelikli kişisel veri (örneğin sağlık verisi) ya da ödeme kartı verisi girmek; örneğin puan düzeltme gerekçelerinde ya da program metinlerinde.</li>
+      </ul>`,
+    },
+    {
+      id: 'fees',
+      title: 'Planlar ve ücretler',
+      html: `<ul>
+        <li>Uygulamanın ücretli planları vardır. Shopify bunları uygulama faturalandırması (Shopify App Pricing) ile Shopify faturanıza yansıtır. Uygulama için Shopify dışında ücret almayız.</li>
+        <li>Her planın özellikleri, sınırları ve ücreti uygulamanın Shopify App Store sayfasında ve uygulamadaki plan sayfasında gösterilir. Orada seçtiğiniz plan geçerlidir.</li>
+        <li>Planınızı uygulamadan değiştirebilirsiniz; değişiklik Shopify faturalandırmasının uyguladığı şekilde yürürlüğe girer.</li>
+        <li>Planınızın ücretini değiştirirsek sizi önceden bilgilendiririz; değişiklik yalnızca Shopify'ın faturalandırma kurallarının izin verdiği şekilde uygulanır.</li>
+        <li>Vergiler Shopify'ın faturalandırma şartlarına göre alınır. Ücretler, Shopify'ın şartları ya da kanun gerektirmedikçe veya Shopify üzerinden kredi vermeye karar vermedikçe iade edilmez.</li>
+      </ul>`,
+    },
+    {
+      id: 'trial',
+      title: 'Ücretsiz deneme ve iptal',
+      html: `<ul>
+        <li>Bir planda ücretsiz deneme varsa süresi uygulama sayfasında gösterilir. Deneme bitmeden uygulamayı kaldırmazsanız deneme bitince ücretlendirme başlar.</li>
+        <li>Uygulamayı Shopify yönetim panelinizden kaldırarak istediğiniz zaman iptal edebilirsiniz. Kaldırma aboneliğinizi sona erdirir; son ücretlendirmeyi Shopify kendi kurallarına göre yapar.</li>
+        <li>Uygulamayı kaldırdığınızda Rewards paneli ve uygulamanın blokları mağazanızda çalışmayı durdurur.</li>
+        <li>Shopify, kaldırmadan 48 saat sonra bize silme talebi (shop/redact) gönderir; mağazanızın verisini veri işleme sözleşmesinde anlatıldığı gibi sileriz. Bundan önce yeniden kurarsanız program verileriniz duruyor olabilir; sonrasında geri getirilemez.</li>
+        <li>Programın sona ermesi, program kurallarınıza göre müşterilerinize karşı olan yükümlülüklerinizi (örneğin kazanılmış puanlar) ortadan kaldırmaz.</li>
+      </ul>`,
+    },
+    {
+      id: 'merchant',
+      title: 'Sorumluluklarınız',
+      html: `<h3>Program kurallarınız</h3>
+      <p>Programınızın kurallarını siz belirlersiniz: puanın nasıl kazanılıp harcandığı, ne zaman sona erdiği, kademeler, kampanyalar, davetler, oyunlar ve iadede ne olacağı. Müşterilerinizin gördüğü metinleri de siz yazarsınız. Müşterilerinize açık program koşulları yayımlamaktan, programınızın sunduğu ödülleri yerine getirmekten ve puan ile indirimlerin vergi ve muhasebe işlemlerinden siz sorumlusunuz. Ayarlarınızı yayımlamadan önce kontrol edin; uygulama sizin belirlediğiniz kuralları uygular.</p>
+      <h3>Müşterilerinizin verileri ve izinleri</h3>
+      <p>Müşterilerinizin kişisel verileri için veri sorumlusu sizsiniz; biz bu verileri veri işleme sözleşmesi kapsamında sizin adınıza işleriz. Müşterilerinizi program ve verilerinin nasıl kullanıldığı konusunda bilgilendirmekten, bir hukuki sebebe dayanmaktan ve kanunun gerektirdiği izinleri almaktan siz sorumlusunuz. Uygulama kendisi pazarlama mesajı göndermez. Uygulamanın verilerine dayanarak mesaj gönderirseniz (örneğin Shopify Flow ya da e-posta aracınızla), müşterilerinizin ticari ileti izninden siz sorumlusunuz.</p>
+      <h3>Şans oyunları</h3>
+      <p>Günlük Çark puanı şansa bağlı verir. Açmadan önce uygulamada, çarkı yürütmenin sizin sorumluluğunuzda olduğunu onaylamanız gerekir; uygulama onayı hangi personelin ne zaman verdiğini kaydeder ve onay geri çekilirse çarkı kapatır. Çark yalnızca ücretsiz günlük hakla oynanır; puan ya da para ile oynanamaz. Bir oyunun, çekilişin ya da şansa dayalı bir promosyonun müşterilerinizin bulunduğu yerde izin, kayıt ya da özel koşul gerektirip gerektirmediğini (örneğin piyango ve çekiliş mevzuatı) kontrol etmekten ve bu gereklilikleri karşılamaktan siz sorumlusunuz.</p>`,
+    },
+    {
+      id: 'support',
+      title: 'Erişilebilirlik ve destek',
+      html: `<ul>
+        <li>Uygulamayı erişilebilir tutmak ve sorunları hızla gidermek için çalışırız; ancak kesintisiz ya da hatasız çalışmayı garanti etmeyiz. Kısa bakım süreleri gerekebilir.</li>
+        <li>Uygulama Shopify'a ve barındırma sağlayıcımız Microsoft Azure'a bağlıdır. Onların tarafındaki kesinti ya da değişiklikler uygulamayı etkileyebilir.</li>
+        <li>Destek e-postayla verilir: ${support}, Pazartesi–Cuma, 09:00–18:00 (Türkiye saati). Soruların çoğunu bir iş günü içinde yanıtlarız.</li>
+      </ul>`,
+    },
+    {
+      id: 'data',
+      title: 'Veriler ve gizlilik',
+      html: `<p>Program verileriniz size aittir. Bu verileri yalnızca uygulamayı sağlamak için, ${dpa('veri işleme sözleşmesinde')} belirtildiği şekilde işleriz. ${policy('Uygulama gizlilik politikası')}, uygulamanın Shopify'da neye eriştiğini, neyi ne kadar süre sakladığımızı anlatır. Programınızın Shopify'da görünmesi için uygulama her üyenin puan bakiyesini ve kademesini müşteri kaydına uygulama alanı ve etiket olarak yazar.</p>`,
+    },
+    {
+      id: 'ip',
+      title: 'Fikri mülkiyet',
+      html: `<p>Uygulama, yazılımı ve tasarımı ile Tryino ve Ino Loyalty adları ve logoları Tryino'ya ya da lisans verenlerine aittir. Aboneliğiniz sürdüğü sürece size uygulamayı Shopify mağazanız için kullanma konusunda münhasır olmayan, devredilemez bir hak veririz. Logonuz, program metinleriniz ve ürün görselleriniz gibi kendi içeriğiniz üzerindeki tüm haklar sizde kalır; bunları yalnızca uygulamayı sizin için çalıştırmak amacıyla kullanmamıza izin verirsiniz. Bize öneri gönderirseniz, size karşı bir yükümlülük doğmadan kullanabiliriz.</p>`,
+    },
+    {
+      id: 'warranty',
+      title: 'Garanti reddi',
+      html: `<p>Kanunun izin verdiği ölçüde uygulama “olduğu gibi” ve “erişilebildiği ölçüde”, belirli bir amaca uygunluk dahil açık ya da örtülü hiçbir garanti olmadan sunulur. Program ayarlarınızın istediğiniz sonucu verdiğini kontrol etmek sizin sorumluluğunuzdadır. Bu şartlardaki hiçbir hüküm, kanunen kaldırılamayan bir garantiyi ortadan kaldırmaz.</p>`,
+    },
+    {
+      id: 'liability',
+      title: 'Sorumluluğun sınırlandırılması',
+      html: `<ul>
+        <li>Taraflardan hiçbiri dolaylı zararlardan ya da kâr, gelir, itibar veya iş fırsatı kaybından sorumlu değildir.</li>
+        <li>Her bir tarafın bu şartlar ve veri işleme sözleşmesi kapsamındaki toplam sorumluluğu, talebe yol açan olaydan önceki 12 ayda uygulama için ödediğiniz ücretlerle sınırlıdır.</li>
+        <li>Bu sınırlar kast ya da ağır kusurdan doğan sorumluluğa ve kanunen sınırlandırılamayan diğer sorumluluklara uygulanmaz.</li>
+        <li>Program kurallarınızdan, oyunlarınızdan ya da müşteri verilerini kanuna aykırı kullanmanızdan doğan müşteri veya resmi makam taleplerinden siz sorumlusunuz ve bu taleplerin bize verdiği makul zararları karşılarsınız.</li>
+      </ul>`,
+    },
+    {
+      id: 'termination',
+      title: 'Askıya alma ve fesih',
+      html: `<ul>
+        <li>Uygulamayı, diğer mağazaları ya da müşterileri korumak için gerekirse, bu şartları ağır biçimde ihlal ederseniz ya da kanun veya Shopify gerektirirse erişiminizi tamamen ya da kısmen askıya alabiliriz. Nedenini size bildirir, askıyı gerekli olanla sınırlar ve neden ortadan kalkınca erişimi geri açarız.</li>
+        <li>Taraflardan biri bu şartları önemli ölçüde ihlal eder ve yazılı bildirimden sonra 15 gün içinde düzeltmezse, diğer taraf şartları feshedebilir; düzeltilemeyecek bir ihlalde derhal feshedebilir.</li>
+        <li>Uygulamayı kaldırarak bu şartları istediğiniz zaman sona erdirebilirsiniz. Biz uygulamayı en az 30 gün önceden bildirerek sunmayı bırakabiliriz.</li>
+        <li>Şartlar sona erdiğinde aboneliğiniz Shopify üzerinden sona erer ve verileriniz veri işleme sözleşmesinde anlatıldığı gibi silinir. Sorumluluk ve uygulanacak hukuk gibi niteliği gereği devam etmesi gereken hükümler devam eder.</li>
+      </ul>`,
+    },
+    {
+      id: 'changes',
+      title: 'Şartlardaki değişiklikler',
+      html: `<p>Bu şartları güncelleyebiliriz. Sayfanın başındaki tarih son sürümü gösterir. Önemli değişiklikleri yürürlüğe girmeden en az 30 gün önce uygulamada ya da e-postayla bildiririz. Sonrasında uygulamayı kullanmaya devam ederseniz yeni şartlar geçerli olur; kabul etmiyorsanız uygulamayı kaldırabilirsiniz.</p>`,
+    },
+    {
+      id: 'law',
+      title: 'Uygulanacak hukuk ve uyuşmazlıklar',
+      html: `<p>Bu şartlar Türkiye Cumhuriyeti kanunlarına tabidir. İstanbul mahkemeleri ve icra daireleri münhasıran yetkilidir. Bu hüküm, emredici hukukun size tanıdığı korumaları ortadan kaldırmaz.</p>`,
+    },
+    {
+      id: 'general',
+      title: 'Genel hükümler',
+      html: `<ul>
+        <li>Bu şartlar, veri işleme sözleşmesi ve uygulama gizlilik politikası uygulama konusunda aramızdaki sözleşmenin tamamıdır. Kişisel veriler konusunda veri işleme sözleşmesi bu şartlardan önce gelir.</li>
+        <li>Bu şartları onayımız olmadan devredemezsiniz. Biz, uygulamayı devralan bir şirkete devredebilir ve size bildiririz.</li>
+        <li>Taraflar, makul kontrolleri dışındaki olayların yol açtığı gecikmelerden sorumlu değildir.</li>
+        <li>Bir hüküm geçersiz olursa diğer hükümler geçerli kalır. Bir hakkın kullanılmaması o haktan vazgeçildiği anlamına gelmez.</li>
+        <li>Bu şartlar İngilizce ve Türkçe olarak sunulur. Metinler arasında fark varsa İngilizce metin geçerlidir.</li>
+      </ul>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>${co.legalName}, ${co.address} · Destek: ${support} · Gizlilik: ${privacy}</p>`,
+    },
+  ],
+};
+
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Veri işleme sözleşmesi' : 'Data processing agreement', href: href(lang, 'dpaShopify')},
+  {label: lang === 'tr' ? 'Shopify uygulaması gizliliği' : 'Shopify app privacy', href: href(lang, 'privacyShopify')},
+  {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} updated={updated} />

@@ -20,6 +20,9 @@ export const routes = {
   privacy: '/privacy',
   privacyShopify: '/privacy/ino-loyalty-shopify',
   privacyIkas: '/privacy/ino-loyalty-ikas',
+  termsShopify: '/terms/ino-loyalty-shopify',
+  dpaShopify: '/dpa/ino-loyalty-shopify',
+  incidentResponse: '/security/incident-response',
   cookies: '/cookies',
   terms: '/terms',
   pricing: '/pricing', // hidden: not linked, noindex

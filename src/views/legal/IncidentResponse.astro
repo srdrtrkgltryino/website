@@ -1,0 +1,219 @@
+---
+// Public version of the security incident response policy for the Ino Loyalty app for Shopify.
+// Source: Ino-Loyalty-NET docs/shopify-store/incident-response-policy.md (v1.0, effective 2026-11-06).
+// Left out on purpose, because they are internal: names, phone numbers and the contact list location; Azure resource
+// names; secret names and step-by-step rotation; the evidence storage location; status notes on monitoring still to
+// configure. The internal document stays the full version.
+// TODO(owner): Fill in the names/roles in the internal policy (§2) and its Shopify notification clause (§6); keep this page
+// in step with it. Do not add alerting claims here until the Log Analytics alert rules and Application Insights (internal
+// policy §4) are actually switched on. The Key Vault audit and database connection logs (90 days) mentioned below depend on
+// the production deploy in progress on 2026-11-06; verify before publishing, then update internal policy §4 to match.
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const updated = '2026-11-06';
+const privacy = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
+const support = `<a href="mailto:${co.supportEmail}">${co.supportEmail}</a>`;
+const table = (head: string[], rows: string[][]) =>
+  `<div class="table"><table><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows
+    .map((r) => `<tr>${r.map((d) => `<td>${d}</td>`).join('')}</tr>`)
+    .join('')}</tbody></table></div>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Security incident response policy · Tryino',
+  description: 'How Tryino detects, handles, reports and learns from security incidents affecting the Ino Loyalty app for Shopify.',
+  eyebrow: 'Security',
+  h1: 'Security incident response policy',
+  intro: 'How Tryino detects, handles, reports and learns from security incidents that affect the Ino Loyalty app for Shopify. This is the public summary of our internal policy, version 1.0, effective 6 November 2026.',
+  sections: [
+    {
+      id: 'scope',
+      title: 'Scope',
+      html: `<p>A <strong>security incident</strong> is any event that puts at risk the confidentiality, integrity or availability of data the app processes, for example unauthorised access, data shown to the wrong store, a leaked secret or tampering with points.</p>
+      <p>The policy covers the app’s production environment on Microsoft Azure in France Central (Paris, EU): the admin and webhook service, the loyalty engine, the PostgreSQL databases, the key vault and the logs, and the app’s configuration in Shopify.</p>
+      <p>Data at risk is mainly shoppers’ Shopify customer IDs and the loyalty data linked to them (points, order summaries, tiers, activity), and merchant data such as store settings, staff user IDs and Shopify access tokens, which are stored encrypted. Shopper names and e-mail addresses are not stored. For shopper data, the merchant is the controller and Tryino the processor.</p>`,
+    },
+    {
+      id: 'roles',
+      title: 'Roles',
+      html: `<ul>
+        <li><strong>Incident Lead:</strong> declares the incident, sets its severity, owns decisions and the incident record, and approves external notices.</li>
+        <li><strong>Technical Responder:</strong> investigates, contains, removes the cause and recovers; preserves evidence; rotates credentials.</li>
+        <li><strong>Communications:</strong> prepares and sends notices to merchants, Shopify and authorities, and answers ${support} and ${privacy}.</li>
+      </ul>
+      <p>Tryino is a small team, so one person may hold more than one role. Each role has a named backup, who takes over if the Incident Lead cannot be reached for 2 hours during a SEV-1 or SEV-2 incident.</p>`,
+    },
+    {
+      id: 'severity',
+      title: 'Severity levels',
+      html: `${table(['Level', 'Examples', 'Response starts', 'Contain within'], [
+        ['<strong>SEV-1 Critical</strong>', 'Confirmed unauthorised access to or disclosure of shopper or merchant data; data visible across stores; a leaked production secret; points changed at scale by an attacker', 'Immediately, any hour', '4 hours'],
+        ['<strong>SEV-2 High</strong>', 'Suspected but unconfirmed access; an exploitable vulnerability in production; a compromised Tryino account with production access; Shopify privacy webhooks failing for more than 24 hours', 'Within 4 hours', '24 hours'],
+        ['<strong>SEV-3 Medium</strong>', 'A vulnerability with limited exposure or no known exploit; an incident confined to one store with no data disclosed; repeated attacks that our controls blocked', 'Next business day', '5 business days'],
+        ['<strong>SEV-4 Low</strong>', 'A policy deviation or hardening item with no data at risk', 'Planned work', 'Next release'],
+      ])}
+      <p>We raise the severity as soon as new facts justify it. Outages that only affect availability are handled as operational issues unless an attack caused them.</p>`,
+    },
+    {
+      id: 'detection',
+      title: 'Detection and reporting',
+      html: `<p>Incidents can come to light through application logs (for example rejected webhooks, signature failures and refused staff point changes), access logs for secrets in Azure Key Vault and for database connections, Azure activity records, cost alerts, notices from Shopify, and reports from merchants, shoppers or security researchers. Key Vault and database connection logs are kept in Azure Log Analytics for 90 days; application logs contain no shopper data.</p>
+      <p>To report a suspected security issue, write to ${privacy}. Anyone at Tryino who suspects an incident tells the Incident Lead at once, and nobody investigates alone for more than 30 minutes before doing so.</p>`,
+    },
+    {
+      id: 'response',
+      title: 'How we respond',
+      html: `<ol>
+        <li><strong>Identify:</strong> open an incident record (times in UTC), set the severity and establish the scope: which stores, which data and which period. Production data is examined only inside the protected environment and is never copied to laptops, tickets or chat.</li>
+        <li><strong>Contain:</strong> take the smallest action that stops the harm, such as limiting traffic, closing access, removing suspicious permissions, revoking sessions or rotating any credential that may be exposed. Shopify webhook outages are kept short, and orders are checked against Shopify afterwards.</li>
+        <li><strong>Eradicate:</strong> fix the root cause, rebuild and redeploy from reviewed, committed code, and remove anything an attacker may have left behind.</li>
+        <li><strong>Recover:</strong> if data integrity is affected, restore from point-in-time backups (the last 14 days) to a new server, compare before switching over, re-process pending order notifications, check the app end to end, and watch closely for 14 days.</li>
+        <li><strong>Review:</strong> hold a post-incident review (see below).</li>
+      </ol>`,
+    },
+    {
+      id: 'notification',
+      title: 'Notification',
+      html: `${table(['Who', 'When'], [
+        ['<strong>Affected merchants</strong> (controllers)', 'Without undue delay after we become aware of a breach affecting their data. Our target is the first notice within 48 hours, with updates as facts become clear.'],
+        ['<strong>Shopify</strong>', 'Within the time and through the channel Shopify’s partner and API terms require, at the same time as the merchant notice or earlier.'],
+        ['<strong>Supervisory authorities</strong>', 'Within 72 hours where notification is required: under the GDPR, and to the Personal Data Protection Board under KVKK. For shopper data this is the merchant’s duty, and we support it. We notify for data we control ourselves.'],
+        ['<strong>Affected individuals</strong>', 'As the merchant decides or the law requires. We provide the facts and draft wording on request.'],
+      ])}
+      <p>A merchant notice says what happened and when; the stores and categories of data affected, with approximate counts; the likely consequences; the measures taken and planned; what the merchant should do; and a contact person.</p>`,
+    },
+    {
+      id: 'evidence',
+      title: 'Evidence and records',
+      html: `<p>We preserve evidence before changing anything we can avoid changing: relevant log results are exported at once (application logs, Key Vault access and database connection logs are kept 90 days), databases are restored to a separate server rather than altered, and deployment versions and Shopify webhook delivery logs are recorded. Old secret versions are kept, not purged. Evidence is stored with access restrictions and integrity hashes, and shopper personal data is kept out of incident notes.</p>
+      <p>Each incident record holds its severity and status, detection time and source, timeline, scope, actions taken, notices sent, root cause and follow-up actions.</p>`,
+    },
+    {
+      id: 'credentials',
+      title: 'Credential rotation',
+      html: `<p>Production secrets are kept in Azure Key Vault and read by managed identities. When a credential may be exposed, we rotate it (for example the Shopify app secret, the key that encrypts store access tokens, service keys or database passwords), deploy new versions of the services that use it, and revoke and review the access of people and identities involved.</p>`,
+    },
+    {
+      id: 'review',
+      title: 'Post-incident review',
+      html: `<p>We hold a blameless review within 10 business days of every SEV-1 and SEV-2 incident, and of SEV-3 incidents where useful. It covers the timeline, the root cause and why it was not prevented or found sooner, what worked and what did not, and the data and notification outcome. The result is a list of owned, dated actions and, where needed, updates to this policy, our data inventory and our monitoring.</p>`,
+    },
+    {
+      id: 'testing',
+      title: 'Testing and maintenance',
+      html: `<p>At least once a year, and after any major change to the architecture, we run a tabletop exercise of a SEV-1 scenario and a test restore of the production database, and record the findings. The policy is reviewed every year and after each SEV-1 or SEV-2 incident.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'Contact',
+      html: `<p>Security and privacy: ${privacy} · Support: ${support} · ${co.legalName}, ${co.address}</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Güvenlik olayı müdahale politikası · Tryino',
+  description: "Tryino'nun Shopify için Ino Loyalty uygulamasını etkileyen güvenlik olaylarını nasıl tespit ettiği, yönettiği, bildirdiği ve bunlardan nasıl ders çıkardığı.",
+  eyebrow: 'Güvenlik',
+  h1: 'Güvenlik olayı müdahale politikası',
+  intro: "Tryino'nun Shopify için Ino Loyalty uygulamasını etkileyen güvenlik olaylarını nasıl tespit ettiği, yönettiği, bildirdiği ve bunlardan nasıl ders çıkardığı. Bu, iç politikamızın kamuya açık özetidir; sürüm 1.0, yürürlük 6 Kasım 2026.",
+  sections: [
+    {
+      id: 'scope',
+      title: 'Kapsam',
+      html: `<p><strong>Güvenlik olayı</strong>, uygulamanın işlediği verilerin gizliliğini, bütünlüğünü ya da erişilebilirliğini riske atan her olaydır; örneğin yetkisiz erişim, verinin yanlış mağazaya görünmesi, sızan bir sır ya da puanlarla oynanması.</p>
+      <p>Politika, uygulamanın Microsoft Azure France Central (Paris, AB) bölgesindeki üretim ortamını kapsar: yönetim ve webhook servisi, sadakat motoru, PostgreSQL veritabanları, anahtar kasası ve kayıtlar ile uygulamanın Shopify'daki yapılandırması.</p>
+      <p>Risk altındaki veriler başlıca müşterilerin Shopify müşteri kimlikleri ve bunlara bağlı sadakat verileri (puan, sipariş özetleri, kademe, hareketler) ile mağaza ayarları, personel kullanıcı kimlikleri ve şifreli saklanan Shopify erişim anahtarları gibi mağaza verileridir. Müşteri adı ve e-posta adresi saklanmaz. Müşteri verileri için veri sorumlusu mağaza, veri işleyen Tryino'dur.</p>`,
+    },
+    {
+      id: 'roles',
+      title: 'Roller',
+      html: `<ul>
+        <li><strong>Olay Sorumlusu:</strong> olayı ilan eder, önem derecesini belirler, kararları ve olay kaydını yönetir, dış bildirimleri onaylar.</li>
+        <li><strong>Teknik Müdahaleci:</strong> inceler, sınırlar, nedeni ortadan kaldırır ve hizmeti geri getirir; kanıtları korur; kimlik bilgilerini yeniler.</li>
+        <li><strong>İletişim:</strong> mağazalara, Shopify'a ve resmi makamlara bildirimleri hazırlar ve gönderir; ${support} ve ${privacy} adreslerini yanıtlar.</li>
+      </ul>
+      <p>Tryino küçük bir ekiptir; bir kişi birden fazla rol üstlenebilir. Her rolün belirlenmiş bir yedeği vardır; SEV-1 ya da SEV-2 olayında Olay Sorumlusuna 2 saat ulaşılamazsa yedek devralır.</p>`,
+    },
+    {
+      id: 'severity',
+      title: 'Önem dereceleri',
+      html: `${table(['Derece', 'Örnekler', 'Müdahale başlar', 'Sınırlama süresi'], [
+        ['<strong>SEV-1 Kritik</strong>', 'Müşteri ya da mağaza verisine doğrulanmış yetkisiz erişim veya ifşa; verinin mağazalar arasında görünmesi; sızan bir üretim sırrı; bir saldırganın puanları toplu değiştirmesi', 'Hemen, her saatte', '4 saat'],
+        ['<strong>SEV-2 Yüksek</strong>', 'Şüphelenilen ama doğrulanmamış erişim; üretimde istismar edilebilir bir açık; üretim erişimi olan bir Tryino hesabının ele geçirilmesi; Shopify gizlilik webhook\'larının 24 saatten uzun hata vermesi', '4 saat içinde', '24 saat'],
+        ['<strong>SEV-3 Orta</strong>', 'Etkisi sınırlı ya da bilinen istismarı olmayan bir açık; veri ifşası olmadan tek mağazayla sınırlı bir olay; denetimlerimizin engellediği tekrarlanan saldırılar', 'Sonraki iş günü', '5 iş günü'],
+        ['<strong>SEV-4 Düşük</strong>', 'Veri riski olmayan bir politika sapması ya da sıkılaştırma işi', 'Planlı iş', 'Sonraki sürüm'],
+      ])}
+      <p>Yeni olgular gerektirdiğinde önem derecesini hemen yükseltiriz. Yalnızca erişilebilirliği etkileyen kesintiler, bir saldırıdan kaynaklanmadıkça işletme sorunu olarak ele alınır.</p>`,
+    },
+    {
+      id: 'detection',
+      title: 'Tespit ve bildirim kanalı',
+      html: `<p>Olaylar uygulama kayıtlarından (örneğin reddedilen webhook'lar, imza hataları, reddedilen personel puan değişiklikleri), Azure Key Vault'taki sırlara ve veritabanı bağlantılarına ilişkin erişim kayıtlarından, Azure etkinlik kayıtlarından, maliyet uyarılarından, Shopify bildirimlerinden ve mağazaların, müşterilerin ya da güvenlik araştırmacılarının bildirimlerinden ortaya çıkabilir. Key Vault ve veritabanı bağlantı kayıtları Azure Log Analytics'te 90 gün tutulur; uygulama kayıtlarında müşteri verisi yoktur.</p>
+      <p>Şüphelendiğiniz bir güvenlik sorununu ${privacy} adresine bildirin. Tryino'da bir olaydan şüphelenen herkes bunu hemen Olay Sorumlusuna bildirir; kimse bildirmeden 30 dakikadan uzun tek başına inceleme yapmaz.</p>`,
+    },
+    {
+      id: 'response',
+      title: 'Nasıl müdahale ederiz',
+      html: `<ol>
+        <li><strong>Tespit:</strong> olay kaydı açılır (saatler UTC), önem derecesi belirlenir ve kapsam çıkarılır: hangi mağazalar, hangi veriler, hangi dönem. Üretim verisi yalnızca korumalı ortamın içinde incelenir; dizüstü bilgisayara, kayıt sistemine ya da sohbete kopyalanmaz.</li>
+        <li><strong>Sınırlama:</strong> zararı durduran en küçük adım atılır; trafiği sınırlamak, erişimi kapatmak, şüpheli yetkileri kaldırmak, oturumları sonlandırmak ya da açığa çıkmış olabilecek kimlik bilgilerini yenilemek gibi. Shopify webhook kesintileri kısa tutulur, sonrasında siparişler Shopify ile karşılaştırılır.</li>
+        <li><strong>Giderme:</strong> kök neden düzeltilir, incelenmiş ve kaydedilmiş koddan yeniden derlenip dağıtılır, saldırganın bırakmış olabileceği her şey kaldırılır.</li>
+        <li><strong>Kurtarma:</strong> veri bütünlüğü etkilendiyse son 14 günün zamana dönük yedeklerinden yeni bir sunucuya geri yüklenir, geçişten önce karşılaştırılır, bekleyen sipariş bildirimleri yeniden işlenir, uygulama baştan sona denenir ve 14 gün yakından izlenir.</li>
+        <li><strong>Değerlendirme:</strong> olay sonrası değerlendirme yapılır (aşağıda).</li>
+      </ol>`,
+    },
+    {
+      id: 'notification',
+      title: 'Bildirim',
+      html: `${table(['Kime', 'Ne zaman'], [
+        ['<strong>Etkilenen mağazalar</strong> (veri sorumluları)', 'Verilerini etkileyen bir ihlali öğrendikten sonra gecikmeksizin. Hedefimiz ilk bildirimi 48 saat içinde göndermek; olgular netleştikçe güncelleme.'],
+        ['<strong>Shopify</strong>', "Shopify'ın iş ortağı ve API şartlarının gerektirdiği süre ve kanalla; mağaza bildirimiyle aynı anda ya da daha önce."],
+        ['<strong>Denetim makamları</strong>', "Bildirim gerekiyorsa 72 saat içinde: GDPR kapsamında ve KVKK kapsamında Kişisel Verileri Koruma Kurulu'na. Müşteri verileri için bu mağazanın yükümlülüğüdür, biz destekleriz. Kendi sorumlu olduğumuz veriler için biz bildiririz."],
+        ['<strong>Etkilenen kişiler</strong>', 'Mağazanın kararına ya da kanunun gereğine göre. Talep üzerine olguları ve taslak metni sağlarız.'],
+      ])}
+      <p>Mağaza bildirimi ne olduğunu ve ne zaman olduğunu; etkilenen mağazaları ve veri kategorilerini, yaklaşık sayılarıyla; olası sonuçları; alınan ve planlanan önlemleri; mağazanın ne yapması gerektiğini ve bir irtibat kişisini içerir.</p>`,
+    },
+    {
+      id: 'evidence',
+      title: 'Kanıtlar ve kayıtlar',
+      html: `<p>Değiştirmekten kaçınabileceğimiz hiçbir şeyi değiştirmeden önce kanıtları koruruz: ilgili kayıt sonuçları hemen dışa aktarılır (uygulama kayıtları, Key Vault erişim ve veritabanı bağlantı kayıtları 90 gün tutulur), veritabanları değiştirilmek yerine ayrı bir sunucuya geri yüklenir, dağıtım sürümleri ve Shopify webhook teslim kayıtları saklanır. Sırların eski sürümleri silinmez, korunur. Kanıtlar erişimi kısıtlı bir yerde, bütünlük özetleriyle saklanır; müşteri kişisel verileri olay notlarına yazılmaz.</p>
+      <p>Her olay kaydı önem derecesini ve durumunu, tespit zamanını ve kaynağını, zaman çizelgesini, kapsamı, alınan önlemleri, gönderilen bildirimleri, kök nedeni ve takip işlerini içerir.</p>`,
+    },
+    {
+      id: 'credentials',
+      title: 'Kimlik bilgilerinin yenilenmesi',
+      html: `<p>Üretim sırları Azure Key Vault'ta tutulur ve yönetilen kimliklerle okunur. Bir kimlik bilgisinin açığa çıkmış olabileceği durumda onu yeniler (örneğin Shopify uygulama sırrı, mağaza erişim anahtarlarını şifreleyen anahtar, servis anahtarları ya da veritabanı parolaları), onu kullanan servislerin yeni sürümlerini dağıtır, ilgili kişi ve kimliklerin erişimini sonlandırıp gözden geçiririz.</p>`,
+    },
+    {
+      id: 'review',
+      title: 'Olay sonrası değerlendirme',
+      html: `<p>Her SEV-1 ve SEV-2 olayından, yararlı olduğunda SEV-3 olaylarından sonra 10 iş günü içinde suçlama içermeyen bir değerlendirme yaparız. Değerlendirme zaman çizelgesini, kök nedeni ve neden daha önce önlenemediğini ya da fark edilmediğini, neyin işe yarayıp neyin yaramadığını, veri ve bildirim sonucunu kapsar. Sonuç, sorumlusu ve tarihi belli işlerin listesi ve gerektiğinde bu politikanın, veri envanterimizin ve izleme kurallarımızın güncellenmesidir.</p>`,
+    },
+    {
+      id: 'testing',
+      title: 'Test ve bakım',
+      html: `<p>En az yılda bir ve mimaride her büyük değişiklikten sonra bir SEV-1 senaryosunun masa başı tatbikatını ve üretim veritabanının deneme geri yüklemesini yapar, bulguları kaydederiz. Politika her yıl ve her SEV-1 ya da SEV-2 olayından sonra gözden geçirilir.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'İletişim',
+      html: `<p>Güvenlik ve gizlilik: ${privacy} · Destek: ${support} · ${co.legalName}, ${co.address}</p>`,
+    },
+  ],
+};
+
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'Shopify uygulaması gizliliği' : 'Shopify app privacy', href: href(lang, 'privacyShopify')},
+  {label: lang === 'tr' ? 'Veri işleme sözleşmesi' : 'Data processing agreement', href: href(lang, 'dpaShopify')},
+  {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} updated={updated} />
