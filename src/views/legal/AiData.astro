@@ -1,7 +1,8 @@
 ---
 // Ino AI and your data: what the AI features of Ino Loyalty send to the model, where it is processed, what Tryino keeps and how a company turns it off.
 // Source: Ino-Loyalty-NET docs/AI_LAYER.md §6-7, docs/KVKK_UYUM.md §8, src/InoLoyalty.Api/Ai/PiiScrubber.cs, db/migrations/0081_ai_layer.sql (ai.request),
-// Azure deployments (ino-prod-eu1-ai: gpt-4.1-mini Standard, Sweden Central). Checked 2026-11-17.
+// Azure deployments (ino-prod-eu1-ai: gpt-4.1-mini Standard = default, gpt-5.4-mini DataZoneStandard EU, gpt-5-mini GlobalStandard; firm chooses in
+// Ino AI → Settings, AI Layer v2 F5b, docs/AI_LAYER_V2_F5B_DESIGN.md). Checked 2026-11-17.
 // TODO(owner): Lawyer to confirm (1) whether KVKK Art. 9 needs the standard contract for the EU processing of free text, (2) whether to apply for
 // Azure OpenAI modified abuse monitoring (then remove the 30-day sentence).
 import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
@@ -26,7 +27,7 @@ const en: {title: string; description: string; eyebrow: string; h1: string; intr
       title: 'The short version',
       html: `<ul>
         <li><strong>No member records go to the model.</strong> The loyalty engine does the counting itself and sends only totals, your own program settings and what your team types.</li>
-        <li><strong>Processed in the EU.</strong> Ino AI runs on Microsoft Azure AI Foundry in Sweden Central; your program data stays on Microsoft Azure in France Central.</li>
+        <li><strong>Processed in Sweden by default.</strong> Ino AI runs on Microsoft Azure AI Foundry in Sweden Central; your program data stays on Microsoft Azure in France Central. An administrator may choose a model processed elsewhere in the EU or worldwide, only after confirming it.</li>
         <li><strong>Not used to train models</strong>, and Tryino does not keep the text of prompts or answers.</li>
         <li><strong>You decide.</strong> Ino AI does nothing until an administrator turns it on and finishes its setup, and it can be turned off at any time.</li>
       </ul>`,
@@ -49,7 +50,15 @@ const en: {title: string; description: string; eyebrow: string; h1: string; intr
     {
       id: 'where',
       title: 'Where it is processed',
-      html: `<p>The model runs on <strong>Microsoft Azure AI Foundry in Sweden Central (EU)</strong>, in a regional deployment, so requests are processed in that region. Microsoft does not use these requests to train models. Microsoft may keep requests for up to 30 days in the same geography to detect abuse of the service. ${co.legalName} is based in Türkiye; our staff may access the systems remotely to operate and support them.</p>`,
+      html: `<p>By default the model runs on <strong>Microsoft Azure AI Foundry in Sweden Central (EU)</strong>, in a regional deployment, so requests are processed in that region.</p>
+      <p>An administrator can choose another model in <strong>Ino AI → Settings</strong>. Each model shows where it is processed:</p>
+      <ul>
+        <li><strong>Sweden</strong>: regional deployment in Sweden Central (the default).</li>
+        <li><strong>EU data zone</strong>: requests may be processed in any Azure region in the European Union.</li>
+        <li><strong>Global</strong>: requests may be processed in any Azure region worldwide, including outside the EU.</li>
+      </ul>
+      <p>Ino AI asks the administrator to confirm before a model processed outside Sweden is used, and records each change (without personal data). If a model later moves to a wider processing location than the one confirmed, Ino AI returns to the Sweden model. Rules for segments, campaign drafts and texts are never sent to a Global model. Whichever model is chosen, requests are sent only through Ino AI and contain no member records.</p>
+      <p>Microsoft does not use these requests to train models. Microsoft may keep requests for up to 30 days in the geography of the Azure resource (EU) to detect abuse of the service. ${co.legalName} is based in Türkiye; our staff may access the systems remotely to operate and support them.</p>`,
     },
     {
       id: 'kept',
@@ -81,7 +90,7 @@ const tr: typeof en = {
       title: 'Kısaca',
       html: `<ul>
         <li><strong>Modele üye kaydı gitmez.</strong> Sayımları sadakat motoru kendisi yapar; modele yalnız toplamlar, programınızın kendi ayarları ve ekibinizin yazdığı metin gider.</li>
-        <li><strong>AB'de işlenir.</strong> Ino AI, Microsoft Azure AI Foundry'de Sweden Central bölgesinde çalışır; program verileriniz Microsoft Azure'da France Central bölgesinde kalır.</li>
+        <li><strong>Varsayılan olarak İsveç'te işlenir.</strong> Ino AI, Microsoft Azure AI Foundry'de Sweden Central bölgesinde çalışır; program verileriniz Microsoft Azure'da France Central bölgesinde kalır. Bir yönetici, onayladıktan sonra AB'nin başka bir yerinde ya da dünya genelinde işlenen bir model seçebilir.</li>
         <li><strong>Model eğitiminde kullanılmaz</strong>; Tryino istem ve yanıt metnini saklamaz.</li>
         <li><strong>Karar sizde.</strong> Ino AI, bir yönetici açıp kurulumunu tamamlayana kadar hiçbir şey yapmaz ve her an kapatılabilir.</li>
       </ul>`,
@@ -104,7 +113,15 @@ const tr: typeof en = {
     {
       id: 'where',
       title: 'Nerede işlenir',
-      html: `<p>Model, bölgesel bir dağıtımla <strong>Microsoft Azure AI Foundry'de Sweden Central (AB)</strong> bölgesinde çalışır; istekler bu bölgede işlenir. Microsoft bu istekleri model eğitiminde kullanmaz. Microsoft, hizmetin kötüye kullanımını tespit etmek için istekleri aynı coğrafyada en çok 30 gün saklayabilir. ${co.legalName} Türkiye'dedir; çalışanlarımız sistemleri işletmek ve desteklemek için uzaktan erişebilir.</p>`,
+      html: `<p>Varsayılan olarak model, bölgesel bir dağıtımla <strong>Microsoft Azure AI Foundry'de Sweden Central (AB)</strong> bölgesinde çalışır; istekler bu bölgede işlenir.</p>
+      <p>Bir yönetici <strong>Ino AI → Settings</strong> ekranında başka bir model seçebilir. Her modelin nerede işlendiği yazar:</p>
+      <ul>
+        <li><strong>Sweden</strong>: Sweden Central'da bölgesel dağıtım (varsayılan).</li>
+        <li><strong>EU data zone</strong>: istekler Avrupa Birliği'ndeki herhangi bir Azure bölgesinde işlenebilir.</li>
+        <li><strong>Global</strong>: istekler AB dışı dahil dünyadaki herhangi bir Azure bölgesinde işlenebilir.</li>
+      </ul>
+      <p>İsveç dışında işlenen bir model kullanılmadan önce Ino AI yöneticiden onay ister ve her değişikliği kaydeder (kişisel veri olmadan). Model sonradan onaylanandan daha geniş bir yerde işlenmeye başlarsa Ino AI İsveç modeline döner. Segment kuralları, kampanya taslakları ve metinler hiçbir zaman Global modele gönderilmez. Hangi model seçilirse seçilsin istekler yalnız Ino AI üzerinden gider ve üye kaydı içermez.</p>
+      <p>Microsoft bu istekleri model eğitiminde kullanmaz. Microsoft, hizmetin kötüye kullanımını tespit etmek için istekleri Azure kaynağının coğrafyasında (AB) en çok 30 gün saklayabilir. ${co.legalName} Türkiye'dedir; çalışanlarımız sistemleri işletmek ve desteklemek için uzaktan erişebilir.</p>`,
     },
     {
       id: 'kept',
