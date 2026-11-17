@@ -1,0 +1,135 @@
+---
+// Ino AI and your data: what the AI features of Ino Loyalty send to the model, where it is processed, what Tryino keeps and how a company turns it off.
+// Source: Ino-Loyalty-NET docs/AI_LAYER.md §6-7, docs/KVKK_UYUM.md §8, src/InoLoyalty.Api/Ai/PiiScrubber.cs, db/migrations/0081_ai_layer.sql (ai.request),
+// Azure deployments (ino-prod-eu1-ai: gpt-4.1-mini Standard, Sweden Central). Checked 2026-11-17.
+// TODO(owner): Lawyer to confirm (1) whether KVKK Art. 9 needs the standard contract for the EU processing of free text, (2) whether to apply for
+// Azure OpenAI modified abuse monitoring (then remove the 30-day sentence).
+import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
+import {company as co} from '../../data/company';
+import {href, type Lang} from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+const mail = `<a href="mailto:${co.privacyEmail}">${co.privacyEmail}</a>`;
+
+const en: {title: string; description: string; eyebrow: string; h1: string; intro: string; sections: Section[]} = {
+  title: 'Ino AI and your data · Tryino',
+  description: 'What the AI features of Ino Loyalty send to the model, where it is processed, what Tryino keeps and how to turn Ino AI off.',
+  eyebrow: 'Ino Loyalty',
+  h1: 'Ino AI and your data',
+  intro: 'Ino AI helps your team describe segments, draft and review campaigns, coach running campaigns and write member-facing text. This page explains what it uses and where.',
+  sections: [
+    {
+      id: 'principle',
+      title: 'The short version',
+      html: `<ul>
+        <li><strong>No member records go to the model.</strong> The loyalty engine does the counting itself and sends only totals, your own program settings and what your team types.</li>
+        <li><strong>Processed in the EU.</strong> Ino AI runs on Microsoft Azure AI Foundry in Sweden Central; your program data stays on Microsoft Azure in France Central.</li>
+        <li><strong>Not used to train models</strong>, and Tryino does not keep the text of prompts or answers.</li>
+        <li><strong>You decide.</strong> Ino AI does nothing until an administrator turns it on and finishes its setup, and it can be turned off at any time.</li>
+      </ul>`,
+    },
+    {
+      id: 'sent',
+      title: 'What is sent to the model',
+      html: `<ul>
+        <li>Totals the engine has counted, for example “about 230 members have not bought for 60 days”. Numbers are rounded and small groups are not shown.</li>
+        <li>Your program’s configuration: campaign and segment rules, product, category and store names, program settings.</li>
+        <li>A short profile of your program that Ino AI writes once during setup (no personal data), so that its answers fit your business.</li>
+        <li>The text your team types, such as a campaign description. Before it is sent, e-mail addresses, phone numbers, card numbers, IBANs and Turkish ID numbers are masked. Please do not type other personal data, such as a member’s name, into Ino AI.</li>
+      </ul>`,
+    },
+    {
+      id: 'not-sent',
+      title: 'What is never sent',
+      html: `<p>Member lists or records, names and contact details, individual orders or point movements, payment data, and the content of API requests. Explanations of failed API calls in the Developers area are written by the engine itself and are not sent to a model.</p>`,
+    },
+    {
+      id: 'where',
+      title: 'Where it is processed',
+      html: `<p>The model runs on <strong>Microsoft Azure AI Foundry in Sweden Central (EU)</strong>, in a regional deployment, so requests are processed in that region. Microsoft does not use these requests to train models. Microsoft may keep requests for up to 30 days in the same geography to detect abuse of the service. ${co.legalName} is based in Türkiye; our staff may access the systems remotely to operate and support them.</p>`,
+    },
+    {
+      id: 'kept',
+      title: 'What Tryino keeps',
+      html: `<p>For billing and security we record each AI request: which feature, how many AI credits, the size of the request, how long it took, how many items were masked and, if it failed, an error code. We record which user asked by an internal id, not by name. We do not store the text of prompts or answers. Some features save their own result (for example an approver summary or campaign ideas) so that opening them again costs no credits; these results contain no personal data.</p>`,
+    },
+    {
+      id: 'control',
+      title: 'Turning Ino AI on and off',
+      html: `<p>An administrator turns Ino AI on in <strong>Ino AI → Overview</strong>. Until its setup has run, no Ino AI feature sends anything to the model. When it is off, the engine’s own checks (warnings, findings, failure explanations) keep working. Ino AI suggests; your team decides, and campaigns still go through your approval before they run.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'Questions',
+      html: `<p>${mail}. Ino AI is part of the Ino Loyalty service you use under your agreement with ${co.legalName}; the agreement and its data processing terms apply. Our general <a href="${href(lang, 'privacy')}">privacy policy</a> covers tryino.com itself.</p>`,
+    },
+  ],
+};
+
+const tr: typeof en = {
+  title: 'Ino AI ve verileriniz · Tryino',
+  description: 'Ino Loyalty\'nin yapay zekâ özellikleri modele neyi gönderir, nerede işlenir, Tryino neyi saklar ve Ino AI nasıl kapatılır.',
+  eyebrow: 'Ino Loyalty',
+  h1: 'Ino AI ve verileriniz',
+  intro: 'Ino AI ekibinizin segment tanımlamasına, kampanya taslağı ve onay özetine, çalışan kampanyalara öneri almasına ve üyelere yönelik metin yazmasına yardım eder. Bu sayfa neyi, nerede kullandığını anlatır.',
+  sections: [
+    {
+      id: 'principle',
+      title: 'Kısaca',
+      html: `<ul>
+        <li><strong>Modele üye kaydı gitmez.</strong> Sayımları sadakat motoru kendisi yapar; modele yalnız toplamlar, programınızın kendi ayarları ve ekibinizin yazdığı metin gider.</li>
+        <li><strong>AB'de işlenir.</strong> Ino AI, Microsoft Azure AI Foundry'de Sweden Central bölgesinde çalışır; program verileriniz Microsoft Azure'da France Central bölgesinde kalır.</li>
+        <li><strong>Model eğitiminde kullanılmaz</strong>; Tryino istem ve yanıt metnini saklamaz.</li>
+        <li><strong>Karar sizde.</strong> Ino AI, bir yönetici açıp kurulumunu tamamlayana kadar hiçbir şey yapmaz ve her an kapatılabilir.</li>
+      </ul>`,
+    },
+    {
+      id: 'sent',
+      title: 'Modele ne gönderilir',
+      html: `<ul>
+        <li>Motorun saydığı toplamlar, örneğin “yaklaşık 230 üye 60 gündür alışveriş yapmadı”. Sayılar yuvarlanır, küçük gruplar gösterilmez.</li>
+        <li>Programınızın yapılandırması: kampanya ve segment kuralları, ürün, kategori ve mağaza adları, program ayarları.</li>
+        <li>Ino AI'ın kurulum sırasında bir kez yazdığı, programınızı anlatan kısa profil (kişisel veri içermez); yanıtları işinize uygun olsun diye.</li>
+        <li>Ekibinizin yazdığı metin, örneğin bir kampanya tarifi. Gönderilmeden önce e-posta adresi, telefon, kart numarası, IBAN ve T.C. kimlik numarası maskelenir. Lütfen Ino AI'a bir üyenin adı gibi başka kişisel veri yazmayın.</li>
+      </ul>`,
+    },
+    {
+      id: 'not-sent',
+      title: 'Hiçbir zaman gönderilmeyenler',
+      html: `<p>Üye listeleri ya da kayıtları, ad ve iletişim bilgileri, tek tek siparişler ya da puan hareketleri, ödeme bilgileri ve API isteklerinin içeriği. Developers alanında başarısız API çağrılarının açıklamasını motorun kendisi yazar; bunlar modele gönderilmez.</p>`,
+    },
+    {
+      id: 'where',
+      title: 'Nerede işlenir',
+      html: `<p>Model, bölgesel bir dağıtımla <strong>Microsoft Azure AI Foundry'de Sweden Central (AB)</strong> bölgesinde çalışır; istekler bu bölgede işlenir. Microsoft bu istekleri model eğitiminde kullanmaz. Microsoft, hizmetin kötüye kullanımını tespit etmek için istekleri aynı coğrafyada en çok 30 gün saklayabilir. ${co.legalName} Türkiye'dedir; çalışanlarımız sistemleri işletmek ve desteklemek için uzaktan erişebilir.</p>`,
+    },
+    {
+      id: 'kept',
+      title: 'Tryino neyi saklar',
+      html: `<p>Faturalama ve güvenlik için her AI isteğini kaydederiz: hangi özellik, kaç AI kredisi, isteğin büyüklüğü, ne kadar sürdüğü, kaç öğenin maskelendiği ve başarısızsa bir hata kodu. İsteyen kullanıcıyı adıyla değil iç kimliğiyle kaydederiz. İstem ve yanıt metnini saklamayız. Bazı özellikler sonucunu saklar (örneğin onaylayan özeti ya da kampanya fikirleri), böylece yeniden açmak kredi harcamaz; bu sonuçlar kişisel veri içermez.</p>`,
+    },
+    {
+      id: 'control',
+      title: 'Ino AI\'ı açmak ve kapatmak',
+      html: `<p>Bir yönetici Ino AI'ı <strong>Ino AI → Overview</strong> ekranından açar. Kurulumu çalışana kadar hiçbir Ino AI özelliği modele bir şey göndermez. Kapalıyken motorun kendi denetimleri (uyarılar, bulgular, hata açıklamaları) çalışmaya devam eder. Ino AI önerir, karar ekibinizindir; kampanyalar yine çalışmadan önce sizin onayınızdan geçer.</p>`,
+    },
+    {
+      id: 'contact',
+      title: 'Sorular',
+      html: `<p>${mail}. Ino AI, ${co.legalName} ile yaptığınız sözleşme kapsamında kullandığınız Ino Loyalty hizmetinin parçasıdır; sözleşme ve veri işleme hükümleri geçerlidir. Genel <a href="${href(lang, 'privacy')}">gizlilik politikamız</a> tryino.com sitesinin kendisini kapsar.</p>`,
+    },
+  ],
+};
+
+const c = lang === 'tr' ? tr : en;
+const related = [
+  {label: lang === 'tr' ? 'ikas uygulaması gizliliği' : 'ikas app privacy', href: href(lang, 'privacyIkas')},
+  {label: lang === 'tr' ? 'Güvenlik olayı politikası' : 'Incident response policy', href: href(lang, 'incidentResponse')},
+  {label: lang === 'tr' ? 'Destek' : 'Support', href: href(lang, 'support')},
+];
+---
+
+<LegalDoc lang={lang} {...c} related={related} updated="2026-11-17" />
