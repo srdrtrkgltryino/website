@@ -2,7 +2,7 @@
 // Ino AI and your data: what the AI features of Ino Loyalty send to the model, where it is processed, what Tryino keeps and how a company turns it off.
 // Source: Ino-Loyalty-NET docs/AI_LAYER.md §6-7, docs/KVKK_UYUM.md §8, src/InoLoyalty.Api/Ai/PiiScrubber.cs, db/migrations/0081_ai_layer.sql (ai.request),
 // Azure deployments (ino-prod-eu1-ai: gpt-4.1-mini Standard = default, gpt-5.4-mini DataZoneStandard EU, gpt-5-mini GlobalStandard; firm chooses in
-// Ino AI → Settings, AI Layer v2 F5b, docs/AI_LAYER_V2_F5B_DESIGN.md). Checked 2026-11-17.
+// Ino AI → Settings, AI Layer v2 F5b, docs/AI_LAYER_V2_F5B_DESIGN.md); firm's own key: Azure OpenAI / OpenAI / Anthropic / Google (F5c, F5c-2). Checked 2026-11-17.
 // TODO(owner): Lawyer to confirm (1) whether KVKK Art. 9 needs the standard contract for the EU processing of free text, (2) whether to apply for
 // Azure OpenAI modified abuse monitoring (then remove the 30-day sentence).
 import LegalDoc, {type Section} from '../../components/LegalDoc.astro';
@@ -58,6 +58,7 @@ const en: {title: string; description: string; eyebrow: string; h1: string; intr
         <li><strong>Global</strong>: requests may be processed in any Azure region worldwide, including outside the EU.</li>
       </ul>
       <p>Ino AI asks the administrator to confirm before a model processed outside Sweden is used, and records each change (without personal data). If a model later moves to a wider processing location than the one confirmed, Ino AI returns to the Sweden model. Rules for segments, campaign drafts and texts are never sent to a Global model. Whichever model is chosen, requests are sent only through Ino AI and contain no member records.</p>
+      <p><strong>Your own AI key.</strong> An administrator can instead connect your organization's own Azure OpenAI resource, or an API key from OpenAI, Anthropic (Claude) or Google (Gemini). Ino AI's requests then go directly to that provider under your organization's own agreement with it, and no Ino AI credits are used. For a provider other than your own Azure resource, the administrator confirms that this agreement exists and that requests may be processed outside the EU (often in the United States); the confirmation is recorded. Under KVKK and GDPR your organization is responsible for that transfer. Ino AI's setup still runs on Tryino's model in Sweden.</p>
       <p>Microsoft does not use these requests to train models. Microsoft may keep requests for up to 30 days in the geography of the Azure resource (EU) to detect abuse of the service. ${co.legalName} is based in Türkiye; our staff may access the systems remotely to operate and support them.</p>`,
     },
     {
@@ -121,6 +122,7 @@ const tr: typeof en = {
         <li><strong>Global</strong>: istekler AB dışı dahil dünyadaki herhangi bir Azure bölgesinde işlenebilir.</li>
       </ul>
       <p>İsveç dışında işlenen bir model kullanılmadan önce Ino AI yöneticiden onay ister ve her değişikliği kaydeder (kişisel veri olmadan). Model sonradan onaylanandan daha geniş bir yerde işlenmeye başlarsa Ino AI İsveç modeline döner. Segment kuralları, kampanya taslakları ve metinler hiçbir zaman Global modele gönderilmez. Hangi model seçilirse seçilsin istekler yalnız Ino AI üzerinden gider ve üye kaydı içermez.</p>
+      <p><strong>Kendi yapay zekâ anahtarınız.</strong> Bir yönetici bunun yerine kurumunuzun kendi Azure OpenAI kaynağını ya da OpenAI, Anthropic (Claude) veya Google (Gemini) API anahtarını bağlayabilir. Ino AI istekleri o zaman kurumunuzun o sağlayıcıyla yaptığı kendi sözleşmesine göre doğrudan o sağlayıcıya gider ve Ino AI kredisi kullanılmaz. Kendi Azure kaynağınız dışındaki bir sağlayıcı için yönetici, bu sözleşmenin var olduğunu ve isteklerin AB dışında (çoğunlukla ABD'de) işlenebileceğini onaylar; onay kaydedilir. Bu aktarımın KVKK ve GDPR kapsamındaki sorumluluğu kurumunuzdadır. Ino AI kurulumu yine Tryino'nun İsveç'teki modelinde çalışır.</p>
       <p>Microsoft bu istekleri model eğitiminde kullanmaz. Microsoft, hizmetin kötüye kullanımını tespit etmek için istekleri Azure kaynağının coğrafyasında (AB) en çok 30 gün saklayabilir. ${co.legalName} Türkiye'dedir; çalışanlarımız sistemleri işletmek ve desteklemek için uzaktan erişebilir.</p>`,
     },
     {
