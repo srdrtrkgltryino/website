@@ -7,6 +7,8 @@ import {Image} from 'astro:assets';
 import memberImg from '../assets/tiles/member.jpg';
 import campaignImg from '../assets/tiles/campaign.jpg';
 import walletImg from '../assets/tiles/wallet.jpg';
+import aiDraftImg from '../assets/ai/campaign-draft-ai.jpg';
+import Shot from '../components/Shot.astro';
 import {href, type Lang} from '../i18n';
 
 interface Props {
@@ -42,6 +44,11 @@ const copy = {
       ['Engage', 'Campaigns that know your customers', ['Campaigns in five steps with a test basket', 'Segments built from behaviour, explained in plain words', 'Vouchers: generated or imported batches', 'Apple Wallet cards, SMS-verified sign-up, Braze']],
       ['Connect', 'One engine behind every channel', ['Shopify and ikas apps, SAP Commerce Cloud and Akinon connectors', 'Real-time API, signed webhooks, event catalog', 'Batch file import and offline POS reconciliation', 'Kafka event streaming and Parquet data exports']],
     ],
+    aiEyebrow: 'Ino AI',
+    aiTitle: 'Help in every screen, decisions stay yours',
+    aiText: 'Type “double points on denim at the weekend” and Ino AI fills in the campaign for you to check. It also suggests campaigns from your own data, reviews the ones that are running and explains failed API calls. The engine does the counting, and nothing goes live without your approval.',
+    aiPoints: ['Campaign and segment drafts from plain words', 'Campaign ideas and reviews based on real orders', 'Customer records never go to the model'],
+    aiLink: 'Meet Ino AI',
     tourEyebrow: 'See it',
     tourTitle: 'A one-minute tour',
     shopperEyebrow: 'What your customers see',
@@ -65,6 +72,7 @@ const copy = {
       ['Points, tiers and vouchers in one model', 'later', 'partly', 'yes'],
       ['Same program online, in store and in apps', 'later', 'no', 'yes'],
       ['Tested before going live', 'no', 'no', 'yes'],
+      ['AI in every screen, with your approval', 'no', 'partly', 'yes'],
       ['Returns and cancellations handled by policy', 'later', 'no', 'yes'],
       ['Consent and erasure requests built in', 'later', 'no', 'yes'],
     ],
@@ -110,6 +118,11 @@ const copy = {
       ['Etkileşim', 'Müşterinizi tanıyan kampanyalar', ['Örnek sepetle test edilen beş adımlı kampanyalar', 'Davranıştan kurulan, düz cümleyle anlatılan segmentler', 'Kuponlar: üretilen ya da içe aktarılan partiler', 'Apple Wallet kartları, SMS doğrulamalı kayıt, Braze']],
       ['Bağla', 'Her kanalın arkasında tek motor', ['Shopify ve ikas uygulamaları, SAP Commerce Cloud ve Akinon bağlayıcıları', 'Gerçek zamanlı API, imzalı webhook\'lar, olay kataloğu', 'Dosyayla toplu aktarım ve çevrimdışı kasa mutabakatı', 'Kafka olay akışı ve Parquet veri aktarımı']],
     ],
+    aiEyebrow: 'Ino AI',
+    aiTitle: 'Her ekranda yardım, son söz sizde',
+    aiText: '“Hafta sonu denimde çift puan” yazın, Ino AI kampanyayı kontrol etmeniz için doldursun. Kendi verinizden kampanya önerir, yayındakileri inceler, başarısız API çağrılarının nedenini anlatır. Hesabı motor yapar; onayınız olmadan hiçbir şey yayına çıkmaz.',
+    aiPoints: ['Düz cümleden kampanya ve segment taslağı', 'Gerçek siparişlere dayanan kampanya fikirleri ve incelemeler', 'Müşteri kayıtları modele asla gitmez'],
+    aiLink: 'Ino AI’ı tanıyın',
     tourEyebrow: 'İzleyin',
     tourTitle: 'Bir dakikalık tur',
     shopperEyebrow: 'Müşterileriniz ne görür',
@@ -133,6 +146,7 @@ const copy = {
       ['Puan, kademe ve kupon tek modelde', 'later', 'partly', 'yes'],
       ['Online, mağazada ve uygulamada aynı program', 'later', 'no', 'yes'],
       ['Yayından önce test edilir', 'no', 'no', 'yes'],
+      ['Her ekranda yapay zekâ, onay sizde', 'no', 'partly', 'yes'],
       ['İade ve iptaller politikayla yönetilir', 'later', 'no', 'yes'],
       ['İzin ve silme talepleri yerleşik', 'later', 'no', 'yes'],
     ],
@@ -237,6 +251,21 @@ const mark = (v: string) => ({yes: copy.yes, no: copy.no, partly: copy.partly, l
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="section ai-band">
+    <div class="container ai-grid">
+      <div data-reveal>
+        <span class="pill"><span class="dot"></span>{copy.aiEyebrow}</span>
+        <h2>{copy.aiTitle}</h2>
+        <p class="lead">{copy.aiText}</p>
+        <ul class="ai-points">
+          {copy.aiPoints.map((p) => <li>{p}</li>)}
+        </ul>
+        <a class="btn btn-primary" href={href(lang, 'ai')}>{copy.aiLink} <span class="arrow">→</span></a>
+      </div>
+      <div data-reveal><Shot src={aiDraftImg} alt={copy.aiTitle} label="Campaign Wizard" /></div>
     </div>
   </section>
 
@@ -348,6 +377,23 @@ const mark = (v: string) => ({yes: copy.yes, no: copy.no, partly: copy.partly, l
 </Base>
 
 <style>
+  .ai-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .ai-grid h2 { margin: 14px 0 12px; }
+  .ai-points {
+    margin: 18px 0 26px;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+  }
+  @media (max-width: 900px) {
+    .ai-grid { grid-template-columns: 1fr; }
+  }
+
   .ino-hero {
     position: relative;
     overflow: hidden;

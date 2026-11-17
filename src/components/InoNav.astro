@@ -4,13 +4,14 @@ import {href, t, type Lang, type RouteKey} from '../i18n';
 
 interface Props {
   lang: Lang;
-  current: 'ino' | 'features' | 'integrations' | 'developers';
+  current: 'ino' | 'features' | 'ai' | 'integrations' | 'developers';
 }
 const {lang, current} = Astro.props;
 const n = t(lang).nav;
 const items: {key: RouteKey; label: string}[] = [
   {key: 'ino', label: n.inoOverview},
   {key: 'features', label: n.features},
+  {key: 'ai', label: n.ai},
   {key: 'integrations', label: n.integrations},
   {key: 'developers', label: n.developers},
 ];
