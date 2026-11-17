@@ -1,4 +1,6 @@
 ---
+import aiDraftImg from '../assets/ai/campaign-draft-ai.jpg';
+import Shot from '../components/Shot.astro';
 import {company} from '../data/company';
 import {Image} from 'astro:assets';
 import Base from '../layouts/Base.astro';
@@ -56,6 +58,10 @@ const copy = {
       ['Privacy desk', 'Erasure requests reviewed and completed end to end.'],
     ],
     featCta: 'All features',
+    aiEyebrow: 'Ino AI',
+    aiTitle: 'AI that does the legwork, not the deciding',
+    aiText: 'Ino AI sits inside the screens your team already uses. It turns a sentence into a campaign draft, finds groups of customers worth a campaign, reviews what’s running and explains failed API calls. The engine checks every number, and a person approves.',
+    aiLink: 'See what Ino AI does',
     howEyebrow: 'How it works',
     howTitle: 'From first call to first reward',
     how: [
@@ -134,6 +140,10 @@ const copy = {
       ['Gizlilik masası', 'Silme talepleri incelenir ve uçtan uca tamamlanır.'],
     ],
     featCta: 'Tüm özellikler',
+    aiEyebrow: 'Ino AI',
+    aiTitle: 'Ayak işini yapan, kararı size bırakan yapay zekâ',
+    aiText: 'Ino AI ekibinizin zaten kullandığı ekranların içinde çalışır. Bir cümleyi kampanya taslağına çevirir, kampanyaya değer müşteri gruplarını bulur, yayındakileri inceler ve başarısız API çağrılarını açıklar. Her rakamı motor kontrol eder, onayı bir insan verir.',
+    aiLink: 'Ino AI neler yapıyor, görün',
     howEyebrow: 'Nasıl çalışır',
     howTitle: 'İlk görüşmeden ilk ödüle',
     how: [
@@ -263,6 +273,15 @@ const featPos = ['0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%'];
         <div class="center" data-reveal>
           <a class="btn btn-ghost" href={href(lang, 'features')}>{copy.featCta} <span class="arrow">→</span></a>
         </div>
+      </div>
+      <div class="block ai-home">
+        <div class="ai-home-text" data-reveal>
+          <span class="pill"><span class="dot"></span>{copy.aiEyebrow}</span>
+          <h2>{copy.aiTitle}</h2>
+          <p class="lead">{copy.aiText}</p>
+          <a class="btn btn-primary" href={href(lang, 'ai')}>{copy.aiLink} <span class="arrow">→</span></a>
+        </div>
+        <div data-reveal><Shot src={aiDraftImg} alt={copy.aiTitle} label="Campaign Wizard" /></div>
       </div>
       <div class="block">
         <div class="section-head left" data-reveal>
@@ -452,6 +471,18 @@ const featPos = ['0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%'];
 
 
 <style>
+  .ai-home {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .ai-home h2 { margin: 14px 0 12px; }
+  .ai-home .lead { margin-bottom: 24px; }
+  @media (max-width: 900px) {
+    .ai-home { grid-template-columns: 1fr; }
+  }
+
   /* Hero */
   .hero {
     position: relative;

@@ -1,0 +1,390 @@
+---
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import Shot from '../components/Shot.astro';
+import {href, type Lang} from '../i18n';
+import draftImg from '../assets/ai/campaign-draft-ai.jpg';
+import ideasImg from '../assets/ai/campaign-ideas.jpg';
+import segmentImg from '../assets/ai/segment-describe.jpg';
+import preflightImg from '../assets/ai/campaign-preflight.jpg';
+import analyzeImg from '../assets/ai/campaign-analysis.jpg';
+import programImg from '../assets/ai/program-review.jpg';
+import devImg from '../assets/ai/developer-agent.jpg';
+import memoryImg from '../assets/ai/ino-ai-memory.jpg';
+import settingsImg from '../assets/ai/ino-ai-settings.jpg';
+import modelImg from '../assets/ai/ino-ai-model-key.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+type Section = {id: string; title: string; text: string; points: string[]; img?: ImageMetadata; label?: string; chips?: string[]};
+
+const copy = {
+  en: {
+    title: 'Ino AI · AI built into Ino Loyalty',
+    description: 'Ino AI turns a sentence into a campaign draft, suggests campaigns from your own data, reviews live campaigns and explains failed API calls. The engine does the counting and your team approves.',
+    pill: 'Ino AI',
+    h1: 'Help in every screen. The call is still yours.',
+    lead: 'Ino AI isn’t a chat window off to the side. It works inside the screens your team already uses: it turns a sentence into a campaign draft, points out customers you’ve been missing, and tells you why a live campaign isn’t pulling its weight. The engine does the counting. A person approves.',
+    toc: 'On this page',
+    demo: 'Book a demo',
+    rules: [
+      ['It suggests, you decide', 'Nothing is saved and nothing goes live until someone on your team says so.'],
+      ['Numbers come from the engine', 'Counts, costs and forecasts are calculated by Ino Loyalty. The model doesn’t guess them.'],
+      ['Customer records stay out', 'The model sees rules, catalogue names and totals. Never names, e-mail addresses or purchase histories.'],
+    ],
+    sections: [
+      {id: 'draft', title: 'Campaign Assistant', label: 'Campaign Wizard', img: draftImg,
+        text: 'Write what you have in mind the way you’d say it to a colleague: “double points on denim at the weekend, online and in store”. Ino AI fills in the campaign and shows you what it understood before anything is saved.',
+        points: ['Picks the real category, channels and days from your program', 'Lists the choices it made, so you can check them at a glance', 'Says so plainly when part of the request isn’t something a campaign can do', 'Apply the draft, then test and approve it like any other campaign']},
+      {id: 'ideas', title: 'Campaign ideas', label: 'Insights', img: ideasImg,
+        text: 'Ino Loyalty looks at who buys, who stopped and who never came back for a second order, and turns that into a short list of campaigns worth running.',
+        points: ['The engine finds and counts the groups; Ino AI picks the best ones and names them', 'Each idea comes with a budget, a once-per-member limit and a hold-out group', 'One click opens it as a draft in the Campaign Wizard']},
+      {id: 'segments', title: 'Segment Assistant', label: 'Segment Studio', img: segmentImg,
+        text: 'Describe the customers you want in plain words and get a working segment rule back, along with how many members it matches today.',
+        points: ['Uses your own categories, tiers and channels', 'You see the member count before you save anything', 'If something can’t be written as a rule, it tells you instead of guessing']},
+      {id: 'approval', title: 'Before approval', label: 'Campaign Wizard · Publish', img: preflightImg,
+        text: 'Approvers shouldn’t have to read rule trees. Before a campaign goes live, Ino Loyalty runs recent baskets through it and Ino AI sums up the result in a few sentences.',
+        points: ['Which live campaigns hit the same baskets, and whether their benefits add up', 'Expected cost per basket, per month and for the whole run', 'A short summary in plain words for whoever signs it off']},
+      {id: 'analyze', title: 'Ino AI Analyze', label: 'Campaign Insights', img: analyzeImg,
+        text: 'Open a running campaign and ask for a second opinion. You get what’s working, what to keep an eye on and one or two concrete changes.',
+        points: ['Findings on rules, pace, budget and overlaps come from the engine', 'A suggested change goes to the approver as a new version, never straight to live', 'No hold-out group? It tells you, because without one you can’t see what the campaign really changed']},
+      {id: 'program', title: 'Program review', label: 'Program Designer', img: programImg,
+        text: 'Checks your points rules against your members’ real orders. Here it spotted that members need 500 points before they can spend any, while an average order earns about 31.',
+        points: ['Earning, minimum spend, point value and expiry are looked at together', '“Use this” only changes your draft; you publish when you’re happy with it']},
+      {id: 'developers', title: 'Developer Agent', label: 'Developers console', img: devImg,
+        text: 'Your developers describe what they want to build and get a step-by-step plan that only uses operations and events Ino Loyalty actually has.',
+        points: ['Calls that change data are marked, and signing and retries are covered', 'It can set up a paused webhook endpoint to test against', 'When a call fails, the log explains why in plain words']},
+      {id: 'memory', title: 'Setup and memory', label: 'Ino AI', img: memoryImg,
+        text: 'When you switch Ino AI on, it takes a minute to get to know your program: categories, brands, tiers, channels and how people buy. Every helper starts from there.',
+        points: ['Built from counts and catalogue names, not customer records', 'Your team can add its own terms and notes', 'Run it again whenever the program changes']},
+      {id: 'settings', title: 'Your controls', label: 'Ino AI · Settings', img: settingsImg,
+        text: 'Every helper has its own switch. Turn off what you don’t need and choose the language Ino AI writes its notes in.',
+        points: ['A switch for each helper, from Segment Assistant to Developer Agent', 'Notes in English or Turkish; screens and rules stay as they are', 'Every plan includes monthly AI credits, and you can see what each helper uses']},
+      {id: 'model', title: 'Model and region', label: 'Ino AI · Settings', img: modelImg,
+        text: 'By default Ino AI runs in Sweden. If you’d rather use a different model, or your company already pays for one, you can switch.',
+        points: ['A recommended model processed in Sweden, plus EU data zone and global options', 'Or connect your own Azure OpenAI, OpenAI, Anthropic or Google key', 'With your own key, your provider bills you and no Ino AI credits are used']},
+    ] as Section[],
+    devLink: 'Read the developer docs',
+    dataLink: 'Ino AI and your data',
+  },
+  tr: {
+    title: 'Ino AI · Ino Loyalty’nin içindeki yapay zekâ',
+    description: 'Ino AI bir cümleden kampanya taslağı çıkarır, kendi verinizden kampanya önerir, yayındaki kampanyaları inceler ve başarısız API çağrılarının nedenini anlatır. Hesabı motor yapar, onayı ekibiniz verir.',
+    pill: 'Ino AI',
+    h1: 'Her ekranda yardım. Son söz yine sizde.',
+    lead: 'Ino AI kenarda duran bir sohbet penceresi değil. Ekibinizin zaten kullandığı ekranların içinde çalışır: bir cümleyi kampanya taslağına çevirir, gözden kaçan müşterileri gösterir, yayındaki bir kampanyanın neden beklediğiniz kadar iş görmediğini söyler. Hesabı motor yapar, onayı bir insan verir.',
+    toc: 'Bu sayfada',
+    demo: 'Demo planlayın',
+    rules: [
+      ['Önerir, siz karar verirsiniz', 'Ekibinizden biri onay vermeden hiçbir şey kaydedilmez, hiçbir şey yayına çıkmaz.'],
+      ['Rakamlar motordan gelir', 'Sayıları, maliyetleri ve tahminleri Ino Loyalty hesaplar. Model bunları tahmin etmez.'],
+      ['Müşteri kayıtları dışarıda kalır', 'Model kuralları, katalog adlarını ve toplamları görür. İsim, e-posta ya da alışveriş geçmişi asla gitmez.'],
+    ],
+    sections: [
+      {id: 'draft', title: 'Campaign Assistant', label: 'Campaign Wizard', img: draftImg,
+        text: 'Aklınızdakini bir çalışma arkadaşınıza anlatır gibi yazın: “hafta sonu denimde çift puan, online ve mağazada”. Ino AI kampanyayı doldurur ve bir şey kaydetmeden önce neyi nasıl anladığını gösterir.',
+        points: ['Programınızdaki gerçek kategoriyi, kanalları ve günleri seçer', 'Yaptığı seçimleri listeler, tek bakışta kontrol edersiniz', 'İsteğin bir kısmı kampanyayla yapılamıyorsa bunu açıkça söyler', 'Taslağı uygulayın, sonra her kampanya gibi test edip onaya gönderin']},
+      {id: 'ideas', title: 'Kampanya fikirleri', label: 'Insights', img: ideasImg,
+        text: 'Ino Loyalty kimin alışveriş yaptığına, kimin bıraktığına ve kimin ikinci siparişe hiç gelmediğine bakar; bunu yapmaya değer kısa bir kampanya listesine çevirir.',
+        points: ['Grupları motor bulur ve sayar; Ino AI en iyilerini seçip adlandırır', 'Her fikir bir bütçe, üye başına tek kullanım ve bir kontrol grubuyla gelir', 'Tek tıkla Campaign Wizard’da taslak olarak açılır']},
+      {id: 'segments', title: 'Segment Assistant', label: 'Segment Studio', img: segmentImg,
+        text: 'İstediğiniz müşterileri düz bir cümleyle anlatın; bugün kaç üyeye denk geldiğiyle birlikte çalışan bir segment kuralı alın.',
+        points: ['Kendi kategorilerinizi, kademelerinizi ve kanallarınızı kullanır', 'Bir şey kaydetmeden önce üye sayısını görürsünüz', 'Kurala dökülemeyen bir şey varsa tahmin etmek yerine bunu söyler']},
+      {id: 'approval', title: 'Onaydan önce', label: 'Campaign Wizard · Publish', img: preflightImg,
+        text: 'Onaylayan kişinin kural ağacı okuması gerekmemeli. Kampanya yayına çıkmadan önce Ino Loyalty son sepetleri kampanyadan geçirir, Ino AI da sonucu birkaç cümleyle özetler.',
+        points: ['Hangi canlı kampanyalar aynı sepetlere düşüyor, faydalar üst üste biniyor mu', 'Sepet başına, aylık ve kampanyanın tamamı için beklenen maliyet', 'Onayı verecek kişi için düz bir dille kısa bir özet']},
+      {id: 'analyze', title: 'Ino AI Analyze', label: 'Campaign Insights', img: analyzeImg,
+        text: 'Yayındaki bir kampanyayı açın ve ikinci bir görüş isteyin. Neyin iyi gittiğini, nelere dikkat etmek gerektiğini ve bir iki somut değişikliği görürsünüz.',
+        points: ['Kural, hız, bütçe ve çakışma bulguları motordan gelir', 'Önerilen değişiklik onaylayana yeni sürüm olarak gider, doğrudan yayına çıkmaz', 'Kontrol grubu yoksa söyler; çünkü onsuz kampanyanın gerçekte neyi değiştirdiğini göremezsiniz']},
+      {id: 'program', title: 'Program incelemesi', label: 'Program Designer', img: programImg,
+        text: 'Puan kurallarınızı üyelerinizin gerçek siparişleriyle karşılaştırır. Burada üyelerin harcayabilmek için 500 puan biriktirmesi gerektiğini, ortalama bir siparişin ise yaklaşık 31 puan kazandırdığını fark etti.',
+        points: ['Kazanma, en az harcama, puan değeri ve sona erme birlikte ele alınır', '“Use this” yalnız taslağınızı değiştirir; içinize sinince yayınlarsınız']},
+      {id: 'developers', title: 'Developer Agent', label: 'Developers console', img: devImg,
+        text: 'Geliştiricileriniz ne yapmak istediklerini anlatır; yalnız Ino Loyalty’de gerçekten bulunan işlemleri ve olayları kullanan adım adım bir plan alırlar.',
+        points: ['Veri değiştiren çağrılar işaretlenir; imzalama ve yeniden deneme hesaba katılır', 'Denemek için duraklatılmış bir webhook ucu açabilir', 'Bir çağrı başarısız olursa kayıt, nedenini düz bir dille anlatır']},
+      {id: 'memory', title: 'Kurulum ve hafıza', label: 'Ino AI', img: memoryImg,
+        text: 'Ino AI’ı açtığınızda programınızı tanımak için bir dakika ayırır: kategoriler, markalar, kademeler, kanallar ve insanların nasıl alışveriş yaptığı. Her yardımcı işe buradan başlar.',
+        points: ['Müşteri kayıtlarından değil, sayılardan ve katalog adlarından oluşur', 'Ekibiniz kendi terimlerini ve notlarını ekleyebilir', 'Program değiştikçe yeniden çalıştırabilirsiniz']},
+      {id: 'settings', title: 'Ayarlar sizde', label: 'Ino AI · Settings', img: settingsImg,
+        text: 'Her yardımcının kendi anahtarı var. İhtiyacınız olmayanı kapatın, Ino AI’ın notlarını hangi dilde yazacağını seçin.',
+        points: ['Segment Assistant’tan Developer Agent’a kadar her yardımcı için ayrı anahtar', 'Notlar İngilizce ya da Türkçe; ekranlar ve kurallar olduğu gibi kalır', 'Her pakette aylık AI kredisi bulunur; hangi yardımcının ne kadar kullandığını görürsünüz']},
+      {id: 'model', title: 'Model ve bölge', label: 'Ino AI · Settings', img: modelImg,
+        text: 'Ino AI varsayılan olarak İsveç’te çalışır. Başka bir modeli tercih ediyorsanız ya da şirketiniz zaten bir yapay zekâ hizmetine ödeme yapıyorsa değiştirebilirsiniz.',
+        points: ['İsveç’te işlenen önerilen model, ayrıca AB veri bölgesi ve global seçenekler', 'Ya da kendi Azure OpenAI, OpenAI, Anthropic veya Google anahtarınızı bağlayın', 'Kendi anahtarınızla faturayı sağlayıcınız keser, Ino AI kredisi harcanmaz']},
+    ] as Section[],
+    devLink: 'Geliştirici belgelerini okuyun',
+    dataLink: 'Ino AI ve verileriniz',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="f-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-200px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-200px" aria-hidden="true"></div>
+    <div class="container f-hero-inner">
+      <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+      <h1 data-reveal>{copy.h1}</h1>
+      <p class="lead" data-reveal>{copy.lead}</p>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="ai" />
+
+  <section class="container rules" aria-label="Ino AI">
+    {copy.rules.map(([h, p]) => (
+      <div class="rule" data-reveal>
+        <h2>{h}</h2>
+        <p>{p}</p>
+      </div>
+    ))}
+  </section>
+
+  <div class="container layout">
+    <aside class="toc" aria-label={copy.toc}>
+      <p>{copy.toc}</p>
+      <ol>
+        {copy.sections.map((s) => (
+          <li><a href={`#${s.id}`} data-toc={s.id}>{s.title}</a></li>
+        ))}
+      </ol>
+      <a class="btn btn-primary btn-sm" href={href(lang, 'demo')}>{copy.demo}</a>
+    </aside>
+
+    <div class="content">
+      {copy.sections.map((s, i) => (
+        <section class="feature" id={s.id} data-section>
+          <div class="f-head" data-reveal>
+            <span class="f-no">{String(i + 1).padStart(2, '0')}</span>
+            <h2>{s.title}</h2>
+            <p class="lead">{s.text}</p>
+          </div>
+          <ul class="f-points" data-reveal>
+            {s.points.map((p) => <li>{p}</li>)}
+          </ul>
+          {s.img && (
+            <div data-reveal>
+              <Shot src={s.img} alt={s.title} label={s.label} />
+            </div>
+          )}
+          {s.chips && (
+            <div class="chips" data-reveal aria-hidden="true">
+              {s.chips.map((c) => <span class="code">{c}</span>)}
+            </div>
+          )}
+          {s.id === 'developers' && (
+            <a class="btn btn-dark dev-link" href={href(lang, 'developers')}>{copy.devLink} <span class="arrow">→</span></a>
+          )}
+          {s.id === 'model' && (
+            <a class="btn btn-dark dev-link" href={href(lang, 'aiData')}>{copy.dataLink} <span class="arrow">→</span></a>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Highlight the table-of-contents entry for the section in view.
+  const links = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')].map((a) => [a.dataset.toc!, a]));
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          links.forEach((a) => a.removeAttribute('aria-current'));
+          links.get(e.target.id)?.setAttribute('aria-current', 'true');
+        }
+      }
+    },
+    {rootMargin: '-40% 0px -55% 0px'},
+  );
+  document.querySelectorAll('[data-section]').forEach((s) => io.observe(s));
+</script>
+
+<style>
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 56px;
+  }
+  .rule {
+    padding: 22px 24px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .rule h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+  .rule p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+  @media (max-width: 900px) {
+    .rules { grid-template-columns: 1fr; }
+  }
+
+  .f-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0 100px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #b9c6d9;
+  }
+  .f-hero-inner {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .f-hero-inner > * {
+    max-width: 860px;
+  }
+  .f-hero-inner img {
+    width: 16px;
+    height: 16px;
+  }
+  .f-hero h1 {
+    color: #fff;
+    font-size: clamp(40px, 5.4vw, 66px);
+  }
+  .f-hero .lead {
+    color: #b9c6d9;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 64px;
+    padding-top: 72px;
+    padding-bottom: var(--section);
+  }
+  .toc {
+    position: sticky;
+    top: 170px;
+    align-self: start;
+    display: grid;
+    gap: 14px;
+  }
+  .toc p {
+    font: 600 12.5px/1 var(--font-text);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 2px;
+    border-left: 2px solid var(--line);
+  }
+  .toc ol a {
+    display: block;
+    padding: 7px 14px;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .toc ol a:hover {
+    color: var(--ink);
+  }
+  .toc ol a[aria-current] {
+    color: var(--ink);
+    font-weight: 600;
+    border-left-color: var(--blue);
+  }
+  .toc .btn {
+    justify-self: start;
+    margin-top: 8px;
+  }
+  .content {
+    display: grid;
+    gap: 96px;
+    min-width: 0;
+  }
+  .feature {
+    display: grid;
+    gap: 26px;
+    scroll-margin-top: 170px;
+  }
+  .f-head {
+    display: grid;
+    gap: 12px;
+  }
+  .f-no {
+    font: 650 14px/1 var(--font-display);
+    color: var(--blue-ink);
+  }
+  .f-head h2 {
+    font-size: clamp(30px, 3.4vw, 42px);
+  }
+  .f-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .f-points li {
+    position: relative;
+    padding: 16px 18px 16px 46px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .f-points li::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 19px;
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: var(--grad);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .code {
+    padding: 14px 20px;
+    border-radius: 14px;
+    background: #fff;
+    border: 2px dashed var(--line-2);
+    font: 650 18px/1 ui-monospace, 'SF Mono', Menlo, monospace;
+    letter-spacing: 0.06em;
+    color: var(--indigo);
+  }
+  .dev-link {
+    justify-self: start;
+  }
+  @media (max-width: 960px) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .toc {
+      display: none;
+    }
+    .f-points {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
