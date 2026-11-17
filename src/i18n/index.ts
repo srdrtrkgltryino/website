@@ -22,6 +22,7 @@ export const routes = {
   privacyIkas: '/privacy/ino-loyalty-ikas',
   termsShopify: '/terms/ino-loyalty-shopify',
   dpaShopify: '/dpa/ino-loyalty-shopify',
+  aiData: '/privacy/ino-ai',
   incidentResponse: '/security/incident-response',
   cookies: '/cookies',
   terms: '/terms',
