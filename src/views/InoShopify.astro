@@ -1,0 +1,397 @@
+---
+// Ino Loyalty for Shopify: the standalone Shopify app, sold and billed on the Shopify App Store. No prices here (they live on the listing).
+import {Image} from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import InoNav from '../components/InoNav.astro';
+import {href, type Lang} from '../i18n';
+import rewardsImg from '../assets/shopify/rewards-panel.jpg';
+import gamesImg from '../assets/shopify/games.jpg';
+import cartImg from '../assets/shopify/product-and-cart.jpg';
+import campaignsImg from '../assets/shopify/campaigns.jpg';
+import membersImg from '../assets/shopify/members.jpg';
+import playImg from '../assets/shopify/play-settings.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const {lang} = Astro.props;
+
+/** The live App Store listing. Shopify's badge rules: link the badge to the listing, never alter it, at least 30 px tall. */
+const APP_STORE_URL = 'https://apps.shopify.com/ino-loyalty';
+
+type Shot = {img: ImageMetadata; alt: string; title: string; text: string};
+
+const copy = {
+  en: {
+    title: 'Ino Loyalty for Shopify · Loyalty points, tiers and games, redeemed in the cart',
+    description: 'Ino Loyalty for Shopify, by Tryino, a Shopify Partner: points, tiers, campaigns and games in your brand, redeemed in the cart with no codes. Works with Shopify POS, customer accounts, Shopify Flow and Klaviyo.',
+    pill: 'Shopify Partner',
+    h1: 'Ino Loyalty for Shopify',
+    lead: 'Loyalty rewards that look like your store from day one. Customers join with their store account in one tap, earn on every order, climb tiers and spend points right in the cart, with no codes to copy.',
+    badgeAlt: 'Find it on the Shopify App Store',
+    demo: 'Book a demo',
+    partner: 'Built by Tryino, a member of the Shopify Partner Program. Install, trial and billing all run through the Shopify App Store.',
+    facts: [
+      ['In the cart', 'Points become a discount in the cart and at checkout. No codes.'],
+      ['Online and in store', 'The same rewards on Shopify POS: one tap at the till.'],
+      ['Six languages', 'English, Turkish, German, French, Italian and Dutch.'],
+    ],
+    shotsTitle: 'What your customers and your team see',
+    shots: [
+      {img: rewardsImg, alt: 'Rewards panel in the store', title: 'A rewards panel in your colors', text: 'Points, a daily check-in, missions and offers. Members see what they have and what comes next.'},
+      {img: cartImg, alt: 'Points on the product page and in the cart', title: 'Points where buying happens', text: 'The product page shows what an item earns; the cart turns points into a discount and shows how close the next tier is.'},
+      {img: gamesImg, alt: 'Games made from store products', title: 'Games made from your products', text: 'This or that, guess the price, fly through and a garden that grows with each order. Results are decided on the server.'},
+      {img: campaignsImg, alt: 'Campaign targeting by product, brand and tier', title: 'Campaigns by product, brand and tier', text: 'Double points, member discounts and free shipping for the products and members you choose.'},
+      {img: membersImg, alt: 'Members overview in the Shopify admin', title: 'Every member at a glance', text: 'Balances, tiers, history and what members are worth, inside your Shopify admin.'},
+      {img: playImg, alt: 'Game settings in the Shopify admin', title: 'You choose the rewards', text: 'Turn games on, set free plays and reward steps, and try each one before customers see it.'},
+    ] as Shot[],
+    worksTitle: 'Works with what you already run',
+    works: ['Shopify POS', 'Customer accounts', 'Checkout and thank-you pages', 'Shopify Flow', 'Klaviyo', 'Your theme, with no code'],
+    allTitle: 'Everything in the app',
+    all: [
+      'Points on every order, settled automatically on refunds and cancellations',
+      'Tiers with their own earn rates and perks',
+      'Double points, member discounts and shipping rewards that apply by themselves',
+      'Points on the thank-you, order status and customer account pages',
+      'Referral codes: your customer and their friend both earn',
+      'Birthday rewards, daily check-ins and missions',
+      'Five games built from your products',
+      'Loyalty fields and events in Klaviyo for your own flows',
+    ],
+    moreTitle: 'Loyalty beyond one store?',
+    moreText: 'For retailers with shops, several sites, apps and their own POS or ERP, the Ino Loyalty platform runs one program across every channel.',
+    moreCta: 'See the Ino Loyalty platform',
+    install: 'Install from the Shopify App Store',
+    note: 'Shopify and the Shopify App Store badge are trademarks of Shopify Inc., used under the Shopify Partner Program Agreement.',
+  },
+  tr: {
+    title: 'Shopify için Ino Loyalty · Sepette kullanılan puan, kademe ve oyunlar',
+    description: 'Shopify Partner\'ı Tryino\'dan Shopify için Ino Loyalty: markanızla puan, kademe, kampanya ve oyunlar; kod olmadan sepette kullanılır. Shopify POS, müşteri hesapları, Shopify Flow ve Klaviyo ile çalışır.',
+    pill: 'Shopify Partner',
+    h1: 'Shopify için Ino Loyalty',
+    lead: 'İlk günden mağazanız gibi görünen bir sadakat programı. Müşteriler mağaza hesaplarıyla tek dokunuşla katılır, her siparişte puan kazanır, kademe atlar ve puanlarını kod kopyalamadan doğrudan sepette kullanır.',
+    badgeAlt: 'Find it on the Shopify App Store',
+    demo: 'Demo planlayın',
+    partner: 'Shopify Partner Programı üyesi Tryino tarafından geliştirildi. Kurulum, deneme süresi ve faturalama Shopify App Store üzerinden yürür.',
+    facts: [
+      ['Sepette', 'Puan sepette ve ödemede indirime dönüşür. Kod yok.'],
+      ['Online ve mağazada', 'Aynı ödüller Shopify POS\'ta: kasada tek dokunuş.'],
+      ['Altı dil', 'İngilizce, Türkçe, Almanca, Fransızca, İtalyanca ve Felemenkçe.'],
+    ],
+    shotsTitle: 'Müşterilerinizin ve ekibinizin gördüğü',
+    shots: [
+      {img: rewardsImg, alt: 'Mağazada ödül paneli', title: 'Mağazanızın renklerinde ödül paneli', text: 'Puan, günlük giriş, görevler ve teklifler. Üye elindekini ve sıradakini görür.'},
+      {img: cartImg, alt: 'Ürün sayfasında ve sepette puan', title: 'Puan, alışverişin olduğu yerde', text: 'Ürün sayfası kazanılacak puanı gösterir; sepet puanı indirime çevirir ve bir sonraki kademeye ne kaldığını söyler.'},
+      {img: gamesImg, alt: 'Mağaza ürünlerinden oluşan oyunlar', title: 'Ürünlerinizden oluşan oyunlar', text: 'Bu mu şu mu, fiyatı tahmin et, uçuş ve her siparişle büyüyen bir bahçe. Sonuçlar sunucuda belirlenir.'},
+      {img: campaignsImg, alt: 'Ürün, marka ve kademeye göre kampanya hedefleme', title: 'Ürün, marka ve kademeye göre kampanyalar', text: 'Seçtiğiniz ürünler ve üyeler için çift puan, üye indirimi ve ücretsiz kargo.'},
+      {img: membersImg, alt: 'Shopify yönetim panelinde üyeler', title: 'Her üye tek bakışta', text: 'Bakiye, kademe, geçmiş ve üyelerin değeri; Shopify yönetim panelinizin içinde.'},
+      {img: playImg, alt: 'Shopify yönetim panelinde oyun ayarları', title: 'Ödülleri siz seçersiniz', text: 'Oyunları açın, ücretsiz oynama hakkını ve ödül basamaklarını belirleyin, müşteriler görmeden önce her birini deneyin.'},
+    ] as Shot[],
+    worksTitle: 'Kullandıklarınızla birlikte çalışır',
+    works: ['Shopify POS', 'Müşteri hesapları', 'Ödeme ve teşekkür sayfaları', 'Shopify Flow', 'Klaviyo', 'Temanız, kod gerekmeden'],
+    allTitle: 'Uygulamada neler var',
+    all: [
+      'Her siparişte puan; iade ve iptalde kendiliğinden düzeltilir',
+      'Kendi kazanma oranı ve ayrıcalıkları olan kademeler',
+      'Kendiliğinden uygulanan çift puan, üye indirimi ve kargo ödülleri',
+      'Teşekkür, sipariş durumu ve müşteri hesabı sayfalarında puan',
+      'Arkadaşını getir kodu: müşteriniz de arkadaşı da kazanır',
+      'Doğum günü ödülü, günlük giriş ve görevler',
+      'Ürünlerinizden oluşan beş oyun',
+      'Kendi akışlarınız için Klaviyo\'da sadakat alanları ve olayları',
+    ],
+    moreTitle: 'Tek mağazanın ötesinde sadakat mi?',
+    moreText: 'Fiziki mağazaları, birden çok sitesi, uygulaması ve kendi kasa ya da ERP sistemi olan perakendeciler için Ino Loyalty platformu tüm kanallarda tek bir program yürütür.',
+    moreCta: 'Ino Loyalty platformunu inceleyin',
+    install: 'Shopify App Store\'dan kurun',
+    note: 'Shopify ve Shopify App Store rozeti Shopify Inc.\'in ticari markalarıdır; Shopify Partner Programı Sözleşmesi kapsamında kullanılır.',
+  },
+}[lang];
+---
+
+<Base lang={lang} title={copy.title} description={copy.description}>
+  <section class="f-hero">
+    <div class="glow blue" style="width:640px;height:640px;left:-200px;top:-260px" aria-hidden="true"></div>
+    <div class="glow indigo" style="width:640px;height:640px;right:-240px;top:-200px" aria-hidden="true"></div>
+    <div class="container f-hero-inner">
+      <span class="pill on-dark" data-reveal><img src="/brand/ino-loyalty-symbol-color-on-dark.svg" alt="" width="16" height="16" />{copy.pill}</span>
+      <h1 data-reveal>{copy.h1}</h1>
+      <p class="lead" data-reveal>{copy.lead}</p>
+      <div class="actions" data-reveal>
+        <a class="badge" href={APP_STORE_URL} rel="noopener" target="_blank">
+          <img src="/badges/shopify-app-store-light.svg" alt={copy.badgeAlt} width="200" height="53" />
+        </a>
+        <a class="btn btn-glass" href={href(lang, 'demo')}>{copy.demo} <span class="arrow">→</span></a>
+      </div>
+      <p class="partner" data-reveal>{copy.partner}</p>
+    </div>
+  </section>
+
+  <InoNav lang={lang} current="shopify" />
+
+  <section class="container facts" aria-label={copy.h1}>
+    {copy.facts.map(([h, p]) => (
+      <div class="fact" data-reveal>
+        <h2>{h}</h2>
+        <p>{p}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="container shots">
+    <h2 class="s-title" data-reveal>{copy.shotsTitle}</h2>
+    <div class="shot-grid">
+      {copy.shots.map((s) => (
+        <figure class="shot" data-reveal>
+          <Image src={s.img} alt={s.alt} widths={[640, 960, 1600]} sizes="(max-width: 900px) 100vw, 560px" />
+          <figcaption>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section class="container lists">
+    <div class="list-card" data-reveal>
+      <h2>{copy.allTitle}</h2>
+      <ul class="points">
+        {copy.all.map((p) => <li>{p}</li>)}
+      </ul>
+    </div>
+    <div class="list-card" data-reveal>
+      <h2>{copy.worksTitle}</h2>
+      <ul class="chips">
+        {copy.works.map((w) => <li>{w}</li>)}
+      </ul>
+      <a class="badge dark" href={APP_STORE_URL} rel="noopener" target="_blank">
+        <img src="/badges/shopify-app-store-dark.svg" alt={copy.badgeAlt} width="200" height="53" />
+      </a>
+    </div>
+  </section>
+
+  <section class="container more" data-reveal>
+    <div>
+      <h2>{copy.moreTitle}</h2>
+      <p>{copy.moreText}</p>
+    </div>
+    <a class="btn btn-dark" href={href(lang, 'ino')}>{copy.moreCta} <span class="arrow">→</span></a>
+  </section>
+
+  <p class="container note">{copy.note}</p>
+</Base>
+
+<style>
+  .f-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 160px 0 100px;
+    background: radial-gradient(120% 90% at 85% 10%, #22307a 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color: #b9c6d9;
+  }
+  .f-hero-inner {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    justify-items: start;
+  }
+  .f-hero-inner > * {
+    max-width: 860px;
+  }
+  .pill img {
+    width: 16px;
+    height: 16px;
+  }
+  .f-hero h1 {
+    color: #fff;
+    font-size: clamp(40px, 5.4vw, 66px);
+  }
+  .f-hero .lead {
+    color: #b9c6d9;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 27px;
+    padding: 13px 0;
+  }
+  .badge {
+    display: inline-block;
+    line-height: 0;
+  }
+  .badge img {
+    height: 53px;
+    width: auto;
+  }
+  .partner {
+    font-size: 14.5px;
+    color: #8fa1bb;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 56px;
+  }
+  .fact {
+    padding: 22px 24px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .fact h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 1.3;
+  }
+  .fact p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+
+  .shots {
+    padding-top: 88px;
+  }
+  .s-title {
+    font-size: clamp(30px, 3.4vw, 42px);
+    margin-bottom: 32px;
+  }
+  .shot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .shot {
+    margin: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .shot figcaption {
+    padding: 18px 22px 22px;
+  }
+  .shot h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+  }
+  .shot p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .lists {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+    padding-top: 88px;
+  }
+  .list-card {
+    display: grid;
+    align-content: start;
+    gap: 20px;
+    padding: 28px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .list-card h2 {
+    font-size: 24px;
+  }
+  .points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .points li {
+    position: relative;
+    padding-left: 28px;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--grad);
+  }
+  .chips {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .chips li {
+    padding: 9px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 14.5px;
+    color: var(--ink-2);
+  }
+  .list-card .badge {
+    justify-self: start;
+    margin-top: 6px;
+  }
+
+  .more {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    margin-top: 88px;
+    padding: 32px 36px;
+    border-radius: 22px;
+    background: var(--app-bg);
+    border: 1px solid var(--line);
+  }
+  .more h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .more p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 640px;
+  }
+  .note {
+    padding-top: 40px;
+    padding-bottom: var(--section);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .facts,
+    .shot-grid,
+    .lists {
+      grid-template-columns: 1fr;
+    }
+    .more {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
