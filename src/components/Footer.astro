@@ -9,7 +9,7 @@ const {lang} = Astro.props;
 const {nav: n, footer: f} = t(lang);
 const year = new Date().getFullYear();
 const columns = [
-  {title: f.product, links: [['ino', n.inoOverview], ['features', n.features], ['ai', n.ai], ['integrations', n.integrations], ['developers', n.developers]]},
+  {title: f.product, links: [['ino', n.inoOverview], ['features', n.features], ['ai', n.ai], ['integrations', n.integrations], ['shopify', n.shopify], ['developers', n.developers]]},
   {title: f.services, links: [['crm', n.crm], ['browserping', n.browserping]]},
   {title: f.company, links: [['about', n.about], ['contact', n.contact], ['support', n.support]]},
   {title: f.legal, links: [['privacy', f.privacy], ['cookies', f.cookies], ['terms', f.terms]]},
