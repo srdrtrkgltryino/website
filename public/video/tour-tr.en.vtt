@@ -1,40 +1,58 @@
 WEBVTT
 
-00:00:00.333 --> 00:00:02.000
+00:00:00.333 --> 00:00:02.033
 Meet Ino Loyalty.
 
-00:00:02.733 --> 00:00:08.000
-Set how points are earned, spent, and when they expire.
+00:00:02.767 --> 00:00:08.067
+Decide how points are earned, spent, and when they expire.
 
-00:00:08.733 --> 00:00:13.333
-Reward your best customers with tiers and perks of their own.
+00:00:08.800 --> 00:00:12.800
+Give your best customers tiers with perks of their own.
 
-00:00:14.067 --> 00:00:20.100
-Launch a campaign in five steps: name it, pick who qualifies, set the rules,
+00:00:13.533 --> 00:00:15.333
+Build a campaign in five steps,
 
-00:00:20.100 --> 00:00:23.300
-test it on a sample basket, and publish.
+00:00:15.333 --> 00:00:18.367
+and test it on a sample basket before anyone sees it.
 
-00:00:28.733 --> 00:00:34.300
-Build segments from real shopping behaviour, explained in plain words.
+00:00:27.367 --> 00:00:29.133
+Or just describe it.
 
-00:00:35.033 --> 00:00:40.667
-Every member in one view: balance, tier, purchases, consents,
+00:00:29.133 --> 00:00:34.633
+Ino AI turns one sentence into a campaign draft you can check.
 
-00:00:40.667 --> 00:00:43.067
-and a branded wallet card.
+00:00:35.367 --> 00:00:40.667
+Say who you want to reach, and see how many members match before you save.
 
-00:00:43.900 --> 00:00:49.567
-Track outstanding points, liability and expiry at a glance.
+00:00:41.400 --> 00:00:45.633
+Ino AI also finds campaigns worth running in your own data,
 
-00:00:50.300 --> 00:00:56.333
-For developers: signed webhooks, an event catalog and a real-time API.
+00:00:45.633 --> 00:00:48.500
+each with a budget and a hold-out group.
 
-00:00:57.067 --> 00:00:58.667
+00:00:49.233 --> 00:00:54.733
+Before anything goes live, your approver sees the cost and every overlap.
+
+00:00:55.767 --> 00:00:58.800
+Once it's running, ask for a second opinion.
+
+00:00:58.800 --> 00:01:02.633
+Changes go through a draft, so the campaign never stops.
+
+00:01:04.900 --> 00:01:09.133
+Every member in one view, with a wallet card in your brand.
+
+00:01:11.433 --> 00:01:15.000
+Developers get a plan built on the real API,
+
+00:01:15.000 --> 00:01:18.433
+and failed calls explained in plain words.
+
+00:01:19.233 --> 00:01:20.867
 Privacy is built in.
 
-00:00:58.667 --> 00:01:03.200
+00:01:20.867 --> 00:01:25.467
 Erasure requests are reviewed, then completed end to end.
 
-00:01:03.933 --> 00:01:06.300
+00:01:26.233 --> 00:01:28.633
 Ino Loyalty, by Tryino.

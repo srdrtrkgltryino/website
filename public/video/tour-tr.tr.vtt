@@ -1,43 +1,55 @@
 WEBVTT
 
-00:00:00.333 --> 00:00:02.000
+00:00:00.333 --> 00:00:02.033
 Ino Loyalty ile tanışın.
 
-00:00:02.733 --> 00:00:08.000
-Puanların nasıl kazanılıp harcanacağını ve ne zaman sona ereceğini siz belirleyin.
+00:00:02.767 --> 00:00:08.067
+Puanların nasıl kazanılıp harcanacağına ve ne zaman sona ereceğine siz karar verin.
 
-00:00:08.733 --> 00:00:13.333
-En iyi müşterilerinizi, kendi ayrıcalıkları olan kademelerle ödüllendirin.
+00:00:08.800 --> 00:00:12.800
+En iyi müşterilerinize, kendi ayrıcalıkları olan kademeler sunun.
 
-00:00:14.067 --> 00:00:18.767
-Beş adımda kampanya: adını verin, kimlerin yararlanacağını seçin,
+00:00:13.533 --> 00:00:18.367
+Beş adımda kampanya kurun; kimse görmeden önce örnek bir sepetle deneyin.
 
-00:00:18.767 --> 00:00:23.300
-kuralları belirleyin, örnek bir sepetle deneyin ve yayına alın.
+00:00:27.367 --> 00:00:28.900
+Ya da sadece anlatın.
 
-00:00:28.733 --> 00:00:32.000
-Gerçek alışveriş davranışından segmentler oluşturun;
+00:00:28.900 --> 00:00:34.633
+Ino AI tek bir cümleyi, kontrol edebileceğiniz bir kampanya taslağına çevirir.
 
-00:00:32.000 --> 00:00:34.300
-kurallar düz bir cümleyle anlatılsın.
+00:00:35.367 --> 00:00:40.667
+Kime ulaşmak istediğinizi söyleyin; kaydetmeden önce kaç üyenin eşleştiğini görün.
 
-00:00:35.033 --> 00:00:39.367
-Her müşteri tek ekranda: bakiye, kademe, alışverişler,
+00:00:41.400 --> 00:00:45.633
+Ino AI, kendi verinizde yapmaya değer kampanyaları da bulur;
 
-00:00:39.367 --> 00:00:43.067
-izinler ve markanızı taşıyan bir cüzdan kartı.
+00:00:45.633 --> 00:00:48.500
+her biri bütçe ve kontrol grubuyla gelir.
 
-00:00:43.900 --> 00:00:49.567
-Bekleyen puanları, finansal yükümlülüğü ve sona erecek puanları tek bakışta izleyin.
+00:00:49.233 --> 00:00:54.733
+Hiçbir şey yayına çıkmadan önce onaylayan kişi maliyeti ve tüm çakışmaları görür.
 
-00:00:50.300 --> 00:00:56.333
-Geliştiriciler için imzalı webhook'lar, olay kataloğu ve gerçek zamanlı bir API.
+00:00:55.767 --> 00:00:59.000
+Kampanya yayındayken ikinci bir görüş isteyin.
 
-00:00:57.067 --> 00:00:59.200
+00:00:59.000 --> 00:01:02.633
+Değişiklikler taslakla yapılır, kampanya hiç durmaz.
+
+00:01:04.900 --> 00:01:09.133
+Her üye tek ekranda; markanızı taşıyan bir cüzdan kartıyla.
+
+00:01:11.433 --> 00:01:15.467
+Geliştiricileriniz gerçek API üzerine kurulu bir plan alır;
+
+00:01:15.467 --> 00:01:18.433
+başarısız çağrılar düz bir dille açıklanır.
+
+00:01:19.233 --> 00:01:21.400
 Gizlilik en baştan düşünüldü.
 
-00:00:59.200 --> 00:01:03.200
+00:01:21.400 --> 00:01:25.467
 Silme talepleri incelenir, sonra uçtan uca tamamlanır.
 
-00:01:03.933 --> 00:01:06.300
+00:01:26.233 --> 00:01:28.633
 Ino Loyalty, Tryino'dan.
