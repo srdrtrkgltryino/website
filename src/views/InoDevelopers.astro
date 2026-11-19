@@ -31,7 +31,7 @@ const copy = {
     quickTitle: 'Your first request in three steps',
     steps: [
       ['Get your credentials', 'During onboarding you receive your API host and a channel code (for example MODERN_ECOM). Your IT admin creates the API key and secret in the Developers console of Ino Loyalty.'],
-      ['Sign the request', 'Every call carries X-Api-Key, X-Timestamp (Unix seconds, within 5 minutes) and X-Signature: the lowercase hex HMAC-SHA256 of "{timestamp}.{raw body}" with your secret. Sign the exact bytes you send.'],
+      ['Sign the request', 'Every call carries X-Api-Key, X-Timestamp (Unix seconds, within 5 minutes), X-Nonce (new for every request), X-Signature-Version: 2 and X-Signature: the lowercase hex HMAC-SHA256 of "v2.{timestamp}.{nonce}.{METHOD}.{path}.{raw body}" with your secret. The method, the path and the one-time nonce are signed, so a captured request cannot be replayed or sent elsewhere. Sign the exact bytes you send.'],
       ['Record a purchase', 'Call transaction.create with the order and list prices. Ino Loyalty evaluates campaigns, earns or spends points and returns the result.'],
     ],
     conceptsTitle: 'Good to know',
@@ -84,7 +84,7 @@ const copy = {
     quickTitle: 'Üç adımda ilk isteğiniz',
     steps: [
       ['Kimlik bilgilerinizi alın', 'Kurulumda API adresinizi ve bir kanal kodu (örneğin MODERN_ECOM) alırsınız. BT yöneticiniz API anahtarını ve gizli anahtarı Ino Loyalty\'nin Developers konsolunda oluşturur.'],
-      ['İsteği imzalayın', 'Her çağrı X-Api-Key, X-Timestamp (Unix saniye, 5 dakika içinde) ve X-Signature taşır: gizli anahtarla "{timestamp}.{ham gövde}" üzerinden HMAC-SHA256, küçük harf hex. Tam olarak gönderdiğiniz baytları imzalayın.'],
+      ['İsteği imzalayın', 'Her çağrı X-Api-Key, X-Timestamp (Unix saniye, 5 dakika içinde), X-Nonce (her istekte yeni), X-Signature-Version: 2 ve X-Signature taşır: gizli anahtarla "v2.{timestamp}.{nonce}.{YÖNTEM}.{yol}.{ham gövde}" üzerinden HMAC-SHA256, küçük harf hex. Yöntem, yol ve tek kullanımlık değer de imzalandığı için ele geçen bir istek tekrar ya da başka yere gönderilemez. Tam olarak gönderdiğiniz baytları imzalayın.'],
       ['Bir alışveriş kaydedin', 'Sipariş ve liste fiyatlarıyla transaction.create çağırın. Ino Loyalty kampanyaları değerlendirir, puan kazandırır ya da harcatır ve sonucu döner.'],
     ],
     conceptsTitle: 'Bilmeniz gerekenler',
@@ -142,18 +142,22 @@ const body = JSON.stringify({
   },
   payments: [{type: 'CREDIT_CARD', amount: '119.00'}],
 });
+const path = '/api/v1/MODERN_ECOM/transaction.create';
 const timestamp = Math.floor(Date.now() / 1000).toString();
+const nonce = crypto.randomUUID().replaceAll('-', '');
 const signature = crypto
   .createHmac('sha256', process.env.INO_HMAC_SECRET)
-  .update(\`\${timestamp}.\${body}\`)
+  .update(\`v2.\${timestamp}.\${nonce}.POST.\${path}.\${body}\`)
   .digest('hex');
 
-const res = await fetch(\`https://\${host}/api/v1/MODERN_ECOM/transaction.create\`, {
+const res = await fetch(\`https://\${host}\${path}\`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
     'X-Api-Key': process.env.INO_API_KEY,
     'X-Timestamp': timestamp,
+    'X-Nonce': nonce,
+    'X-Signature-Version': '2',
     'X-Signature': signature,
   },
   body,
@@ -170,14 +174,18 @@ body = json.dumps({
                             "unitPrice": "89.00", "originalUnitPrice": "89.00"}]},
     "payments": [{"type": "CREDIT_CARD", "amount": "119.00"}],
 }, separators=(",", ":"))
+path = "/api/v1/MODERN_ECOM/transaction.create"
 timestamp = str(int(time.time()))
+nonce = uuid.uuid4().hex
 signature = hmac.new(os.environ["INO_HMAC_SECRET"].encode(),
-                     f"{timestamp}.{body}".encode(), hashlib.sha256).hexdigest()
+                     f"v2.{timestamp}.{nonce}.POST.{path}.{body}".encode(), hashlib.sha256).hexdigest()
 
-res = requests.post(f"https://{host}/api/v1/MODERN_ECOM/transaction.create", data=body, headers={
+res = requests.post(f"https://{host}{path}", data=body, headers={
     "Content-Type": "application/json",
     "X-Api-Key": os.environ["INO_API_KEY"],
     "X-Timestamp": timestamp,
+    "X-Nonce": nonce,
+    "X-Signature-Version": "2",
     "X-Signature": signature,
 })`,
   csharp: `using System.Security.Cryptography;
@@ -194,15 +202,19 @@ var body = JsonSerializer.Serialize(new {
     },
     payments = new[] { new { type = "CREDIT_CARD", amount = "119.00" } },
 });
+const string path = "/api/v1/MODERN_ECOM/transaction.create";
 var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+var nonce = Guid.NewGuid().ToString("N");
 using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes($"{timestamp}.{body}"))).ToLowerInvariant();
+var signature = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes($"v2.{timestamp}.{nonce}.POST.{path}.{body}"))).ToLowerInvariant();
 
-var request = new HttpRequestMessage(HttpMethod.Post, $"https://{host}/api/v1/MODERN_ECOM/transaction.create") {
+var request = new HttpRequestMessage(HttpMethod.Post, $"https://{host}{path}") {
     Content = new StringContent(body, Encoding.UTF8, "application/json"),
 };
 request.Headers.Add("X-Api-Key", apiKey);
 request.Headers.Add("X-Timestamp", timestamp);
+request.Headers.Add("X-Nonce", nonce);
+request.Headers.Add("X-Signature-Version", "2");
 request.Headers.Add("X-Signature", signature);`,
   verify: `import {Webhook} from 'standardwebhooks'; // npm i standardwebhooks (also for Python, .NET, Go, Java…)
 
