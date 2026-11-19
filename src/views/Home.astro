@@ -376,17 +376,20 @@ const featPos = ['0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%', '0% 0%'];
         <div class="code-bar"><i></i><i></i><i></i><span>sign-request.js</span></div>
         <pre><code><span class="k">const</span> crypto = require(<span class="s">'crypto'</span>);
 
-<span class="c">// Sign exactly the bytes you send.</span>
+<span class="c">// Signature v2: the method, path and a one-time nonce are signed too.</span>
+<span class="k">const</span> path = <span class="s">'/api/v1/ECOM/transaction.create'</span>;
 <span class="k">const</span> body = JSON.stringify(payload);
 <span class="k">const</span> timestamp = Math.floor(Date.now() / <span class="n">1000</span>).toString();
+<span class="k">const</span> nonce = crypto.randomUUID().replaceAll(<span class="s">'-'</span>, <span class="s">''</span>);
 <span class="k">const</span> signature = crypto
   .createHmac(<span class="s">'sha256'</span>, SECRET)
-  .update(<span class="s">`${'{'}timestamp{'}'}.${'{'}body{'}'}`</span>)
+  .update(<span class="s">`v2.${'{'}timestamp{'}'}.${'{'}nonce{'}'}.POST.${'{'}path{'}'}.${'{'}body{'}'}`</span>)
   .digest(<span class="s">'hex'</span>);
 
-<span class="k">await</span> fetch(<span class="s">`${'{'}host{'}'}/api/v1/ECOM/transaction.create`</span>, {'{'}
+<span class="k">await</span> fetch(<span class="s">`${'{'}host{'}'}${'{'}path{'}'}`</span>, {'{'}
   method: <span class="s">'POST'</span>,
-  headers: {'{'} <span class="s">'X-Api-Key'</span>: KEY, <span class="s">'X-Timestamp'</span>: timestamp, <span class="s">'X-Signature'</span>: signature {'}'},
+  headers: {'{'} <span class="s">'X-Api-Key'</span>: KEY, <span class="s">'X-Timestamp'</span>: timestamp, <span class="s">'X-Nonce'</span>: nonce,
+             <span class="s">'X-Signature-Version'</span>: <span class="s">'2'</span>, <span class="s">'X-Signature'</span>: signature {'}'},
   body,
 {'}'});</code></pre>
       </div>
